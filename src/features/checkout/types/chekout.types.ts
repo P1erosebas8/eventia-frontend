@@ -4,7 +4,14 @@ export interface CartItem {
   event_name: string;
   unit_price: number;
   quantity: number;
-  subtotal?: number;
+}
+
+export interface CartContexType {
+  items: CartItem[];
+  addToCart: (item: CartItem) => void;
+  removeFromCart: (id: number) => void;
+  clearCart: () => void;
+  totalAmount: number;
 }
 
 export interface OrderPayload {
