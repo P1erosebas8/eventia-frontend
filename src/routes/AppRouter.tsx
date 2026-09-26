@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import CatalogPage from "../features/catalog/CatalogPage";
+import EventDetailPage from "../features/event-detail/EventDetailPage";
 
 function NotFound() {
   return (
@@ -18,6 +19,8 @@ export default function AppRouter() {
     <Routes>
       <Route path="/" element={<Navigate to="/catalogo" replace />} />
       <Route path="/catalogo" element={<CatalogPage />} />
+      <Route path="/evento" element={<EventDetailPage />} />
+      <Route path="/evento/:id" element={<EventDetailPage />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
