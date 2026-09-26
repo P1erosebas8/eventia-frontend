@@ -24,7 +24,7 @@ export default function UsersHeader({ onNuevoUsuario }: UsersHeaderProps) {
         className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-on-primary text-sm font-bold hover:opacity-90 transition-opacity shrink-0 self-start"
       >
         <UserPlus className="w-4 h-4" />
-        <span>+ Nuevo Usuario</span>
+        <span>Nuevo Usuario</span>
       </button>
     </div>
   );

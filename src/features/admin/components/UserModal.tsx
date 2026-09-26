@@ -37,7 +37,15 @@ export default function UserModal({
     } else {
       setForm(EMPTY_FORM);
     }
-  }, [userToEdit, open]);
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && open) {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [userToEdit, open, onClose]);
 
   if (!open) return null;
 
