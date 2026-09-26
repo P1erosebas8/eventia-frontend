@@ -6,7 +6,7 @@ const NAV = [
   { icon: "badge", label: "Directorio & Roles", activo: true },
 ];
 
-export default function UsuariosCategoriasSidebar() {
+export default function UsuariosRolesCategoriasSidebar() {
   return (
     <aside className="fixed left-0 top-0 h-full w-64 bg-surface-container-low shadow z-50 hidden lg:flex flex-col justify-between py-4 px-4">
       <div className="flex flex-col gap-6">

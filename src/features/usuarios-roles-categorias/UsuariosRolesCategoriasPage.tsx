@@ -1,21 +1,21 @@
 import { useState } from "react";
-import CategoryManager from "../../components/usuarios-categorias/CategoryManager";
-import CategoryModal from "../../components/usuarios-categorias/CategoryModal";
-import KpiRibbon from "../../components/usuarios-categorias/KpiRibbon";
-import Toast, { type ToastData } from "../../components/usuarios-categorias/Toast";
-import UserDirectory from "../../components/usuarios-categorias/UserDirectory";
-import UserModal from "../../components/usuarios-categorias/UserModal";
-import UsuariosCategoriasHeader from "../../components/usuarios-categorias/UsuariosCategoriasHeader";
-import UsuariosCategoriasSidebar from "../../components/usuarios-categorias/UsuariosCategoriasSidebar";
-import UsuariosCategoriasTabs from "../../components/usuarios-categorias/UsuariosCategoriasTabs";
+import CategoryManager from "../../components/usuarios-roles-categorias/CategoryManager";
+import CategoryModal from "../../components/usuarios-roles-categorias/CategoryModal";
+import KpiRibbon from "../../components/usuarios-roles-categorias/KpiRibbon";
+import Toast, { type ToastData } from "../../components/usuarios-roles-categorias/Toast";
+import UserDirectory from "../../components/usuarios-roles-categorias/UserDirectory";
+import UserModal from "../../components/usuarios-roles-categorias/UserModal";
+import UsuariosRolesCategoriasHeader from "../../components/usuarios-roles-categorias/UsuariosRolesCategoriasHeader";
+import UsuariosRolesCategoriasSidebar from "../../components/usuarios-roles-categorias/UsuariosRolesCategoriasSidebar";
+import UsuariosRolesCategoriasTabs from "../../components/usuarios-roles-categorias/UsuariosRolesCategoriasTabs";
 import {
   CATEGORIAS_INICIALES,
   USUARIOS_INICIALES,
   type EstadoCuenta,
   type Rol,
-} from "../../data/usuariosCategorias";
+} from "../../data/usuariosRolesCategorias";
 
-export default function UsuariosCategoriasPage() {
+export default function UsuariosRolesCategoriasPage() {
   const [tab, setTab] = useState<"usuarios" | "categorias">("usuarios");
   const [busqueda, setBusqueda] = useState("");
   const [rol, setRol] = useState<Rol | "ALL">("ALL");
@@ -52,9 +52,9 @@ export default function UsuariosCategoriasPage() {
 
   return (
     <div className="min-h-screen bg-surface">
-      <UsuariosCategoriasSidebar />
+      <UsuariosRolesCategoriasSidebar />
       <div className="pl-0 lg:pl-64">
-        <UsuariosCategoriasHeader onNuevoUsuario={() => setModalUsuario(true)} />
+        <UsuariosRolesCategoriasHeader onNuevoUsuario={() => setModalUsuario(true)} />
         <main className="w-full pt-16 px-6 min-h-screen">
           <div className="flex flex-col w-full pb-10">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 py-4">
@@ -95,7 +95,7 @@ export default function UsuariosCategoriasPage() {
             </div>
 
             <KpiRibbon activas={activas} total={categorias.length} />
-            <UsuariosCategoriasTabs tab={tab} setTab={setTab} />
+            <UsuariosRolesCategoriasTabs tab={tab} setTab={setTab} />
 
             {tab === "usuarios" ? (
               <UserDirectory
