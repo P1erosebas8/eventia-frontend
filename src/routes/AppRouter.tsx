@@ -19,7 +19,7 @@ export default function AppRouter() {
     <Routes>
       <Route path="/" element={<Navigate to="/catalogo" replace />} />
       <Route path="/catalogo" element={<CatalogPage />} />
-      <Route path="/backoffice" element={<BackofficePage />} />
+      <Route path="/gestion-identidades" element={<BackofficePage />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
