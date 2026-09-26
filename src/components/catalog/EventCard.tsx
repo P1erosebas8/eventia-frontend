@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { formatoPrecio, type Evento } from "../../data/events";
 
 function esUrgente(pct: number) {
@@ -84,12 +85,12 @@ export default function EventCard({ evento, vista }: { evento: Evento; vista: "g
               {formatoPrecio(evento.precio)}
             </span>
           </div>
-          <button
+          <Link
+            to={`/evento/${evento.id}`}
             className="px-4 py-2 bg-primary hover:opacity-90 text-on-primary rounded-lg text-sm font-bold shadow-sm transition-all"
-            type="button"
           >
             Comprar Entradas
-          </button>
+          </Link>
         </div>
       </div>
     </article>
