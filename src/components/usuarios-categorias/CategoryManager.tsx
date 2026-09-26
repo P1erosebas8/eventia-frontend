@@ -1,4 +1,4 @@
-import type { CategoriaAdmin } from "../../data/backoffice";
+import type { CategoriaAdmin } from "../../data/usuariosCategorias";
 
 interface Props {
   categorias: CategoriaAdmin[];

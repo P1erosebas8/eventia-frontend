@@ -12,7 +12,7 @@ export default function UserModal({ open, onClose, onSubmit }: Props) {
         <div className="px-4 py-4 bg-surface-container flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-primary text-[22px]">person_add</span>
-            <h3 className="font-display font-semibold text-lg">Crear / Invitar Usuario al Backoffice</h3>
+            <h3 className="font-display font-semibold text-lg">Crear / Invitar Usuario</h3>
           </div>
           <button onClick={onClose} type="button" className="p-1 rounded-lg hover:bg-surface-variant">
             <span className="material-symbols-outlined text-[20px]">close</span>

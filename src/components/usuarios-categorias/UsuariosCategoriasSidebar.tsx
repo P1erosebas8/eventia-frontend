@@ -6,7 +6,7 @@ const NAV = [
   { icon: "badge", label: "Directorio & Roles", activo: true },
 ];
 
-export default function BackofficeSidebar() {
+export default function UsuariosCategoriasSidebar() {
   return (
     <aside className="fixed left-0 top-0 h-full w-64 bg-surface-container-low shadow z-50 hidden lg:flex flex-col justify-between py-4 px-4">
       <div className="flex flex-col gap-6">
@@ -17,7 +17,7 @@ export default function BackofficeSidebar() {
           <div className="flex flex-col">
             <span className="font-display font-semibold text-lg leading-none">Eventia</span>
             <span className="text-[11px] text-primary font-bold tracking-wide uppercase mt-1">
-              Backoffice Perú
+              Gestión Perú
             </span>
           </div>
         </div>

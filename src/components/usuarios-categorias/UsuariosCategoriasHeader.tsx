@@ -1,4 +1,4 @@
-export default function BackofficeHeader({ onNuevoUsuario }: { onNuevoUsuario: () => void }) {
+export default function UsuariosCategoriasHeader({ onNuevoUsuario }: { onNuevoUsuario: () => void }) {
   return (
     <header className="fixed top-0 left-0 lg:left-64 right-0 h-16 bg-surface/90 backdrop-blur-xl shadow z-40 flex items-center justify-between px-6">
       <div className="flex items-center gap-4">

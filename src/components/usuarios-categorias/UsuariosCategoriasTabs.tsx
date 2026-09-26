@@ -3,7 +3,7 @@ interface Props {
   setTab: (t: "usuarios" | "categorias") => void;
 }
 
-export default function BackofficeTabs({ tab, setTab }: Props) {
+export default function UsuariosCategoriasTabs({ tab, setTab }: Props) {
   const base =
     "flex items-center gap-2 px-4 py-2 rounded-lg text-sm transition-all whitespace-nowrap";
   return (

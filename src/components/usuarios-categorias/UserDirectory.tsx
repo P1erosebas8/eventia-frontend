@@ -1,4 +1,4 @@
-import type { EstadoCuenta, Rol, Usuario } from "../../data/backoffice";
+import type { EstadoCuenta, Rol, Usuario } from "../../data/usuariosCategorias";
 
 const ROL_PILL: Record<Rol, string> = {
   Administrador: "bg-primary-fixed text-primary",
