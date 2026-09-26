@@ -1,7 +1,18 @@
-import { CATEGORIAS, PRECIO_MAX, formatoPrecio } from "../../data/events";
-import type { CatalogFilters } from "../../hooks/useCatalogFilters";
+import { CATEGORIAS, PRECIO_MAX, formatoPrecio, type Categoria } from "../../data/events";
 
-export default function FilterSidebar({ f }: { f: CatalogFilters }) {
+interface Props {
+  busqueda: string;
+  setBusqueda: (v: string) => void;
+  soloPromo: boolean;
+  setSoloPromo: (v: boolean) => void;
+  categorias: Categoria[];
+  toggleCategoria: (c: Categoria) => void;
+  precioMax: number;
+  setPrecioMax: (v: number) => void;
+  limpiar: () => void;
+}
+
+export default function FilterSidebar(p: Props) {
   return (
     <aside
       aria-label="Filtros del catálogo"
@@ -13,7 +24,7 @@ export default function FilterSidebar({ f }: { f: CatalogFilters }) {
           <h2 className="font-display font-bold text-xl">Filtros</h2>
         </div>
         <button
-          onClick={f.limpiar}
+          onClick={p.limpiar}
           className="text-xs font-semibold text-secondary hover:opacity-80 transition flex items-center gap-0.5"
           type="button"
         >
@@ -33,8 +44,8 @@ export default function FilterSidebar({ f }: { f: CatalogFilters }) {
           </span>
           <input
             id="event-search-input"
-            value={f.busqueda}
-            onChange={(e) => f.setBusqueda(e.target.value)}
+            value={p.busqueda}
+            onChange={(e) => p.setBusqueda(e.target.value)}
             className="w-full bg-surface-container-low text-sm pl-10 pr-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary placeholder:text-outline"
             placeholder="Buscar artista, evento o sala..."
             type="text"
@@ -55,8 +66,8 @@ export default function FilterSidebar({ f }: { f: CatalogFilters }) {
           <input
             type="checkbox"
             className="sr-only peer"
-            checked={f.soloPromo}
-            onChange={(e) => f.setSoloPromo(e.target.checked)}
+            checked={p.soloPromo}
+            onChange={(e) => p.setSoloPromo(e.target.checked)}
           />
           <div className="w-11 h-6 bg-surface-container-high rounded-full peer-checked:bg-secondary relative transition-colors after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full"></div>
         </label>
@@ -67,7 +78,7 @@ export default function FilterSidebar({ f }: { f: CatalogFilters }) {
         <span className="text-xs font-semibold uppercase tracking-wider">Categorías</span>
         <div className="flex flex-col gap-1.5">
           {CATEGORIAS.map((c) => {
-            const activa = f.categorias.includes(c.nombre);
+            const activa = p.categorias.includes(c.nombre);
             return (
               <label
                 key={c.nombre}
@@ -80,7 +91,7 @@ export default function FilterSidebar({ f }: { f: CatalogFilters }) {
                     type="checkbox"
                     className="w-4 h-4 accent-primary"
                     checked={activa}
-                    onChange={() => f.toggleCategoria(c.nombre)}
+                    onChange={() => p.toggleCategoria(c.nombre)}
                   />
                   <span className={`text-sm ${activa ? "font-medium" : "text-on-surface-variant"}`}>
                     {c.nombre}
@@ -99,58 +110,6 @@ export default function FilterSidebar({ f }: { f: CatalogFilters }) {
         </div>
       </div>
 
-      {/* Fecha (visual) */}
-      <div className="flex flex-col gap-2">
-        <span className="text-xs font-semibold uppercase tracking-wider">Fecha del evento</span>
-        <div className="grid grid-cols-2 gap-2">
-          {["Hoy", "Fin de semana", "Este mes"].map((t, i) => (
-            <button
-              key={t}
-              type="button"
-              className={`py-2 px-3 rounded-lg text-xs font-semibold transition-colors ${
-                i === 1
-                  ? "bg-primary-container/20 text-primary font-bold shadow-sm"
-                  : "bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high"
-              }`}
-            >
-              {t}
-            </button>
-          ))}
-          <button
-            type="button"
-            className="py-2 px-3 rounded-lg text-xs font-semibold bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high transition-colors flex items-center justify-center gap-1"
-          >
-            <span className="material-symbols-outlined text-[16px]">calendar_month</span>
-            Elegir
-          </button>
-        </div>
-      </div>
-
-      {/* Ciudad */}
-      <div className="flex flex-col gap-2">
-        <span className="text-xs font-semibold uppercase tracking-wider">Ubicación y Recintos</span>
-        <select
-          aria-label="Seleccionar ciudad"
-          className="w-full bg-surface-container-low text-sm px-3 py-2.5 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary"
-        >
-          <option>Lima Metropolitana (18)</option>
-          <option>Arequipa (4)</option>
-          <option>Cusco (2)</option>
-          <option>Trujillo (1)</option>
-        </select>
-        <div className="flex flex-wrap gap-1.5 pt-1">
-          <span className="text-xs bg-surface-container-high px-2.5 py-1 rounded-md font-medium cursor-pointer flex items-center gap-1">
-            Estadio Nacional <span className="material-symbols-outlined text-[14px]">check</span>
-          </span>
-          <span className="text-xs bg-surface-container text-outline px-2.5 py-1 rounded-md font-medium cursor-pointer hover:bg-surface-container-high transition-colors">
-            Arena 1 Costa Verde
-          </span>
-          <span className="text-xs bg-surface-container text-outline px-2.5 py-1 rounded-md font-medium cursor-pointer hover:bg-surface-container-high transition-colors">
-            Jockey Club
-          </span>
-        </div>
-      </div>
-
       {/* Precio */}
       <div className="flex flex-col gap-2">
         <div className="flex justify-between items-center">
@@ -162,8 +121,8 @@ export default function FilterSidebar({ f }: { f: CatalogFilters }) {
           max={PRECIO_MAX}
           min={0}
           type="range"
-          value={f.precioMax}
-          onChange={(e) => f.setPrecioMax(Number(e.target.value))}
+          value={p.precioMax}
+          onChange={(e) => p.setPrecioMax(Number(e.target.value))}
         />
         <div className="grid grid-cols-2 gap-2 pt-1">
           <div className="bg-surface-container-low p-2 rounded-lg flex flex-col">
@@ -172,7 +131,7 @@ export default function FilterSidebar({ f }: { f: CatalogFilters }) {
           </div>
           <div className="bg-surface-container-low p-2 rounded-lg flex flex-col">
             <span className="text-xs text-outline">Máximo</span>
-            <span className="text-sm text-primary font-bold">{formatoPrecio(f.precioMax)}</span>
+            <span className="text-sm text-primary font-bold">{formatoPrecio(p.precioMax)}</span>
           </div>
         </div>
       </div>
