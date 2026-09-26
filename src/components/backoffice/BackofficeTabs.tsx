@@ -1,8 +1,6 @@
-import type { BackofficeTab } from "../../hooks/useBackoffice";
-
 interface Props {
-  tab: BackofficeTab;
-  setTab: (t: BackofficeTab) => void;
+  tab: "usuarios" | "categorias";
+  setTab: (t: "usuarios" | "categorias") => void;
 }
 
 export default function BackofficeTabs({ tab, setTab }: Props) {

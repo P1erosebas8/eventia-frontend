@@ -1,4 +1,7 @@
-import type { ToastData } from "../../hooks/useToast";
+export interface ToastData {
+  titulo: string;
+  desc: string;
+}
 
 export default function Toast({ toast }: { toast: ToastData | null }) {
   if (!toast) return null;

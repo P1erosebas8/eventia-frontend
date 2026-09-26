@@ -1,24 +1,60 @@
+import { useState } from "react";
 import BackofficeHeader from "../../components/backoffice/BackofficeHeader";
 import BackofficeSidebar from "../../components/backoffice/BackofficeSidebar";
 import BackofficeTabs from "../../components/backoffice/BackofficeTabs";
 import CategoryManager from "../../components/backoffice/CategoryManager";
 import CategoryModal from "../../components/backoffice/CategoryModal";
 import KpiRibbon from "../../components/backoffice/KpiRibbon";
-import Toast from "../../components/backoffice/Toast";
+import Toast, { type ToastData } from "../../components/backoffice/Toast";
 import UserDirectory from "../../components/backoffice/UserDirectory";
 import UserModal from "../../components/backoffice/UserModal";
-import { useBackoffice } from "../../hooks/useBackoffice";
-import { useToast } from "../../hooks/useToast";
+import {
+  CATEGORIAS_INICIALES,
+  USUARIOS_INICIALES,
+  type EstadoCuenta,
+  type Rol,
+} from "../../data/backoffice";
 
 export default function BackofficePage() {
-  const b = useBackoffice();
-  const { toast, showToast } = useToast();
+  const [tab, setTab] = useState<"usuarios" | "categorias">("usuarios");
+  const [busqueda, setBusqueda] = useState("");
+  const [rol, setRol] = useState<Rol | "ALL">("ALL");
+  const [estado, setEstado] = useState<EstadoCuenta | "ALL">("ALL");
+  const [usuarios, setUsuarios] = useState(USUARIOS_INICIALES);
+  const [categorias, setCategorias] = useState(CATEGORIAS_INICIALES);
+  const [modalUsuario, setModalUsuario] = useState(false);
+  const [modalCategoria, setModalCategoria] = useState(false);
+  const [toast, setToast] = useState<ToastData | null>(null);
+
+  const showToast = (titulo: string, desc: string) => {
+    setToast({ titulo, desc });
+    window.setTimeout(() => setToast(null), 4000);
+  };
+
+  const q = busqueda.trim().toLowerCase();
+  const usuariosFiltrados = usuarios.filter((u) => {
+    if (rol !== "ALL" && u.rol !== rol) return false;
+    if (estado !== "ALL" && u.estado !== estado) return false;
+    if (q && !`${u.nombre} ${u.email} ${u.docEtiqueta}`.toLowerCase().includes(q)) return false;
+    return true;
+  });
+
+  const toggleEstadoUsuario = (id: string) =>
+    setUsuarios((prev) =>
+      prev.map((u) => (u.id === id ? { ...u, estado: u.estado === "Activo" ? "Suspendido" : "Activo" } : u))
+    );
+
+  /** RN03: nunca DELETE físico, solo active true/false. */
+  const toggleCategoria = (id: string) =>
+    setCategorias((prev) => prev.map((c) => (c.id === id ? { ...c, activa: !c.activa } : c)));
+
+  const activas = categorias.filter((c) => c.activa).length;
 
   return (
     <div className="min-h-screen bg-surface">
       <BackofficeSidebar />
       <div className="pl-0 lg:pl-64">
-        <BackofficeHeader onNuevoUsuario={() => b.setModalUsuario(true)} />
+        <BackofficeHeader onNuevoUsuario={() => setModalUsuario(true)} />
         <main className="w-full pt-16 px-6 min-h-screen">
           <div className="flex flex-col w-full pb-10">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 py-4">
@@ -41,7 +77,7 @@ export default function BackofficePage() {
               <div className="flex flex-wrap items-center gap-2">
                 <button
                   type="button"
-                  onClick={() => b.setModalUsuario(true)}
+                  onClick={() => setModalUsuario(true)}
                   className="inline-flex items-center gap-2 bg-primary text-on-primary hover:opacity-90 px-4 py-2.5 rounded-lg text-sm shadow-sm transition-all active:scale-95"
                 >
                   <span className="material-symbols-outlined text-[20px]">person_add</span>
@@ -49,7 +85,7 @@ export default function BackofficePage() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => b.setModalCategoria(true)}
+                  onClick={() => setModalCategoria(true)}
                   className="inline-flex items-center gap-2 bg-surface-container-high hover:bg-surface-variant px-4 py-2.5 rounded-lg text-sm transition-all"
                 >
                   <span className="material-symbols-outlined text-primary text-[20px]">bookmark_add</span>
@@ -58,41 +94,41 @@ export default function BackofficePage() {
               </div>
             </div>
 
-            <KpiRibbon activas={b.activas} total={b.categorias.length} />
-            <BackofficeTabs tab={b.tab} setTab={b.setTab} />
+            <KpiRibbon activas={activas} total={categorias.length} />
+            <BackofficeTabs tab={tab} setTab={setTab} />
 
-            {b.tab === "usuarios" ? (
+            {tab === "usuarios" ? (
               <UserDirectory
-                usuarios={b.usuarios}
-                busqueda={b.busqueda}
-                setBusqueda={b.setBusqueda}
-                rol={b.rol}
-                setRol={b.setRol}
-                estado={b.estado}
-                setEstado={b.setEstado}
-                onToggleEstado={b.toggleEstadoUsuario}
+                usuarios={usuariosFiltrados}
+                busqueda={busqueda}
+                setBusqueda={setBusqueda}
+                rol={rol}
+                setRol={setRol}
+                estado={estado}
+                setEstado={setEstado}
+                onToggleEstado={toggleEstadoUsuario}
                 onToast={showToast}
               />
             ) : (
-              <CategoryManager categorias={b.categorias} onToggle={b.toggleCategoria} onToast={showToast} />
+              <CategoryManager categorias={categorias} onToggle={toggleCategoria} onToast={showToast} />
             )}
           </div>
         </main>
       </div>
 
       <UserModal
-        open={b.modalUsuario}
-        onClose={() => b.setModalUsuario(false)}
+        open={modalUsuario}
+        onClose={() => setModalUsuario(false)}
         onSubmit={() => {
-          b.setModalUsuario(false);
+          setModalUsuario(false);
           showToast("Invitación Despachada", "Credencial inicial con validación RBAC enviada.");
         }}
       />
       <CategoryModal
-        open={b.modalCategoria}
-        onClose={() => b.setModalCategoria(false)}
+        open={modalCategoria}
+        onClose={() => setModalCategoria(false)}
         onSubmit={() => {
-          b.setModalCategoria(false);
+          setModalCategoria(false);
           showToast("Taxonomía Registrada", "Categoría persistida con active=true (RF17).");
         }}
       />
