@@ -1,6 +1,30 @@
-/**
- * Modelos e interfaces del módulo de administración
- */
+/* ── Gestión de Usuarios ── */
+
+export type UserRole = "Organizador" | "Cliente";
+export type UserStatus = "Activo" | "Inactivo";
+
+export interface AdminUser {
+  id: string;
+  codigo: string;
+  nombre: string;
+  email: string;
+  iniciales: string;
+  dni: string;
+  telefono: string;
+  rol: UserRole;
+  fechaRegistro: string;
+  estado: UserStatus;
+}
+
+export interface UserFormData {
+  nombre: string;
+  email: string;
+  dni: string;
+  telefono: string;
+  rol: UserRole;
+}
+
+/* ── Monitoreo ── */
 
 export type MetricColorVariant = "indigo" | "blue" | "purple" | "rose";
 export type EventStatus = "En Curso" | "Activo" | "Próximo" | "Finalizado";
