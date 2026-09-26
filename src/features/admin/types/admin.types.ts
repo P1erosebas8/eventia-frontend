@@ -1,3 +1,22 @@
+/* ── Gestión de Categorías ── */
+
+export type CategoryStatus = "Activa" | "Inactiva";
+
+export interface AdminCategory {
+  id: string;
+  numeroId: number;
+  nombre: string;
+  descripcion: string;
+  estado: CategoryStatus;
+  ultimaActualizacion: string;
+}
+
+export interface CategoryFormData {
+  nombre: string;
+  descripcion: string;
+  estado: CategoryStatus;
+}
+
 /* ── Gestión de Usuarios ── */
 
 export type UserRole = "Organizador" | "Cliente";
