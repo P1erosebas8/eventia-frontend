@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
+import UsuariosRolesCategoriasPage from "../features/usuarios-roles-categorias/UsuariosRolesCategoriasPage";
 import CatalogPage from "../features/catalog/CatalogPage";
 import EventDetailPage from "../features/event-detail/EventDetailPage";
 
@@ -19,6 +20,7 @@ export default function AppRouter() {
     <Routes>
       <Route path="/" element={<Navigate to="/catalogo" replace />} />
       <Route path="/catalogo" element={<CatalogPage />} />
+      <Route path="/usuarios-roles-categorias" element={<UsuariosRolesCategoriasPage />} />
       <Route path="/evento" element={<EventDetailPage />} />
       <Route path="/evento/:id" element={<EventDetailPage />} />
       <Route path="*" element={<NotFound />} />
