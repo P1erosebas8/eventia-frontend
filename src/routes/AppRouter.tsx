@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
+import BackofficePage from "../features/backoffice/BackofficePage";
 import CatalogPage from "../features/catalog/CatalogPage";
 
 function NotFound() {
@@ -18,6 +19,7 @@ export default function AppRouter() {
     <Routes>
       <Route path="/" element={<Navigate to="/catalogo" replace />} />
       <Route path="/catalogo" element={<CatalogPage />} />
+      <Route path="/backoffice" element={<BackofficePage />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
