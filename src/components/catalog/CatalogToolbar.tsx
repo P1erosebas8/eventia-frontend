@@ -1,14 +1,12 @@
-import type { CatalogFilters, Orden, Vista } from "../../hooks/useCatalogFilters";
-
 interface Props {
-  f: CatalogFilters;
   total: number;
+  orden: string;
+  setOrden: (v: string) => void;
+  vista: "grid" | "lista";
+  setVista: (v: "grid" | "lista") => void;
 }
 
-export default function CatalogToolbar({ f, total }: Props) {
-  const setOrden = (v: string) => f.setOrden(v as Orden);
-  const setVista = (v: Vista) => f.setVista(v);
-
+export default function CatalogToolbar({ total, orden, setOrden, vista, setVista }: Props) {
   return (
     <div className="bg-surface-container-lowest p-4 rounded-xl shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
       <div className="flex items-center gap-3">
@@ -24,7 +22,7 @@ export default function CatalogToolbar({ f, total }: Props) {
           </label>
           <select
             id="sort-select"
-            value={f.orden}
+            value={orden}
             onChange={(e) => setOrden(e.target.value)}
             className="bg-surface-container-low text-sm font-medium px-3 py-1.5 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary"
           >
@@ -40,7 +38,7 @@ export default function CatalogToolbar({ f, total }: Props) {
             aria-label="Vista cuadrícula"
             onClick={() => setVista("grid")}
             type="button"
-            className={`p-1.5 rounded-md ${f.vista === "grid" ? "bg-white text-primary shadow-sm" : "text-outline hover:text-on-surface"}`}
+            className={`p-1.5 rounded-md ${vista === "grid" ? "bg-white text-primary shadow-sm" : "text-outline hover:text-on-surface"}`}
           >
             <span className="material-symbols-outlined text-[18px]">grid_view</span>
           </button>
@@ -48,7 +46,7 @@ export default function CatalogToolbar({ f, total }: Props) {
             aria-label="Vista lista"
             onClick={() => setVista("lista")}
             type="button"
-            className={`p-1.5 rounded-md ${f.vista === "lista" ? "bg-white text-primary shadow-sm" : "text-outline hover:text-on-surface"}`}
+            className={`p-1.5 rounded-md ${vista === "lista" ? "bg-white text-primary shadow-sm" : "text-outline hover:text-on-surface"}`}
           >
             <span className="material-symbols-outlined text-[18px]">format_list_bulleted</span>
           </button>

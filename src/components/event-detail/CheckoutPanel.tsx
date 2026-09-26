@@ -1,15 +1,20 @@
 import { TIERS, formatoPEN, type TierId } from "../../data/eventDetail";
-import { useCountdown } from "../../hooks/useCountdown";
-import type { TicketSelection } from "../../hooks/useTicketSelection";
+
+interface Totales {
+  count: number;
+  subtotal: number;
+  descuento: number;
+  total: number;
+}
 
 interface Props {
-  seleccion: TicketSelection;
+  cantidades: Record<TierId, number>;
+  updateQty: (t: TierId, d: number) => void;
+  totales: Totales;
   resaltada: TierId | null;
 }
 
-export default function CheckoutPanel({ seleccion, resaltada }: Props) {
-  const { cantidades, updateQty, totales } = seleccion;
-  const timer = useCountdown(14 * 60 + 59);
+export default function CheckoutPanel({ cantidades, updateQty, totales, resaltada }: Props) {
   const vacio = totales.count === 0;
 
   return (
@@ -21,7 +26,7 @@ export default function CheckoutPanel({ seleccion, resaltada }: Props) {
         </div>
         <div className="flex items-center gap-1 text-secondary bg-secondary-fixed/30 px-2.5 py-1 rounded-full text-xs font-bold">
           <span className="material-symbols-outlined text-[16px]">timer</span>
-          <span>{timer} min</span>
+          <span>14:59 min</span>
         </div>
       </div>
 

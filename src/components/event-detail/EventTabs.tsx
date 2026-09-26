@@ -1,5 +1,6 @@
-import type { TabId } from "../../hooks/useTabs";
 import type { TierId } from "../../data/eventDetail";
+
+export type TabId = "zonas" | "info" | "politicas";
 
 const TABS: { id: TabId; label: string; icon: string }[] = [
   { id: "zonas", label: "Zonas y Mapa", icon: "map" },

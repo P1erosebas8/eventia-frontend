@@ -8,14 +8,27 @@ import OrganizerCard from "../../components/event-detail/OrganizerCard";
 import PromoBannerRN01 from "../../components/event-detail/PromoBannerRN01";
 import Footer from "../../components/layout/Footer";
 import Header from "../../components/layout/Header";
-import type { TierId } from "../../data/eventDetail";
-import { useTabs } from "../../hooks/useTabs";
-import { useTicketSelection } from "../../hooks/useTicketSelection";
+import { TIERS, type TierId } from "../../data/eventDetail";
 
 export default function EventDetailPage() {
-  const { tab, setTab } = useTabs("zonas");
-  const seleccion = useTicketSelection();
+  const [tab, setTab] = useState<"zonas" | "info" | "politicas">("zonas");
+  const [cantidades, setCantidades] = useState<Record<TierId, number>>({ vip: 2, general: 0, occidente: 0 });
   const [resaltada, setResaltada] = useState<TierId | null>(null);
+
+  const updateQty = (tier: TierId, delta: number) => {
+    setCantidades((prev) => {
+      const total = prev.vip + prev.general + prev.occidente;
+      const nuevo = prev[tier] + delta;
+      if (nuevo < 0) return prev;
+      if (delta > 0 && total >= 10) return prev;
+      return { ...prev, [tier]: nuevo };
+    });
+  };
+
+  const count = cantidades.vip + cantidades.general + cantidades.occidente;
+  const subtotal = TIERS.reduce((acc, t) => acc + t.precio * cantidades[t.id], 0);
+  const descuento = subtotal * 0.15;
+  const totales = { count, subtotal, descuento, total: subtotal - descuento };
 
   const handleSelectTier = (t: TierId) => {
     setResaltada(t);
@@ -38,7 +51,7 @@ export default function EventDetailPage() {
               <OrganizerCard />
             </div>
             <div className="lg:col-span-5 lg:sticky lg:top-24">
-              <CheckoutPanel seleccion={seleccion} resaltada={resaltada} />
+              <CheckoutPanel cantidades={cantidades} updateQty={updateQty} totales={totales} resaltada={resaltada} />
             </div>
           </div>
         </div>
