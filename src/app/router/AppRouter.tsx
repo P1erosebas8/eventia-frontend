@@ -2,7 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import MainLayout from "../../layouts/MainLayout";
 import UserLayout from "../../layouts/UserLayout";
 import CatalogPage from "../../features/events/pages/CatalogPage";
-import EventDetailPage from "../../features/event-detail/EventDetailPage";
+import EventDetailPage from "../../features/event-detail/pages/EventDetailPage";
 import LoginPage from "../../features/login/pages/LoginPage";
 import MisTicketsPage from "../../features/user/pages/MisTicketsPage";
 import PerfilPage from "../../features/user/pages/PerfilPage";
@@ -33,6 +33,8 @@ export default function AppRouter() {
       <Route path="/" element={<Navigate to="/catalog" replace />} />
       <Route path="/catalog" element={<CatalogPage />} />
       <Route path="/catalogo" element={<Navigate to="/catalog" replace />} />
+      <Route path="/event" element={<EventDetailPage />} />
+      <Route path="/event/:id" element={<EventDetailPage />} />
       <Route path="/evento" element={<EventDetailPage />} />
       <Route path="/evento/:id" element={<EventDetailPage />} />
 

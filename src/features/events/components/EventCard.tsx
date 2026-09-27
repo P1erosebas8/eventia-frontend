@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { formatPrice } from "../services/events.service";
 import type { CatalogEvent, ViewMode } from "../types/event.types";
 import { getPromoPrice, isPromoUser, PROMO_DISCOUNT_PCT } from "../utils/promo.utils";
@@ -117,12 +118,12 @@ export default function EventCard({ event, view, userName }: EventCardProps) {
               </span>
             )}
           </div>
-          <button
+          <Link
+            to={`/event/${event.id}`}
             className="px-4 py-2 bg-primary hover:opacity-90 text-on-primary rounded-lg text-sm font-bold shadow-sm transition-all shrink-0"
-            type="button"
           >
             Comprar Entradas
-          </button>
+          </Link>
         </div>
       </div>
     </article>
