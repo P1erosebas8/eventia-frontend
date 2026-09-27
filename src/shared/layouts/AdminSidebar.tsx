@@ -3,7 +3,7 @@ import { Link, NavLink } from "react-router-dom";
 const NAV = [
   { to: "/admin/users", icon: "badge", label: "Directorio & Roles" },
   { to: "/admin/categories", icon: "schema", label: "Categorías" },
-  { to: "/catalog", icon: "confirmation_number", label: "Explorar Eventos" },
+  { to: "/", icon: "confirmation_number", label: "Explorar Eventos" },
 ];
 
 export default function AdminSidebar() {

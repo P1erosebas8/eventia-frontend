@@ -7,14 +7,14 @@ export default function Breadcrumbs() {
       className="flex items-center gap-2 text-xs text-outline mb-4 min-w-0 overflow-x-auto whitespace-nowrap"
     >
       <Link
-        to="/catalog"
+        to="/"
         className="hover:text-primary transition-colors flex items-center gap-1 shrink-0"
       >
         <span className="material-symbols-outlined text-[16px]">home</span>
         Inicio
       </Link>
       <span className="material-symbols-outlined text-[14px] shrink-0">chevron_right</span>
-      <Link to="/catalog" className="hover:text-primary transition-colors shrink-0">
+      <Link to="/" className="hover:text-primary transition-colors shrink-0">
         Conciertos
       </Link>
       <span className="material-symbols-outlined text-[14px] shrink-0">chevron_right</span>
