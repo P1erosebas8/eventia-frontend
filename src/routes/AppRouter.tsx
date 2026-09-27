@@ -5,6 +5,7 @@ import EventDetailPage from "../features/event-detail/EventDetailPage";
 import OrganizerLayout from "../features/organizer/components/layout/OrganizerLayout";
 import OrganizerDashboardPage from "../features/organizer/pages/OrganizerDashboardPage";
 import EventEditPage from "../features/organizer/pages/EventEditPage";
+import EventCreatePage from "../features/organizer/pages/EventCreatePage";
 
 function NotFound() {
   return (
@@ -30,6 +31,7 @@ export default function AppRouter() {
       <Route path="/organizador" element={<OrganizerLayout />}>
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<OrganizerDashboardPage />} />
+        <Route path="eventos/nuevo" element={<EventCreatePage />} />
         <Route path="eventos/:id/editar" element={<EventEditPage />} />
       </Route>
 
