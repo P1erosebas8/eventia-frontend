@@ -259,6 +259,54 @@ export const organizerService = {
   },
 
   /**
+   * Crea un nuevo evento
+   */
+  async createEvent(data: {
+    title: string;
+    category?: string;
+    venue?: string;
+    city?: string;
+    date?: string;
+    time?: string;
+    bannerUrl?: string;
+    status?: OrganizerEvent["status"];
+    active?: boolean;
+    capacity?: number;
+    featured?: boolean;
+    description?: string;
+  }): Promise<OrganizerEvent> {
+    if (USE_MOCK_DATA) {
+      await new Promise((r) => setTimeout(r, 180));
+      const year = new Date().getFullYear();
+      const randomCodeNum = Math.floor(1000 + Math.random() * 9000);
+      const newEvent: OrganizerEvent = {
+        id: `EVT-${year}-LIM-${randomCodeNum}`,
+        code: `EVT-${randomCodeNum}`,
+        title: data.title || "Nuevo Evento",
+        category: data.category || "Música & Conciertos",
+        venue: data.venue || "Arena 1 Costa Verde, San Miguel",
+        city: data.city || "Lima",
+        date: data.date || new Date().toISOString().split("T")[0],
+        time: data.time || "20:00",
+        bannerUrl:
+          data.bannerUrl ||
+          "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600&auto=format&fit=crop&q=80",
+        status: data.status || "published",
+        active: data.active ?? true,
+        capacity: data.capacity || 5000,
+        ticketsSold: 0,
+        totalRevenue: 0,
+        featured: data.featured ?? false,
+      };
+      MOCK_EVENTS.unshift(newEvent);
+      return newEvent;
+    }
+
+    const response = await apiClient.post<OrganizerEvent>("/organizer/events", data);
+    return response.data;
+  },
+
+  /**
    * Obtiene el log de auditoría
    */
   async getAuditLog(eventId: string): Promise<AuditLogEntry[]> {
