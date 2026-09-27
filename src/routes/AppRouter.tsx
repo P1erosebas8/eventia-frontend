@@ -1,4 +1,8 @@
 import { Navigate, Route, Routes } from "react-router-dom";
+import AdminLayout from "../features/admin/components/AdminLayout";
+import AdminMonitoringPage from "../features/admin/pages/AdminMonitoringPage";
+import AdminCategoriesPage from "../features/admin/pages/AdminCategoriesPage";
+import AdminUsersPage from "../features/admin/pages/AdminUsersPage";
 import UsuariosRolesCategoriasPage from "../features/usuarios-roles-categorias/UsuariosRolesCategoriasPage";
 import CatalogPage from "../features/catalog/CatalogPage";
 import EventDetailPage from "../features/event-detail/EventDetailPage";
@@ -24,6 +28,15 @@ export default function AppRouter() {
       <Route path="/register" element={<RegisterPage />} />
 
       <Route path="/catalogo" element={<CatalogPage />} />
+
+      {/* Rutas del Módulo Administrador */}
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route index element={<Navigate to="monitoreo" replace />} />
+        <Route path="monitoreo" element={<AdminMonitoringPage />} />
+        <Route path="usuarios" element={<AdminUsersPage />} />
+        <Route path="categorias" element={<AdminCategoriesPage />} />
+      </Route>
+
       <Route path="/usuarios-roles-categorias" element={<UsuariosRolesCategoriasPage />} />
       <Route path="/evento" element={<EventDetailPage />} />
       <Route path="/evento/:id" element={<EventDetailPage />} />
