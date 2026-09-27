@@ -7,7 +7,6 @@ import EventTabs from "../../components/event-detail/EventTabs";
 import OrganizerCard from "../../components/event-detail/OrganizerCard";
 import PromoBannerRN01 from "../../components/event-detail/PromoBannerRN01";
 import Footer from "../../components/layout/Footer";
-import Header from "../../components/layout/Header";
 import { TIERS, type TierId } from "../../data/eventDetail";
 
 export default function EventDetailPage() {
@@ -38,8 +37,7 @@ export default function EventDetailPage() {
 
   return (
     <div className="min-h-screen bg-surface">
-      <Header />
-      <main className="w-full pt-20 min-h-screen">
+      <div className="w-full min-h-screen">
         <ConcurrencyAlert />
         <div className="max-w-[1280px] mx-auto w-full px-6 py-6">
           <Breadcrumbs />
@@ -55,7 +53,7 @@ export default function EventDetailPage() {
             </div>
           </div>
         </div>
-      </main>
+      </div>
       <Footer />
     </div>
   );

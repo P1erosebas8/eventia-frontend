@@ -1,5 +1,6 @@
+import UserHeader from "@/shared/components/UserHeader";
 import { Outlet } from "react-router-dom";
-import UserHeader from "../shared/components/UserHeader";
+
 
 export default function UserLayout() {
   return (

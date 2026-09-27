@@ -6,7 +6,6 @@ import HeroPromo from "../../components/catalog/HeroPromo";
 import Pagination from "../../components/catalog/Pagination";
 import RuleCallout from "../../components/catalog/RuleCallout";
 import Footer from "../../components/layout/Footer";
-import Header from "../../components/layout/Header";
 import PromoTicker from "../../components/layout/PromoTicker";
 import { EVENTOS, PRECIO_MAX, type Categoria } from "../../data/events";
 
@@ -51,12 +50,9 @@ export default function CatalogPage() {
 
   return (
     <div className="min-h-screen bg-surface">
-      <Header />
+      <PromoTicker />
 
-      <main className="w-full pt-20 min-h-screen">
-        <PromoTicker />
-
-        <section className="max-w-[1280px] w-full mx-auto px-6 py-6">
+      <section className="max-w-[1280px] w-full mx-auto px-6 py-6">
           <HeroPromo />
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
@@ -108,7 +104,6 @@ export default function CatalogPage() {
             </main>
           </div>
         </section>
-      </main>
 
       <Footer />
     </div>

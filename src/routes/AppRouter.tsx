@@ -1,11 +1,15 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
 import MainLayout from "../layouts/MainLayout";
+import UserLayout from "../layouts/UserLayout";
 
 import LoginPage from "../features/login/pages/LoginPage";
 
 import CatalogPage from "../features/catalog/CatalogPage";
 import EventDetailPage from "../features/event-detail/EventDetailPage";
+
+import MisTicketsPage from "../features/user/pages/MisTicketsPage";
+import PerfilPage from "../features/user/pages/PerfilPage";
 
 import AdminLayout from "../features/admin/components/AdminLayout";
 import AdminMonitoringPage from "../features/admin/pages/AdminMonitoringPage";
@@ -39,7 +43,7 @@ export default function AppRouter() {
   return (
     <Routes>
 
-      {/* Rutas públicas con Header */}
+      {/* Visitante: Rutas públicas con Header Público (MainLayout) */}
       <Route element={<MainLayout />}>
 
         <Route
@@ -51,7 +55,6 @@ export default function AppRouter() {
           path="/login"
           element={<LoginPage />}
         />
-
 
         <Route
           path="/catalogo"
@@ -70,6 +73,40 @@ export default function AppRouter() {
 
       </Route>
 
+      {/* Autenticado: Rutas de usuario con Header Usuario (UserLayout) */}
+      <Route element={<UserLayout />}>
+
+        <Route
+          path="/app"
+          element={<Navigate to="/app/catalogo" replace />}
+        />
+
+        <Route
+          path="/app/catalogo"
+          element={<CatalogPage />}
+        />
+
+        <Route
+          path="/app/mis-tickets"
+          element={<MisTicketsPage />}
+        />
+
+        <Route
+          path="/app/perfil"
+          element={<PerfilPage />}
+        />
+
+        <Route
+          path="/mis-tickets"
+          element={<MisTicketsPage />}
+        />
+
+        <Route
+          path="/perfil"
+          element={<PerfilPage />}
+        />
+
+      </Route>
 
       {/* Rutas del módulo administrador */}
       <Route path="/admin" element={<AdminLayout />}>

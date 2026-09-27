@@ -62,7 +62,10 @@ export default function LoginForm() {
           "Ocurrió un error inesperado. Inténtalo nuevamente."
         );
       }
+    } finally {
+      setLoading(false);
     }
+  };
 
   return (
     <form
@@ -161,5 +164,4 @@ export default function LoginForm() {
       </button>
     </form>
   );
-}
 }
