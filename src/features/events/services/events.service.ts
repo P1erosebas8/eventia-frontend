@@ -1,11 +1,11 @@
 import type { CatalogEvent, Category } from "../types/event.types";
 
-export const CATEGORIES: { name: Category; total: number }[] = [
-  { name: "Conciertos", total: 18 },
-  { name: "Festivales", total: 9 },
-  { name: "Teatro & Artes", total: 6 },
-  { name: "Tecnología & Startups", total: 4 },
-  { name: "Gastronomía", total: 7 },
+const CATEGORY_ORDER: Category[] = [
+  "Conciertos",
+  "Festivales",
+  "Teatro & Artes",
+  "Tecnología & Startups",
+  "Gastronomía",
 ];
 
 export const EVENTS: CatalogEvent[] = [
@@ -112,6 +112,11 @@ export const EVENTS: CatalogEvent[] = [
     isPromoEligible: false,
   },
 ];
+
+export const CATEGORIES: { name: Category; total: number }[] = CATEGORY_ORDER.map((name) => ({
+  name,
+  total: EVENTS.filter((event) => event.category === name).length,
+}));
 
 export const MAX_PRICE = 800;
 
