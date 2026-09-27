@@ -70,3 +70,29 @@ export interface TicketType {
   isPresale?: boolean;
   maxPerPurchase?: number;
 }
+
+export interface EventFormData {
+  title: string;
+  category: string;
+  capacity: number;
+  venue: string;
+  address: string;
+  eventDate: string;
+  doorsOpen: string;
+  showStart: string;
+  salesClose: string;
+  description: string;
+  restrictions: string[];
+  bannerDesktopUrl: string;
+  bannerMobileUrl: string;
+  isPublic: boolean;
+}
+
+export interface AuditLogEntry {
+  id: string;
+  action: string;
+  timestamp: string;
+  user: string;
+  details: string;
+  metadata?: string;
+}
