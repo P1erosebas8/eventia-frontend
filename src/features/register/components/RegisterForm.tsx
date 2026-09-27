@@ -124,20 +124,11 @@ export default function RegisterForm() {
     try {
       const response = await register(form);
 
-      if (response.accessToken) {
-        localStorage.setItem(
-          "accessToken",
-          response.accessToken
-        );
-      }
+      setSuccess("Cuenta creada correctamente. Redirigiendo al inicio de sesión...");
 
-      setSuccess(
-        `¡Cuenta creada con éxito! Bienvenido, ${response.firstName}.`
-      );
-
-      setTimeout(() => {
-        navigate("/login");
-      }, 1500);
+setTimeout(() => {
+  navigate("/login");
+}, 1500);
     } catch (err) {
       console.error(err);
 

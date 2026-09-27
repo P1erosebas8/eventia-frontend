@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import Header from "../../../shared/layouts/Header";
 import Footer from "../../../shared/layouts/Footer";
 import PromoTicker from "../../../shared/layouts/PromoTicker";
 import CatalogToolbar from "../components/CatalogToolbar";
@@ -91,9 +90,8 @@ export default function CatalogPage() {
 
   return (
     <div className="min-h-screen bg-surface overflow-x-hidden">
-      <Header search={search} onSearchChange={handleSearchChange} />
 
-      <main className="w-full pt-16 min-h-screen min-w-0">
+      <div className="w-full pt-16 min-h-screen min-w-0">
         <PromoTicker />
 
         <section className="max-w-[1280px] w-full mx-auto px-4 sm:px-6 py-6 min-w-0">
@@ -114,7 +112,7 @@ export default function CatalogPage() {
               onClear={clearFilters}
             />
 
-            <main id="catalog-results" className="lg:col-span-8 flex flex-col gap-4 sm:gap-6 min-w-0 scroll-mt-24">
+            <div id="catalog-results" className="lg:col-span-8 flex flex-col gap-4 sm:gap-6 min-w-0 scroll-mt-24">
               <CatalogToolbar
                 total={filtered.length}
                 sort={sort}
@@ -161,10 +159,10 @@ export default function CatalogPage() {
                 onPageChange={setPage}
               />
               <InfoCallout />
-            </main>
+            </div>
           </div>
         </section>
-      </main>
+      </div>
 
       <Footer />
     </div>

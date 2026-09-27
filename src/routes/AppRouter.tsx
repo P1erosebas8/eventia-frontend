@@ -1,6 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
-import UserLayout from "../layouts/UserLayout";
 import CategoriesPage from "../features/categories/pages/CategoriesPage";
 import CatalogPage from "../features/events/pages/CatalogPage";
 import EventDetailPage from "../features/event-detail/pages/EventDetailPage";
@@ -34,25 +33,23 @@ function NotFound() {
 export default function AppRouter() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/catalog" replace />} />
-      <Route path="/catalog" element={<CatalogPage />} />
-      <Route path="/catalogo" element={<Navigate to="/catalog" replace />} />
-      <Route path="/event" element={<EventDetailPage />} />
-      <Route path="/event/:id" element={<EventDetailPage />} />
-      <Route path="/evento" element={<EventDetailPage />} />
-      <Route path="/evento/:id" element={<EventDetailPage />} />
+     <Route element={<MainLayout />}>
+          {/* Catálogo */}
+          <Route path="/" element={<CatalogPage />} />
 
-      <Route element={<MainLayout />}>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-      </Route>
+          {/* Detalle del evento */}
+          <Route path="/event/:id" element={<EventDetailPage />} />
 
-      <Route element={<UserLayout />}>
-        <Route path="/app" element={<Navigate to="/catalog" replace />} />
-        <Route path="/app/mis-tickets" element={<MisTicketsPage />} />
-        <Route path="/app/perfil" element={<PerfilPage />} />
-      </Route>
+          {/* Autenticación */}
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/registro" element={<RegisterPage />} />
 
+          {/* Usuario autenticado */}
+          <Route path="/mis-tickets" element={<MisTicketsPage />} />
+          <Route path="/perfil" element={<PerfilPage />} />
+        </Route>
+
+       {/* Administración */}
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<Navigate to="monitoreo" replace />} />
         <Route path="monitoreo" element={<AdminMonitoringPage />} />
@@ -64,6 +61,8 @@ export default function AppRouter() {
       <Route path="/admin/categories" element={<CategoriesPage />} />
       <Route path="/usuarios-roles-categorias" element={<Navigate to="/admin/users" replace />} />
       <Route path="/usuarios-categorias" element={<Navigate to="/admin/users" replace />} />
+
+       {/* 404 */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

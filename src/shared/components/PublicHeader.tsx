@@ -26,7 +26,7 @@ export default function PublicHeader() {
 
       <nav className="ml-auto hidden md:flex items-center gap-3">
   <NavLink
-    to="/catalog"
+    to="/"
     className={({ isActive }) =>
       `px-3 py-2 rounded-lg text-sm font-semibold transition ${
         isActive
@@ -46,7 +46,7 @@ export default function PublicHeader() {
   </NavLink>
 
   <NavLink
-    to="/register"
+    to="/registro"
     className="rounded-lg px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
   >
     Registrarse
