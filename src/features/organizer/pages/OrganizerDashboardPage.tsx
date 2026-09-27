@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { organizerService } from "../services/organizerService";
 import type { OrganizerDashboardData } from "../types/organizer.types";
-import KpiCard from "../components/KpiCard";
-import SalesChart from "../components/SalesChart";
-import EventsTable from "../components/EventsTable";
+import KpiCard from "../components/dashboard/KpiCard";
+import SalesChart from "../components/dashboard/SalesChart";
+import EventsTable from "../components/dashboard/EventsTable";
 import { formatPEN, formatNumber } from "../utils/organizerFormatters";
 
 export default function OrganizerDashboardPage() {

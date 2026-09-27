@@ -10,8 +10,8 @@ import {
   BarChart,
   Bar,
 } from "recharts";
-import type { DailySalesDataPoint, ZoneDistributionDataPoint } from "../types/organizer.types";
-import { formatPEN, formatNumber } from "../utils/organizerFormatters";
+import type { DailySalesDataPoint, ZoneDistributionDataPoint } from "../../types/organizer.types";
+import { formatPEN, formatNumber } from "../../utils/organizerFormatters";
 
 interface SalesChartProps {
   dailySales: DailySalesDataPoint[];

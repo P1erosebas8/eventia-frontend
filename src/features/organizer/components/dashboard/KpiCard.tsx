@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { formatPercentageChange } from "../utils/organizerFormatters";
+import { formatPercentageChange } from "../../utils/organizerFormatters";
 
 interface KpiCardProps {
   label: string;

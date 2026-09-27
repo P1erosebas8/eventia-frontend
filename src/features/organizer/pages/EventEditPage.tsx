@@ -3,14 +3,14 @@ import { useParams, Link } from "react-router-dom";
 import { organizerService } from "../services/organizerService";
 import type { OrganizerEvent, EventFormData } from "../types/organizer.types";
 import { getStatusConfig } from "../utils/organizerFormatters";
-import EventFormGeneral from "../components/EventFormGeneral";
-import EventFormSchedule from "../components/EventFormSchedule";
-import EventFormDescription from "../components/EventFormDescription";
-import EventFormBanners from "../components/EventFormBanners";
-import DeactivateModal from "../components/DeactivateModal";
-import PreviewModal from "../components/PreviewModal";
-import Toast from "../components/Toast";
-import EventPanel from "../components/EventPanel";
+import EventFormGeneral from "../components/event-edit/EventFormGeneral";
+import EventFormSchedule from "../components/event-edit/EventFormSchedule";
+import EventFormDescription from "../components/event-edit/EventFormDescription";
+import EventFormBanners from "../components/event-edit/EventFormBanners";
+import DeactivateModal from "../components/common/DeactivateModal";
+import PreviewModal from "../components/event-edit/PreviewModal";
+import Toast from "../components/common/Toast";
+import EventPanel from "../components/event-edit/EventPanel";
 
 export default function EventEditPage() {
   const { id } = useParams<{ id: string }>();

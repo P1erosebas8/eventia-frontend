@@ -1,4 +1,4 @@
-import type { EventStatus } from "../types/organizer.types";
+import type { EventStatus } from "../../types/organizer.types";
 
 interface EventPanelProps {
   eventStatus: EventStatus;

@@ -1,5 +1,5 @@
-import type { OrganizerEvent } from "../types/organizer.types";
-import { formatPEN, formatDate } from "../utils/organizerFormatters";
+import type { OrganizerEvent } from "../../types/organizer.types";
+import { formatPEN, formatDate } from "../../utils/organizerFormatters";
 
 interface PreviewModalProps {
   event: OrganizerEvent;
