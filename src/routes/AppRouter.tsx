@@ -2,6 +2,8 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import UsuariosRolesCategoriasPage from "../features/usuarios-roles-categorias/UsuariosRolesCategoriasPage";
 import CatalogPage from "../features/catalog/CatalogPage";
 import EventDetailPage from "../features/event-detail/EventDetailPage";
+import OrganizerLayout from "../features/organizer/components/OrganizerLayout";
+import OrganizerDashboardPage from "../features/organizer/pages/OrganizerDashboardPage";
 
 function NotFound() {
   return (
@@ -23,6 +25,12 @@ export default function AppRouter() {
       <Route path="/usuarios-roles-categorias" element={<UsuariosRolesCategoriasPage />} />
       <Route path="/evento" element={<EventDetailPage />} />
       <Route path="/evento/:id" element={<EventDetailPage />} />
+
+      <Route path="/organizador" element={<OrganizerLayout />}>
+        <Route index element={<Navigate to="dashboard" replace />} />
+        <Route path="dashboard" element={<OrganizerDashboardPage />} />
+      </Route>
+
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
