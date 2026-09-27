@@ -1,16 +1,17 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import MainLayout from "../../layouts/MainLayout";
 import UserLayout from "../../layouts/UserLayout";
+import CategoriesPage from "../../features/categories/pages/CategoriesPage";
 import CatalogPage from "../../features/events/pages/CatalogPage";
 import EventDetailPage from "../../features/event-detail/pages/EventDetailPage";
 import LoginPage from "../../features/login/pages/LoginPage";
 import MisTicketsPage from "../../features/user/pages/MisTicketsPage";
 import PerfilPage from "../../features/user/pages/PerfilPage";
+import UsersPage from "../../features/users/pages/UsersPage";
 import AdminLayout from "../../features/admin/components/AdminLayout";
 import AdminMonitoringPage from "../../features/admin/pages/AdminMonitoringPage";
 import AdminCategoriesPage from "../../features/admin/pages/AdminCategoriesPage";
 import AdminUsersPage from "../../features/admin/pages/AdminUsersPage";
-import UsuariosRolesCategoriasPage from "../../features/usuarios-roles-categorias/UsuariosRolesCategoriasPage";
 
 function NotFound() {
   return (
@@ -57,10 +58,10 @@ export default function AppRouter() {
         <Route path="categorias" element={<AdminCategoriesPage />} />
       </Route>
 
-      <Route
-        path="/usuarios-roles-categorias"
-        element={<UsuariosRolesCategoriasPage />}
-      />
+      <Route path="/admin/users" element={<UsersPage />} />
+      <Route path="/admin/categories" element={<CategoriesPage />} />
+      <Route path="/usuarios-roles-categorias" element={<Navigate to="/admin/users" replace />} />
+      <Route path="/usuarios-categorias" element={<Navigate to="/admin/users" replace />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
