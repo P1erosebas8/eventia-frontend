@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useAuth } from "../../../context/AuthContext";
 import Footer from "../../../shared/layouts/Footer";
 import PromoTicker from "../../../shared/layouts/PromoTicker";
 import CatalogToolbar from "../components/CatalogToolbar";
@@ -9,18 +10,24 @@ import InfoCallout from "../components/InfoCallout";
 import Pagination from "../components/Pagination";
 import { EVENTS, MAX_PRICE } from "../services/events.service";
 import type { Category, SortKey, ViewMode } from "../types/event.types";
+import { isPromoUser } from "../utils/promo.utils";
 
 const PAGE_SIZE = 6;
 
 export default function CatalogPage() {
+  const { isAuthenticated, user } = useAuth();
   const [search, setSearch] = useState("");
-  const [userName, setUserName] = useState("Roberto");
   const [promoOnly, setPromoOnly] = useState(true);
   const [selectedCategories, setSelectedCategories] = useState<Category[]>(["Conciertos"]);
   const [maxPrice, setMaxPrice] = useState(450);
   const [sort, setSort] = useState<SortKey>("popular");
   const [view, setView] = useState<ViewMode>("grid");
   const [page, setPage] = useState(1);
+
+  const sessionName =
+    isAuthenticated && user ? `${user.firstName} ${user.lastName}`.trim() : null;
+  const effectiveName = sessionName ?? "";
+  const showPromoBanner = sessionName !== null && isPromoUser(sessionName);
 
   const toggleCategory = (category: Category) => {
     setSelectedCategories((prev) =>
@@ -31,11 +38,6 @@ export default function CatalogPage() {
 
   const handleSearchChange = (value: string) => {
     setSearch(value);
-    setPage(1);
-  };
-
-  const handleUserNameChange = (value: string) => {
-    setUserName(value);
     setPage(1);
   };
 
@@ -56,7 +58,6 @@ export default function CatalogPage() {
 
   const clearFilters = () => {
     setSearch("");
-    setUserName("");
     setPromoOnly(false);
     setSelectedCategories([]);
     setMaxPrice(MAX_PRICE);
@@ -95,14 +96,13 @@ export default function CatalogPage() {
         <PromoTicker />
 
         <section className="max-w-[1280px] w-full mx-auto px-4 sm:px-6 py-6 min-w-0">
-          <HeroPromo userName={userName} />
+          {showPromoBanner && sessionName !== null && <HeroPromo userName={sessionName} />}
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-start min-w-0">
             <FilterSidebar
               search={search}
               onSearchChange={handleSearchChange}
-              userName={userName}
-              onUserNameChange={handleUserNameChange}
+              sessionName={sessionName}
               promoOnly={promoOnly}
               onPromoOnlyChange={handlePromoOnlyChange}
               selectedCategories={selectedCategories}
@@ -146,7 +146,7 @@ export default function CatalogPage() {
                   }
                 >
                   {paged.map((event) => (
-                    <EventCard key={event.id} event={event} view={view} userName={userName} />
+                    <EventCard key={event.id} event={event} view={view} userName={effectiveName} />
                   ))}
                 </div>
               )}
