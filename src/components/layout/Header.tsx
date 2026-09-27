@@ -1,3 +1,1 @@
-import UserHeader from "../../shared/components/UserHeader";
-
-export default UserHeader;
+export { default } from "../../shared/layouts/Header";
