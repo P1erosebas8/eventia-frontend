@@ -10,7 +10,7 @@ export default function MainLayout() {
     <div className="min-h-screen bg-slate-50">
       {isAuthenticated ? <UserHeader /> : <PublicHeader />}
 
-      <main className="pt-20">
+      <main className="pt-16">
         <Outlet />
       </main>
     </div>
