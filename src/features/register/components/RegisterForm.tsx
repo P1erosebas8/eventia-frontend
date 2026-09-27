@@ -23,8 +23,6 @@ export default function RegisterForm() {
     email: "",
     password: "",
     confirmPassword: "",
-    acceptTerms: false,
-    acceptPromotions: true,
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -108,13 +106,6 @@ export default function RegisterForm() {
 
     setError("");
     setSuccess("");
-
-    if (!form.acceptTerms) {
-      setError(
-        "Debes aceptar los Términos y Condiciones y la Ley N° 29733."
-      );
-      return;
-    }
 
     if (form.password !== form.confirmPassword) {
       setError("Las contraseñas no coinciden.");
