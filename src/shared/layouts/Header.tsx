@@ -15,12 +15,12 @@ export default function Header({ search, onSearchChange, action }: HeaderProps) 
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate("/catalog");
+    navigate("/");
   };
   return (
     <header className="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
       <div className="h-16 max-w-[1280px] mx-auto px-4 sm:px-6 flex items-center justify-between gap-3 sm:gap-4">
-        <Link to="/catalog" className="flex items-center gap-2.5 shrink-0 min-w-0">
+        <Link to="/" className="flex items-center gap-2.5 shrink-0 min-w-0">
           <div className="w-9 h-9 rounded-lg bg-primary text-on-primary flex items-center justify-center font-display font-extrabold text-xl shrink-0">
             E
           </div>
@@ -56,7 +56,7 @@ export default function Header({ search, onSearchChange, action }: HeaderProps) 
 
         <nav className="hidden md:flex items-center gap-1 min-w-0 overflow-hidden">
           <NavLink
-            to="/catalog"
+            to="/"
             className={({ isActive }) =>
               `px-3 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition-colors ${
                 isActive
