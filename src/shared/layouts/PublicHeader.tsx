@@ -1,13 +1,21 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-export default function PublicHeader() {
+export default function PublicHeader({
+  search,
+  onSearchChange,
+}: {
+  search?: string;
+  onSearchChange?: (value: string) => void;
+}) {
   const navigate = useNavigate();
-  const [query, setQuery] = useState("");
+  const [innerQuery, setInnerQuery] = useState("");
+  const controlled = typeof search === "string" && typeof onSearchChange === "function";
+  const inputValue = controlled ? search : innerQuery;
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate("/catalog");
+    if (!controlled) navigate("/catalog");
   };
 
   return (
@@ -36,8 +44,10 @@ export default function PublicHeader() {
             search
           </span>
           <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            value={inputValue}
+            onChange={(e) =>
+              controlled ? onSearchChange(e.target.value) : setInnerQuery(e.target.value)
+            }
             className="w-full bg-surface-container-low text-on-surface text-sm pl-10 pr-4 py-2 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary placeholder:text-outline min-w-0"
             placeholder="Buscar conciertos, obras, festivales..."
             type="text"

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import Header from "../../../shared/layouts/Header";
+import PublicHeader from "../../../shared/layouts/PublicHeader";
 import Footer from "../../../shared/layouts/Footer";
 import PromoTicker from "../../../shared/layouts/PromoTicker";
 import CatalogToolbar from "../components/CatalogToolbar";
@@ -91,7 +91,7 @@ export default function CatalogPage() {
 
   return (
     <div className="min-h-screen bg-surface overflow-x-hidden">
-      <Header search={search} onSearchChange={handleSearchChange} />
+      <PublicHeader search={search} onSearchChange={handleSearchChange} />
 
       <main className="w-full pt-16 min-h-screen min-w-0">
         <PromoTicker />
