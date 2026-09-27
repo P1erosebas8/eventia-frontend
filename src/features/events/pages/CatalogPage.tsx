@@ -95,9 +95,8 @@ export default function CatalogPage() {
       <div className="w-full pt-16 min-h-screen min-w-0">
         <PromoTicker />
 
-        <section className="max-w-[1280px] w-full mx-auto px-4 sm:px-6 py-6 min-w-0">
+        <section className="max-w-[1280px] w-full mx-auto px-4 sm:px-6 py-6 min-w-0 flex flex-col gap-4 sm:gap-6">
           {showPromoBanner && sessionName !== null && <HeroPromo userName={sessionName} />}
-
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-start min-w-0">
             <FilterSidebar
               search={search}
