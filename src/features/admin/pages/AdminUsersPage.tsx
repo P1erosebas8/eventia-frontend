@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import UserModal from "../components/UserModal";
 import UsersFilters from "../components/UsersFilters";
 import UsersHeader from "../components/UsersHeader";
@@ -21,16 +21,13 @@ export default function AdminUsersPage() {
     adminUsersService.getUsers().then(setUsers);
   }, []);
 
-  /* Aplica filtros de rol, estado y búsqueda de texto */
-  const filteredUsers = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    return users.filter((u) => {
-      if (roleFilter !== "Todos" && u.rol !== roleFilter) return false;
-      if (statusFilter !== "Todos" && u.estado !== statusFilter) return false;
-      if (q && !`${u.nombre} ${u.email} ${u.dni}`.toLowerCase().includes(q)) return false;
-      return true;
-    });
-  }, [users, roleFilter, statusFilter, search]);
+  const q = search.trim().toLowerCase();
+  const filteredUsers = users.filter((u) => {
+    if (roleFilter !== "Todos" && u.rol !== roleFilter) return false;
+    if (statusFilter !== "Todos" && u.estado !== statusFilter) return false;
+    if (q && !`${u.nombre} ${u.email} ${u.dni}`.toLowerCase().includes(q)) return false;
+    return true;
+  });
 
   const handleToggleStatus = async (user: AdminUser) => {
     const nuevoEstado = user.estado === "Activo" ? "Inactivo" : "Activo";
@@ -61,10 +58,8 @@ export default function AdminUsersPage() {
 
   return (
     <div className="w-full pb-12 space-y-6">
-      {/* Cabecera con título y botón nuevo usuario */}
       <UsersHeader onNuevoUsuario={handleNuevoUsuario} />
 
-      {/* Filtros de rol, estado y buscador */}
       <UsersFilters
         users={users}
         roleFilter={roleFilter}
@@ -75,14 +70,12 @@ export default function AdminUsersPage() {
         onSearch={setSearch}
       />
 
-      {/* Tabla de usuarios con paginación */}
       <UsersTable
         users={filteredUsers}
         onToggleStatus={handleToggleStatus}
         onEdit={handleEdit}
       />
 
-      {/* Modal para crear / editar usuario */}
       <UserModal
         open={modalOpen}
         userToEdit={userToEdit}

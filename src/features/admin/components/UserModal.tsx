@@ -1,5 +1,5 @@
+import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import { X } from "lucide-react";
-import { useEffect, useState } from "react";
 import type { AdminUser, UserFormData, UserRole } from "../types/admin.types";
 
 interface UserModalProps {
@@ -37,27 +37,30 @@ export default function UserModal({
     } else {
       setForm(EMPTY_FORM);
     }
+  }, [userToEdit, open]);
 
+  useEffect(() => {
+    if (!open) return;
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && open) {
+      if (e.key === "Escape") {
         onClose();
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [userToEdit, open, onClose]);
+  }, [open, onClose]);
 
   if (!open) return null;
 
   const isEditing = Boolean(userToEdit);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     onSave(form);
   };
@@ -66,15 +69,12 @@ export default function UserModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
-      {/* Overlay */}
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-xs"
         onClick={onClose}
       />
 
-      {/* Modal */}
       <div className="relative w-full max-w-md bg-surface-container-lowest rounded-2xl shadow-2xl border border-outline-variant/30 p-6 z-10">
-        {/* Cabecera del modal */}
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="font-display font-bold text-lg text-on-surface">
@@ -96,9 +96,7 @@ export default function UserModal({
           </button>
         </div>
 
-        {/* Formulario */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Nombre */}
           <div>
             <label className="block text-xs font-semibold text-on-surface-variant mb-1.5">
               Nombre completo
@@ -114,7 +112,6 @@ export default function UserModal({
             />
           </div>
 
-          {/* Email */}
           <div>
             <label className="block text-xs font-semibold text-on-surface-variant mb-1.5">
               Correo electrónico
@@ -130,7 +127,6 @@ export default function UserModal({
             />
           </div>
 
-          {/* DNI y Teléfono */}
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-on-surface-variant mb-1.5">
@@ -162,7 +158,6 @@ export default function UserModal({
             </div>
           </div>
 
-          {/* Rol */}
           <div>
             <label className="block text-xs font-semibold text-on-surface-variant mb-1.5">
               Rol asignado
@@ -181,7 +176,6 @@ export default function UserModal({
             </select>
           </div>
 
-          {/* Botones de acción */}
           <div className="flex items-center justify-end gap-3 pt-2">
             <button
               type="button"

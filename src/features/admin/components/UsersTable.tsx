@@ -79,7 +79,6 @@ export default function UsersTable({ users, onToggleStatus, onEdit }: UsersTable
                   key={user.id}
                   className="hover:bg-surface-container-low/40 transition-colors duration-150"
                 >
-                  {/* Avatar + Nombre + Email + Código */}
                   <td className="py-4 px-5">
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-full bg-primary-fixed text-primary flex items-center justify-center font-bold text-xs shrink-0 border border-primary-fixed/60">
@@ -99,28 +98,22 @@ export default function UsersTable({ users, onToggleStatus, onEdit }: UsersTable
                     </div>
                   </td>
 
-                  {/* DNI */}
                   <td className="py-4 px-5 font-mono text-sm text-on-surface">
                     {user.dni}
                   </td>
 
-                  {/* Teléfono */}
                   <td className="py-4 px-5 text-sm text-on-surface-variant font-medium">
                     {user.telefono}
                   </td>
 
-                  {/* Rol */}
                   <td className="py-4 px-5">{getRolBadge(user.rol)}</td>
 
-                  {/* Fecha Registro */}
                   <td className="py-4 px-5 text-sm text-on-surface-variant font-medium">
                     {user.fechaRegistro}
                   </td>
 
-                  {/* Estado */}
                   <td className="py-4 px-5">{getEstadoBadge(user.estado)}</td>
 
-                  {/* Acciones */}
                   <td className="py-4 px-5">
                     <div className="flex items-center justify-end gap-2">
                       <button
@@ -163,7 +156,6 @@ export default function UsersTable({ users, onToggleStatus, onEdit }: UsersTable
         </table>
       </div>
 
-      {/* Paginación */}
       <div className="px-5 py-4 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-outline-variant/20 text-xs text-on-surface-variant">
         <span>
           Mostrando{" "}

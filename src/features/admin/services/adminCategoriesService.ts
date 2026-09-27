@@ -2,7 +2,8 @@ import axios from "axios";
 import type { AdminCategory, CategoryFormData, CategoryStatus } from "../types/admin.types";
 
 const USE_MOCK_DATA = true;
-const API_BASE_URL = "/api/admin/categorias";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api/v1";
+const API_BASE_URL = `${API_URL}/admin/categories`;
 
 function getFormattedDateTime(): string {
   const now = new Date();
@@ -134,7 +135,7 @@ export const adminCategoriesService = {
       categoriesMemory[index] = actualizada;
       return Promise.resolve(actualizada);
     }
-    const response = await axios.patch<AdminCategory>(`${API_BASE_URL}/${id}/estado`, {
+    const response = await axios.patch<AdminCategory>(`${API_BASE_URL}/${id}/status`, {
       estado: nuevoEstado,
     });
     return response.data;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Save, X } from "lucide-react";
 import type { AdminCategory, CategoryFormData, CategoryStatus } from "../types/admin.types";
 
@@ -33,21 +33,24 @@ export default function CategoryModal({
       setEstado("Activa");
       setError(null);
     }
+  }, [categoryToEdit, open]);
 
+  useEffect(() => {
+    if (!open) return;
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && open) {
+      if (e.key === "Escape") {
         onClose();
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [categoryToEdit, open, onClose]);
+  }, [open, onClose]);
 
   if (!open) return null;
 
   const isEditing = Boolean(categoryToEdit);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!nombre.trim()) {
       setError("El nombre de la categoría es obligatorio.");
@@ -73,15 +76,12 @@ export default function CategoryModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Overlay */}
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-xs transition-opacity"
         onClick={onClose}
       />
 
-      {/* Contenedor del Modal */}
       <div className="relative w-full max-w-lg bg-surface-container-lowest rounded-2xl shadow-2xl border border-outline-variant/30 p-6 z-10 animate-in fade-in zoom-in-95 duration-150">
-        {/* Encabezado */}
         <div className="flex items-start justify-between mb-4">
           <div>
             <span className="text-[11px] font-bold text-primary tracking-wider uppercase block mb-1">
@@ -116,7 +116,6 @@ export default function CategoryModal({
             </div>
           )}
 
-          {/* Campo: Nombre de la Categoría */}
           <div>
             <div className="flex items-center justify-between mb-1.5">
               <label
@@ -142,7 +141,6 @@ export default function CategoryModal({
             </p>
           </div>
 
-          {/* Campo: Descripción Funcional */}
           <div>
             <label
               htmlFor="modal-category-description"
@@ -166,7 +164,6 @@ export default function CategoryModal({
             </div>
           </div>
 
-          {/* Campo: Estado de Publicación */}
           <div className="bg-surface-container/30 border border-outline-variant/20 rounded-xl p-3.5 flex items-center justify-between">
             <div>
               <span className="block text-xs font-semibold text-on-surface">
@@ -197,7 +194,6 @@ export default function CategoryModal({
             </button>
           </div>
 
-          {/* Botones de acción */}
           <div className="flex items-center justify-end gap-3 pt-3 border-t border-outline-variant/20">
             <button
               type="button"

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { ChevronLeft, ChevronRight, Layers, PenLine, PowerOff, RotateCcw, Search, X } from "lucide-react";
 import type { AdminCategory, CategoryStatus } from "../types/admin.types";
 
@@ -20,15 +20,12 @@ export default function CategoriesTable({
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("Todas");
 
-  // Filtrado reactivo por texto y estado
-  const filteredCategories = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    return categories.filter((c) => {
-      if (statusFilter !== "Todas" && c.estado !== statusFilter) return false;
-      if (q && !`${c.nombre} ${c.descripcion}`.toLowerCase().includes(q)) return false;
-      return true;
-    });
-  }, [categories, search, statusFilter]);
+  const q = search.trim().toLowerCase();
+  const filteredCategories = categories.filter((c) => {
+    if (statusFilter !== "Todas" && c.estado !== statusFilter) return false;
+    if (q && !`${c.nombre} ${c.descripcion}`.toLowerCase().includes(q)) return false;
+    return true;
+  });
 
   const totalPages = Math.max(1, Math.ceil(filteredCategories.length / ITEMS_PER_PAGE));
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -43,7 +40,6 @@ export default function CategoriesTable({
   return (
     <div className="w-full bg-surface-container-lowest rounded-2xl border border-outline-variant/30 shadow-sm overflow-hidden flex flex-col justify-between">
       <div>
-        {/* Cabecera del catálogo con buscador y filtros integrados */}
         <div className="p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-outline-variant/20 bg-surface/50">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-primary-container/40 text-primary flex items-center justify-center shrink-0">
@@ -60,7 +56,6 @@ export default function CategoriesTable({
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
-            {/* Buscador de categorías */}
             <div className="relative">
               <Search className="w-4 h-4 text-on-surface-variant absolute left-3 top-1/2 -translate-y-1/2" />
               <input
@@ -84,7 +79,6 @@ export default function CategoriesTable({
               )}
             </div>
 
-            {/* Filtro por estado */}
             <div className="inline-flex rounded-xl p-1 bg-surface-container/40 border border-outline-variant/30 text-xs">
               {(["Todas", "Activa", "Inactiva"] as const).map((st) => (
                 <button
@@ -105,14 +99,12 @@ export default function CategoriesTable({
               ))}
             </div>
 
-            {/* Contador total */}
             <span className="px-3 py-1.5 bg-surface-container text-on-surface-variant text-xs font-semibold rounded-full border border-outline-variant/30 shrink-0">
               {filteredCategories.length} Registros
             </span>
           </div>
         </div>
 
-        {/* Tabla a ancho completo sin recorte */}
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
@@ -147,22 +139,18 @@ export default function CategoriesTable({
                     key={category.id}
                     className="hover:bg-surface-container/30 transition-colors"
                   >
-                    {/* ID */}
                     <td className="py-4 px-5 font-semibold text-on-surface-variant whitespace-nowrap">
                       #{category.numeroId}
                     </td>
 
-                    {/* Nombre */}
                     <td className="py-4 px-5 font-bold text-sm text-on-surface whitespace-nowrap">
                       {category.nombre}
                     </td>
 
-                    {/* Descripción completa y cómoda */}
                     <td className="py-4 px-5 text-on-surface-variant leading-relaxed">
                       {category.descripcion || "—"}
                     </td>
 
-                    {/* Estado */}
                     <td className="py-4 px-5 whitespace-nowrap">
                       {category.estado === "Activa" ? (
                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary-container/40 text-primary border border-primary/20">
@@ -175,15 +163,12 @@ export default function CategoriesTable({
                       )}
                     </td>
 
-                    {/* Última Actualización */}
                     <td className="py-4 px-5 text-xs text-on-surface-variant font-mono whitespace-nowrap">
                       {category.ultimaActualizacion}
                     </td>
 
-                    {/* Acciones reutilizando los botones exactos de UsersTable */}
                     <td className="py-4 px-5 whitespace-nowrap text-right">
                       <div className="flex items-center justify-end gap-2">
-                        {/* Botón Editar reutilizado de UsersTable */}
                         <button
                           type="button"
                           onClick={() => onEdit(category)}
@@ -194,7 +179,6 @@ export default function CategoriesTable({
                           <span>Editar</span>
                         </button>
 
-                        {/* Botón Desactivar / Activar reutilizado de UsersTable */}
                         {category.estado === "Activa" ? (
                           <button
                             type="button"
@@ -226,7 +210,6 @@ export default function CategoriesTable({
         </div>
       </div>
 
-      {/* Paginación */}
       <div className="px-5 py-4 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-outline-variant/20 text-xs text-on-surface-variant">
         <span>
           Mostrando{" "}
