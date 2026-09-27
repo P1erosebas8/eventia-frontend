@@ -69,7 +69,8 @@ export default function EventFormGeneral({
             value={title}
             onChange={(e) => onChange("title", e.target.value)}
             maxLength={80}
-            className="w-full bg-surface-container-low px-4 py-2.5 rounded-lg text-on-surface text-sm focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+            placeholder="Ej. Lima Live Sessions 2025"
+            className="w-full bg-surface-container-low px-4 py-2.5 rounded-lg text-on-surface text-sm placeholder:text-outline/60 focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary transition-all"
           />
         </div>
 
@@ -84,6 +85,9 @@ export default function EventFormGeneral({
               onChange={(e) => onChange("category", e.target.value)}
               className="w-full appearance-none bg-surface-container-low px-4 py-2.5 rounded-lg text-on-surface text-sm focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary transition-all pr-10"
             >
+              <option value="" disabled>
+                Selecciona una categoría...
+              </option>
               {CATEGORIES.map((cat) => (
                 <option key={cat} value={cat}>
                   {cat}
@@ -104,15 +108,17 @@ export default function EventFormGeneral({
           <div className="relative">
             <input
               type="number"
-              value={capacity}
+              value={capacity > 0 ? capacity : ""}
               onChange={(e) => onChange("capacity", parseInt(e.target.value) || 0)}
-              className="w-full bg-surface-container-low px-4 py-2.5 rounded-lg text-on-surface text-sm focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary transition-all pl-10"
+              placeholder="Ej. 15000"
+              min={1}
+              className="w-full bg-surface-container-low px-4 py-2.5 rounded-lg text-on-surface text-sm placeholder:text-outline/60 focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary transition-all pl-10"
             />
             <span className="material-symbols-outlined absolute left-3 top-3 text-outline text-[18px]">
               groups
             </span>
           </div>
-          <span className="text-[0.6875rem] text-outline">Capacidad auditada</span>
+          <span className="text-[0.6875rem] text-outline">Capacidad auditada del recinto</span>
         </div>
 
         {/* Recinto */}
@@ -126,6 +132,9 @@ export default function EventFormGeneral({
               onChange={(e) => onChange("venue", e.target.value)}
               className="w-full appearance-none bg-surface-container-low px-4 py-2.5 rounded-lg text-on-surface text-sm focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary transition-all pr-10"
             >
+              <option value="" disabled>
+                Selecciona un recinto oficial...
+              </option>
               {VENUES.map((v) => (
                 <option key={v} value={v}>
                   {v}
@@ -139,13 +148,14 @@ export default function EventFormGeneral({
         </div>
 
         {/* Dirección */}
-        <div className="flex flex-col gap-1.5">
+        <div className="md:col-span-2 flex flex-col gap-1.5">
           <label className="text-sm font-semibold text-on-surface">Dirección / Punto de Ingreso</label>
           <input
             type="text"
             value={address}
             onChange={(e) => onChange("address", e.target.value)}
-            className="w-full bg-surface-container-low px-4 py-2.5 rounded-lg text-on-surface text-sm focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+            placeholder="Ej. Circuito de Playas S/N, San Miguel, Lima"
+            className="w-full bg-surface-container-low px-4 py-2.5 rounded-lg text-on-surface text-sm placeholder:text-outline/60 focus:bg-surface-container-lowest focus:outline-none focus:ring-2 focus:ring-primary transition-all"
           />
         </div>
       </div>
