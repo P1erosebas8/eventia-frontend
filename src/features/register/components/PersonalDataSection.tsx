@@ -91,9 +91,6 @@ export default function PersonalDataSection({
             <option value="Carnet de Extranjería">
               Carnet de Extranjería
             </option>
-            <option value="Pasaporte">
-              Pasaporte
-            </option>
           </select>
         </div>
 

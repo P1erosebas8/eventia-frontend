@@ -9,6 +9,11 @@ import PersonalDataSection from "./PersonalDataSection";
 import CredentialsSection from "./CredentialsSection";
 import RegisterMessages from "./RegisterMessages";
 
+import {
+  sanitizeRegisterField,
+  validateRegisterForm,
+} from "./RegisterValidation";
+
 export default function RegisterForm() {
   const navigate = useNavigate();
 
@@ -31,28 +36,38 @@ export default function RegisterForm() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value, type } = e.target;
+ const handleChange = (
+  e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+) => {
+  const { name, value } = e.target;
 
-    if (type === "checkbox") {
-      const checked = (e.target as HTMLInputElement).checked;
-
-      setForm((prev) => ({
-        ...prev,
-        [name]: checked,
-      }));
-
-      return;
-    }
-
+  if (name === "documentType") {
     setForm((prev) => ({
       ...prev,
-      [name]: value,
+      documentType: value,
+      documentNumber:
+        value === "DNI (Perú)"
+          ? prev.documentNumber.replace(/\D/g, "").slice(0, 8)
+          : prev.documentNumber
+              .replace(/[^a-zA-Z0-9]/g, "")
+              .slice(0, 12)
+              .toUpperCase(),
     }));
-  };
 
+    return;
+  }
+
+  const newValue = sanitizeRegisterField(
+    name,
+    value,
+    form.documentType
+  );
+
+  setForm((prev) => ({
+    ...prev,
+    [name]: newValue,
+  }));
+};
   const getPasswordStrength = (password: string) => {
     if (!password) {
       return {
@@ -100,45 +115,42 @@ export default function RegisterForm() {
   const strength = getPasswordStrength(form.password);
 
   const handleSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
-  ) => {
-    e.preventDefault();
+  e: React.FormEvent<HTMLFormElement>
+) => {
+  e.preventDefault();
 
-    setError("");
-    setSuccess("");
+  setError("");
+  setSuccess("");
 
-    if (form.password !== form.confirmPassword) {
-      setError("Las contraseñas no coinciden.");
-      return;
-    }
+  const validationError = validateRegisterForm(form);
 
-    if (form.password.length < 8) {
-      setError(
-        "La contraseña debe tener al menos 8 caracteres."
-      );
-      return;
-    }
+  if (validationError) {
+    setError(validationError);
+    return;
+  }
 
-    setLoading(true);
+  setLoading(true);
 
-    try {
-      const response = await register(form);
+  try {
+    const response = await register(form);
 
-      setSuccess("Cuenta creada correctamente. Redirigiendo al inicio de sesión...");
+    setSuccess(
+      `¡Cuenta creada con éxito! Bienvenido, ${response.firstName}. Redirigiendo al inicio de sesión...`
+    );
 
-setTimeout(() => {
-  navigate("/login");
-}, 1500);
-    } catch (err) {
-      console.error(err);
+    setTimeout(() => {
+      navigate("/login");
+    }, 1500);
+  } catch (err) {
+    console.error(err);
 
-      setError(
-        "Ocurrió un error al registrar la cuenta. Inténtalo nuevamente."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+    setError(
+      "Ocurrió un error al registrar la cuenta. Inténtalo nuevamente."
+    );
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
