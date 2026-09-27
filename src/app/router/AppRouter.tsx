@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import MainLayout from "../../layouts/MainLayout";
-import UserLayout from "../../layouts/UserLayout";
+import MainLayout from "../../shared/layouts/MainLayout";
+import UserLayout from "../../shared/layouts/UserLayout";
 import CategoriesPage from "../../features/categories/pages/CategoriesPage";
 import CatalogPage from "../../features/events/pages/CatalogPage";
 import EventDetailPage from "../../features/event-detail/pages/EventDetailPage";
