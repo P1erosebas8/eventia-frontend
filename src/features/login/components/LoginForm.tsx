@@ -1,11 +1,13 @@
 import { useState } from "react";
-import axios from "axios";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
-
 import { login } from "../services/loginService";
 import type { LoginRequest } from "../types/login.types";
+import { useAuth } from "@/context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginForm() {
+  const { login: authenticate } = useAuth();
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
   const [form, setForm] = useState<LoginRequest>({
@@ -38,25 +40,16 @@ export default function LoginForm() {
     try {
       const data = await login(form);
 
-      console.log("Inicio de sesión exitoso");
+      authenticate(data.accessToken);
 
-      localStorage.setItem(
-          // accessToken es actualmente requerido por el flujo de autenticación del frontend
-          // migrar a HttpOnly requiere backend
-            "accessToken",
-            data.accessToken
-          );
+      navigate("/");
 
-      alert(`Bienvenido, ${data.firstName}`);
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        if (error.response?.status === 401) {
-          setError("Correo o contraseña incorrectos.");
-        } else {
-          setError(
-            "No se pudo conectar con el servidor. Inténtalo nuevamente."
-          );
-        }
+      } catch (error) {
+      if (
+        error instanceof Error &&
+        error.message === "INVALID_CREDENTIALS"
+      ) {
+        setError("Correo o contraseña incorrectos.");
       } else {
         setError(
           "Ocurrió un error inesperado. Inténtalo nuevamente."

@@ -4,10 +4,9 @@ import { useState } from "react";
 interface HeaderProps {
   search?: string;
   onSearchChange?: (value: string) => void;
-  action?: React.ReactNode;
 }
 
-export default function Header({ search, onSearchChange, action }: HeaderProps) {
+export default function Header({ search, onSearchChange }: HeaderProps) {
   const navigate = useNavigate();
   const [innerSearch, setInnerSearch] = useState("");
   const controlled = typeof search === "string" && typeof onSearchChange === "function";
@@ -15,12 +14,12 @@ export default function Header({ search, onSearchChange, action }: HeaderProps) 
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate("/");
+    navigate("/catalog");
   };
   return (
     <header className="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
       <div className="h-16 max-w-[1280px] mx-auto px-4 sm:px-6 flex items-center justify-between gap-3 sm:gap-4">
-        <Link to="/" className="flex items-center gap-2.5 shrink-0 min-w-0">
+        <Link to="/catalog" className="flex items-center gap-2.5 shrink-0 min-w-0">
           <div className="w-9 h-9 rounded-lg bg-primary text-on-primary flex items-center justify-center font-display font-extrabold text-xl shrink-0">
             E
           </div>
@@ -56,7 +55,7 @@ export default function Header({ search, onSearchChange, action }: HeaderProps) 
 
         <nav className="hidden md:flex items-center gap-1 min-w-0 overflow-hidden">
           <NavLink
-            to="/"
+            to="/catalog"
             className={({ isActive }) =>
               `px-3 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition-colors ${
                 isActive
@@ -68,21 +67,20 @@ export default function Header({ search, onSearchChange, action }: HeaderProps) 
             Explorar Eventos
           </NavLink>
           <NavLink
-            to="/mis-tickets"
-            className={({ isActive }) =>
-              `px-3 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition-colors ${
-                isActive
-                  ? "bg-primary-container/20 text-primary"
-                  : "text-on-surface-variant hover:bg-surface-container-high"
-              }`
-            }
+            to="/tickets"
+            className="px-3 py-2 rounded-lg text-sm font-semibold text-on-surface-variant hover:bg-surface-container-high transition-colors whitespace-nowrap"
           >
             Mis Tickets
+          </NavLink>
+          <NavLink
+            to="/catalog?promo=1"
+            className="px-3 py-2 rounded-lg text-sm font-semibold text-on-surface-variant hover:bg-surface-container-high transition-colors whitespace-nowrap"
+          >
+            Promociones
           </NavLink>
         </nav>
 
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-          {action && <div className="flex items-center gap-2 shrink-0">{action}</div>}
           <div className="hidden lg:flex items-center bg-surface-container px-3 py-1.5 rounded-lg whitespace-nowrap">
             <span className="text-[11px] font-bold text-outline mr-1.5">MONEDA</span>
             <span className="text-sm text-primary font-bold">PEN (S/)</span>
@@ -95,11 +93,7 @@ export default function Header({ search, onSearchChange, action }: HeaderProps) 
             <span className="material-symbols-outlined text-[22px]">notifications</span>
             <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-secondary"></span>
           </button>
-          <Link
-            to="/perfil"
-            className="flex items-center gap-1 min-w-0 hover:opacity-80 transition"
-            aria-label="Mi cuenta"
-          >
+          <div className="flex items-center gap-1 min-w-0">
             <img
               alt="Profile"
               className="w-8 h-8 rounded-full object-cover bg-surface-container-high shrink-0"
@@ -109,7 +103,7 @@ export default function Header({ search, onSearchChange, action }: HeaderProps) 
               Mi Cuenta
             </span>
             <span className="material-symbols-outlined text-outline text-[18px]">expand_more</span>
-          </Link>
+          </div>
         </div>
       </div>
     </header>

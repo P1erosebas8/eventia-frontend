@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Header from "../../../shared/layouts/Header";
 import Footer from "../../../shared/layouts/Footer";
 import Breadcrumbs from "../components/Breadcrumbs";
 import CheckoutPanel from "../components/CheckoutPanel";
@@ -47,7 +46,6 @@ export default function EventDetailPage() {
 
   return (
     <div className="min-h-screen bg-surface overflow-x-hidden">
-      <Header />
       <main className="w-full pt-16 min-h-screen min-w-0">
         <ConcurrencyAlert />
         <div className="max-w-[1280px] mx-auto w-full px-4 sm:px-6 py-6 min-w-0">
