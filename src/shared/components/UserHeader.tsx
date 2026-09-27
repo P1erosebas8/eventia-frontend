@@ -10,9 +10,6 @@ export default function UserHeader() {
           </div>
           <div className="flex flex-col">
             <span className="font-extrabold text-lg tracking-tight leading-none text-slate-900">Eventia</span>
-            <span className="text-[10px] font-bold text-slate-400 tracking-wider uppercase mt-0.5">
-              Perú S.A.C.
-            </span>
           </div>
         </Link>
 

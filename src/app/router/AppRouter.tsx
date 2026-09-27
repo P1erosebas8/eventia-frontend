@@ -5,13 +5,16 @@ import CategoriesPage from "../../features/categories/pages/CategoriesPage";
 import CatalogPage from "../../features/events/pages/CatalogPage";
 import EventDetailPage from "../../features/event-detail/pages/EventDetailPage";
 import LoginPage from "../../features/login/pages/LoginPage";
-import MisTicketsPage from "../../features/user/pages/MisTicketsPage";
-import PerfilPage from "../../features/user/pages/PerfilPage";
+import RegisterPage from "../../features/register/pages/RegisterPage";
+
 import UsersPage from "../../features/users/pages/UsersPage";
 import AdminLayout from "../../features/admin/components/AdminLayout";
 import AdminMonitoringPage from "../../features/admin/pages/AdminMonitoringPage";
 import AdminCategoriesPage from "../../features/admin/pages/AdminCategoriesPage";
 import AdminUsersPage from "../../features/admin/pages/AdminUsersPage";
+import MisTicketsPage from "@/features/users/pages/MisTicketsPage";
+import PerfilPage from "@/features/users/pages/PerfilPage";
+
 
 function NotFound() {
   return (
@@ -41,14 +44,13 @@ export default function AppRouter() {
 
       <Route element={<MainLayout />}>
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
       </Route>
 
       <Route element={<UserLayout />}>
         <Route path="/app" element={<Navigate to="/catalog" replace />} />
         <Route path="/app/mis-tickets" element={<MisTicketsPage />} />
         <Route path="/app/perfil" element={<PerfilPage />} />
-        <Route path="/mis-tickets" element={<MisTicketsPage />} />
-        <Route path="/perfil" element={<PerfilPage />} />
       </Route>
 
       <Route path="/admin" element={<AdminLayout />}>

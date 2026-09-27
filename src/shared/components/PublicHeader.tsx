@@ -24,36 +24,34 @@ export default function PublicHeader() {
           />
         </div>
 
-        <nav className="hidden md:flex items-center gap-2">
-          <NavLink
-            to="/app/catalogo"
-            className={({ isActive }) =>
-              `px-3 py-2 rounded-lg text-sm font-semibold transition ${isActive
-                ? "bg-indigo-50 text-indigo-600 font-bold"
-                : "text-slate-600 hover:bg-slate-100"
-              }`
-            }
-          >
-            Explorar Eventos
-          </NavLink>
-        </nav>
+      <nav className="ml-auto hidden md:flex items-center gap-3">
+  <NavLink
+    to="/catalog"
+    className={({ isActive }) =>
+      `px-3 py-2 rounded-lg text-sm font-semibold transition ${
+        isActive
+          ? "bg-indigo-50 text-indigo-600 font-bold"
+          : "text-slate-600 hover:bg-slate-100"
+      }`
+    }
+  >
+    Explorar Eventos
+  </NavLink>
 
-        <nav className="ml-auto flex items-center gap-3">
-          <NavLink
-            to="/login"
-            className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700"
-          >
-            Iniciar Sesión
-          </NavLink>
+  <NavLink
+    to="/login"
+    className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700"
+  >
+    Iniciar Sesión
+  </NavLink>
 
-          <NavLink
-            to="/register"
-            className="rounded-lg px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
-          >
-            Registrarse
-          </NavLink>
-
-        </nav>
+  <NavLink
+    to="/register"
+    className="rounded-lg px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
+  >
+    Registrarse
+  </NavLink>
+</nav>
 
       </div>
     </header>
