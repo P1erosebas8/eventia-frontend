@@ -1,4 +1,5 @@
 import { useState } from "react";
+import axios from "axios";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 
 import { login } from "../services/loginService";
@@ -37,20 +38,31 @@ export default function LoginForm() {
     try {
       const data = await login(form);
 
-      console.log("Usuario autenticado:", data);
+      console.log("Inicio de sesión exitoso");
 
       localStorage.setItem(
-        "accessToken",
-        data.accessToken
-      );
+          // accessToken es actualmente requerido por el flujo de autenticación del frontend
+          // migrar a HttpOnly requiere backend
+            "accessToken",
+            data.accessToken
+          );
 
       alert(`Bienvenido, ${data.firstName}`);
-    } catch {
-      setError("Correo o contraseña incorrectos.");
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 401) {
+          setError("Correo o contraseña incorrectos.");
+        } else {
+          setError(
+            "No se pudo conectar con el servidor. Inténtalo nuevamente."
+          );
+        }
+      } else {
+        setError(
+          "Ocurrió un error inesperado. Inténtalo nuevamente."
+        );
+      }
     }
-  };
 
   return (
     <form
@@ -149,4 +161,5 @@ export default function LoginForm() {
       </button>
     </form>
   );
+}
 }
