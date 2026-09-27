@@ -21,7 +21,7 @@ function NotFound() {
       <h1 className="font-display font-extrabold text-4xl">404</h1>
       <p className="text-sm text-on-surface-variant">Página no encontrada</p>
       <a
-        href="/catalog"
+        href="/"
         className="mt-2 px-4 py-2 bg-primary text-on-primary text-sm font-bold rounded-lg"
       >
         Volver al catálogo
