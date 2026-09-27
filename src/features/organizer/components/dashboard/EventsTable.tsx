@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import type { OrganizerEvent } from "../types/organizer.types";
-import EventStatusBadge from "./EventStatusBadge";
-import { formatPEN, formatNumber, formatDate, calculateOccupancy } from "../utils/organizerFormatters";
+import type { OrganizerEvent } from "../../types/organizer.types";
+import EventStatusBadge from "../common/EventStatusBadge";
+import { formatPEN, formatNumber, formatDate, calculateOccupancy } from "../../utils/organizerFormatters";
 
 interface EventsTableProps {
   events: OrganizerEvent[];

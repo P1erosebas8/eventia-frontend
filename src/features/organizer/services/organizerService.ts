@@ -1,10 +1,16 @@
+import apiClient from "../../../services/api";
 import type {
   OrganizerDashboardData,
   OrganizerEvent,
   DailySalesDataPoint,
+  AuditLogEntry,
 } from "../types/organizer.types";
 
-const USE_MOCK_DATA = true;
+/**
+ * Flag para alternar entre datos simulados y backend real con Axios.
+ * Puede sobreescribirse mediante la variable de entorno VITE_USE_MOCK_DATA=false.
+ */
+const USE_MOCK_DATA = import.meta.env.VITE_USE_MOCK_DATA !== "false";
 
 const MOCK_EVENTS: OrganizerEvent[] = [
   {
@@ -103,7 +109,7 @@ const MOCK_EVENTS: OrganizerEvent[] = [
     time: "10:00",
     bannerUrl: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop&q=80",
     status: "inactive",
-    active: false, // RN04 Soft delete
+    active: false,
     capacity: 6000,
     ticketsSold: 1200,
     totalRevenue: 96000,
@@ -122,11 +128,13 @@ const MOCK_DAILY_SALES: DailySalesDataPoint[] = [
 ];
 
 export const organizerService = {
+  /**
+   * Obtiene la data consolidada del dashboard
+   */
   async getDashboardData(): Promise<OrganizerDashboardData> {
     if (USE_MOCK_DATA) {
       await new Promise((r) => setTimeout(r, 120));
 
-      // Solo eventos activos y publicados entran en el aforo real
       const activeEventsList = MOCK_EVENTS.filter((e) => e.active && e.status !== "draft");
       const totalTicketsSold = activeEventsList.reduce((acc, e) => acc + e.ticketsSold, 0);
       const totalCapacity = activeEventsList.reduce((acc, e) => acc + e.capacity, 0);
@@ -159,26 +167,40 @@ export const organizerService = {
       };
     }
 
-    throw new Error("API mode not configured yet");
+    const response = await apiClient.get<OrganizerDashboardData>("/organizer/dashboard");
+    return response.data;
   },
 
+  /**
+   * Obtiene la lista completa de eventos del organizador
+   */
   async getEvents(): Promise<OrganizerEvent[]> {
     if (USE_MOCK_DATA) {
       await new Promise((r) => setTimeout(r, 80));
       return [...MOCK_EVENTS];
     }
-    throw new Error("API mode not configured yet");
+
+    const response = await apiClient.get<OrganizerEvent[]>("/organizer/events");
+    return response.data;
   },
 
+  /**
+   * Obtiene el detalle de un evento por su ID
+   */
   async getEventById(id: string): Promise<OrganizerEvent | null> {
     if (USE_MOCK_DATA) {
       await new Promise((r) => setTimeout(r, 60));
       const event = MOCK_EVENTS.find((e) => e.id === id);
       return event ? { ...event } : null;
     }
-    throw new Error("API mode not configured yet");
+
+    const response = await apiClient.get<OrganizerEvent>(`/organizer/events/${id}`);
+    return response.data;
   },
 
+  /**
+   * Cambia el estado publicado/oculto de un evento
+   */
   async toggleEventStatus(id: string, newStatus: OrganizerEvent["status"]): Promise<OrganizerEvent> {
     if (USE_MOCK_DATA) {
       await new Promise((r) => setTimeout(r, 100));
@@ -189,9 +211,16 @@ export const organizerService = {
       }
       throw new Error("Evento no encontrado");
     }
-    throw new Error("API mode not configured yet");
+
+    const response = await apiClient.patch<OrganizerEvent>(`/organizer/events/${id}/status`, {
+      status: newStatus,
+    });
+    return response.data;
   },
 
+  /**
+   * Inactiva un evento (soft delete)
+   */
   async deactivateEvent(id: string, reason: string): Promise<OrganizerEvent> {
     if (USE_MOCK_DATA) {
       await new Promise((r) => setTimeout(r, 120));
@@ -199,11 +228,48 @@ export const organizerService = {
       if (index !== -1) {
         MOCK_EVENTS[index].active = false;
         MOCK_EVENTS[index].status = "inactive";
-        console.log(`[RN04 Soft Delete] Evento ${id} desactivado. Motivo: ${reason}`);
+        console.log(`[Soft Delete] Evento ${id} desactivado. Motivo: ${reason}`);
         return { ...MOCK_EVENTS[index] };
       }
       throw new Error("Evento no encontrado");
     }
-    throw new Error("API mode not configured yet");
+
+    const response = await apiClient.patch<OrganizerEvent>(`/organizer/events/${id}/deactivate`, {
+      reason,
+    });
+    return response.data;
+  },
+
+  /**
+   * Actualiza los datos de un evento
+   */
+  async updateEvent(id: string, data: Partial<OrganizerEvent>): Promise<OrganizerEvent> {
+    if (USE_MOCK_DATA) {
+      await new Promise((r) => setTimeout(r, 150));
+      const index = MOCK_EVENTS.findIndex((e) => e.id === id);
+      if (index !== -1) {
+        MOCK_EVENTS[index] = { ...MOCK_EVENTS[index], ...data };
+        return { ...MOCK_EVENTS[index] };
+      }
+      throw new Error("Evento no encontrado");
+    }
+
+    const response = await apiClient.put<OrganizerEvent>(`/organizer/events/${id}`, data);
+    return response.data;
+  },
+
+  /**
+   * Obtiene el log de auditoría
+   */
+  async getAuditLog(eventId: string): Promise<AuditLogEntry[]> {
+    if (USE_MOCK_DATA) {
+      await new Promise((r) => setTimeout(r, 80));
+      return [];
+    }
+
+    const response = await apiClient.get<AuditLogEntry[]>(`/organizer/events/${eventId}/audit-log`);
+    return response.data;
   },
 };
+
+

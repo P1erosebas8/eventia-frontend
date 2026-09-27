@@ -1,5 +1,5 @@
-import type { EventStatus } from "../types/organizer.types";
-import { getStatusConfig } from "../utils/organizerFormatters";
+import type { EventStatus } from "../../types/organizer.types";
+import { getStatusConfig } from "../../utils/organizerFormatters";
 
 interface EventStatusBadgeProps {
   status: EventStatus;
