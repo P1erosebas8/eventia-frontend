@@ -73,9 +73,15 @@ export default function PublicHeader({
         <div className="flex items-center gap-2 shrink-0">
           <Link
             to="/login"
-            className="px-3.5 py-1.5 rounded-lg bg-primary text-on-primary text-xs font-semibold shadow-sm hover:opacity-90 transition whitespace-nowrap"
+            className="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-on-surface-variant hover:bg-surface-container-high transition whitespace-nowrap"
           >
             Iniciar Sesión
+          </Link>
+          <Link
+            to="/register"
+            className="px-3.5 py-1.5 rounded-lg bg-primary text-on-primary text-xs font-semibold shadow-sm hover:opacity-90 transition whitespace-nowrap"
+          >
+            Registrarse
           </Link>
         </div>
       </div>
