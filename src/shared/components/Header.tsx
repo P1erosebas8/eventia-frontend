@@ -13,7 +13,6 @@ export default function Header() {
           Eventia
         </Link>
 
-        {/* Botones de la derecha */}
         <nav className="ml-auto flex items-center gap-3">
           <NavLink
                       to="/login"
