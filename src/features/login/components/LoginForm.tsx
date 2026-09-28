@@ -40,11 +40,24 @@ export default function LoginForm() {
     try {
       const data = await login(form);
 
-      authenticate(data.accessToken);
+      authenticate(data.accessToken, {
+        id: data.id,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        rol: data.rol,
+      });
 
-      navigate("/");
+      // Redirigir según el rol del usuario:
+      if (data.rol === "ADMIN") {
+        navigate("/admin/monitoreo");
+      } else if (data.rol === "ORGANIZER") {
+        navigate("/organizador/dashboard");
+      } else {
+        navigate("/");
+      }
 
-      } catch (error) {
+    } catch (error) {
       if (
         error instanceof Error &&
         error.message === "INVALID_CREDENTIALS"
@@ -58,6 +71,14 @@ export default function LoginForm() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleFillDemo = (email: string) => {
+    setForm({
+      email,
+      password: "Password123!",
+    });
+    setError("");
   };
 
   return (
@@ -155,6 +176,39 @@ export default function LoginForm() {
           ? "Iniciando sesión..."
           : "Iniciar Sesión"}
       </button>
+
+      {/* Cuentas de Acceso Rápido para Pruebas */}
+      <div className="pt-4 border-t border-slate-100 space-y-2">
+        <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 text-center">
+          Cuentas demo para pruebas rápidas
+        </p>
+        <div className="grid grid-cols-3 gap-1.5">
+          <button
+            type="button"
+            onClick={() => handleFillDemo("rquispe@gmail.com")}
+            className="px-2 py-1.5 bg-slate-50 hover:bg-indigo-50 hover:text-indigo-600 border border-slate-200 rounded-lg text-[11px] font-semibold text-slate-600 transition truncate"
+            title="Cliente: rquispe@gmail.com"
+          >
+            👤 Cliente
+          </button>
+          <button
+            type="button"
+            onClick={() => handleFillDemo("contacto@marioeventos.pe")}
+            className="px-2 py-1.5 bg-slate-50 hover:bg-indigo-50 hover:text-indigo-600 border border-slate-200 rounded-lg text-[11px] font-semibold text-slate-600 transition truncate"
+            title="Organizador: contacto@marioeventos.pe"
+          >
+            🎪 Organizador
+          </button>
+          <button
+            type="button"
+            onClick={() => handleFillDemo("vmendoza@eventia.pe")}
+            className="px-2 py-1.5 bg-slate-50 hover:bg-indigo-50 hover:text-indigo-600 border border-slate-200 rounded-lg text-[11px] font-semibold text-slate-600 transition truncate"
+            title="Admin: vmendoza@eventia.pe"
+          >
+            🛡️ Admin
+          </button>
+        </div>
+      </div>
     </form>
   );
 }

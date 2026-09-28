@@ -1,11 +1,11 @@
 import type { RegisterRequest } from "@/features/register/types/register.types";
 
 export interface StoredUser {
-  id: number;
+  id: number | string;
   firstName: string;
   lastName: string;
   email: string;
-  password: string;
+  password?: string;
   rol: string;
   documentType?: string;
   documentNumber?: string;
@@ -47,6 +47,30 @@ export function getStoredUsers(): StoredUser[] {
         documentNumber: "45892110",
         birthDate: "1988-11-20",
         phoneNumber: "+51 912 345 678",
+      },
+      {
+        id: 3,
+        firstName: "Mario",
+        lastName: "Vargas Llosa",
+        email: "contacto@marioeventos.pe",
+        password: "Password123!",
+        rol: "ORGANIZER",
+        documentType: "RUC",
+        documentNumber: "20601948231",
+        birthDate: "1985-03-12",
+        phoneNumber: "+51 984 219 042",
+      },
+      {
+        id: 4,
+        firstName: "Carlos",
+        lastName: "Arana Romero",
+        email: "contacto@veltrac.pe",
+        password: "Password123!",
+        rol: "ORGANIZER",
+        documentType: "RUC",
+        documentNumber: "20554981120",
+        birthDate: "1982-08-25",
+        phoneNumber: "+51 955 812 340",
       },
     ];
     localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultUsers));
@@ -109,11 +133,11 @@ export function findUserByEmail(
 }
 
 export function updateStoredUser(
-  userId: number,
+  userId: number | string,
   updates: { email?: string; password?: string }
 ): StoredUser {
   const users = getStoredUsers();
-  const index = users.findIndex((u) => u.id === userId);
+  const index = users.findIndex((u) => String(u.id) === String(userId));
 
   if (index === -1) {
     throw new Error("USER_NOT_FOUND");
@@ -139,3 +163,44 @@ export function updateStoredUser(
 
   return updatedUser;
 }
+
+export function saveOrganizerUser(data: {
+  id?: number | string;
+  nombre: string;
+  email: string;
+  dni: string;
+  telefono: string;
+  password?: string;
+  rol?: string;
+}): StoredUser {
+  const users = getStoredUsers();
+  const emailNorm = data.email.trim().toLowerCase();
+  const parts = data.nombre.trim().split(" ");
+  const firstName = parts[0] || "Organizador";
+  const lastName = parts.slice(1).join(" ") || "Eventia";
+
+  const existingIdx = users.findIndex(
+    (u) => u.email && u.email.trim().toLowerCase() === emailNorm
+  );
+
+  const userObj: StoredUser = {
+    id: data.id || (existingIdx !== -1 ? users[existingIdx].id : Date.now()),
+    firstName,
+    lastName,
+    email: data.email.trim(),
+    password: data.password?.trim() || "Password123!",
+    rol: data.rol || "ORGANIZER",
+    documentType: data.dni.length === 11 ? "RUC" : "DNI",
+    documentNumber: data.dni,
+    phoneNumber: data.telefono,
+  };
+
+  if (existingIdx !== -1) {
+    users[existingIdx] = { ...users[existingIdx], ...userObj };
+  } else {
+    users.push(userObj);
+  }
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
+  return userObj;
+}

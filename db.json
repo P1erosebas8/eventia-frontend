@@ -16,6 +16,40 @@
           "discount_applied": 20
         }
       ]
+    },
+    {
+      "id": "EmicVDThmBU",
+      "id_user": 1790633771463,
+      "order_date": "2026-09-28T22:18:35.324Z",
+      "payment_method": "CREDIT_CARD",
+      "total_amount": 140,
+      "status": "COMPLETED",
+      "order_details": [
+        {
+          "id_ticket_type": 7,
+          "ticket_name": "General",
+          "quantity": 1,
+          "unit_price": 140,
+          "discount_applied": 0
+        }
+      ]
+    },
+    {
+      "id": "vmIlvPwfqOM",
+      "id_user": 1790633771463,
+      "order_date": "2026-09-28T22:19:30.695Z",
+      "payment_method": "CREDIT_CARD",
+      "total_amount": 120,
+      "status": "COMPLETED",
+      "order_details": [
+        {
+          "id_ticket_type": 3,
+          "ticket_name": "General",
+          "quantity": 1,
+          "unit_price": 120,
+          "discount_applied": 0
+        }
+      ]
     }
   ],
   "tickets": [
@@ -62,63 +96,85 @@
       "venue": "Estadio Nacional",
       "qr_code": "EVT-ORD1003-TCK5004-SECURE",
       "status": "VIGENTE"
+    },
+    {
+      "id": "szNKcv0tz5U",
+      "id_order": "ord-1790633915324",
+      "id_user": 1790633771463,
+      "event_title": "Trap & Latin Flow Live Tour",
+      "ticket_type": "General",
+      "event_date": "18 Enero 2026",
+      "venue": "Arena 1, Costa Verde",
+      "qr_code": "EVT-ORD-1790633915324-TCK-1790633915325-1-1-SECURE",
+      "status": "VIGENTE"
+    },
+    {
+      "id": "OQoIu0BBN38",
+      "id_order": "ord-1790633970695",
+      "id_user": 1790633771463,
+      "event_title": "Illapu: 50 Años de Memoria",
+      "ticket_type": "General",
+      "event_date": "22 Noviembre 2025",
+      "venue": "Estadio Nacional, Lima",
+      "qr_code": "EVT-ORD-1790633970695-TCK-1790633970695-1-1-SECURE",
+      "status": "VIGENTE"
     }
   ],
   "ticket_types": [
     {
-      "id": 1,
+      "id": "1",
       "id_event": 100,
       "name": "General",
-      "price": 100.0,
+      "price": 100,
       "stock": 50
     },
     {
-      "id": 2,
+      "id": "2",
       "id_event": 100,
       "name": "VIP",
-      "price": 220.0,
+      "price": 220,
       "stock": 20
     },
     {
-      "id": 3,
+      "id": "3",
       "id_event": 101,
       "name": "General",
-      "price": 120.0,
+      "price": 120,
       "stock": 1200
     },
     {
-      "id": 4,
+      "id": "4",
       "id_event": 102,
       "name": "General",
-      "price": 85.0,
+      "price": 85,
       "stock": 900
     },
     {
-      "id": 5,
+      "id": "5",
       "id_event": 103,
       "name": "General",
-      "price": 60.0,
+      "price": 60,
       "stock": 200
     },
     {
-      "id": 6,
+      "id": "6",
       "id_event": 104,
       "name": "General",
-      "price": 45.0,
+      "price": 45,
       "stock": 1500
     },
     {
-      "id": 7,
+      "id": "7",
       "id_event": 105,
       "name": "General",
-      "price": 140.0,
+      "price": 140,
       "stock": 1100
     },
     {
-      "id": 8,
+      "id": "8",
       "id_event": 106,
       "name": "General",
-      "price": 210.0,
+      "price": 210,
       "stock": 400
     }
   ],
@@ -129,7 +185,8 @@
       "description": "Shows musicales en vivo",
       "active": true,
       "created_at": "2024-01-10T10:00:00Z",
-      "updated_at": "2024-01-10T10:00:00Z"
+      "updated_at": "2024-01-10T10:00:00Z",
+      "id": "NnMGYkFNmu0"
     },
     {
       "id_category": "cat-02",
@@ -137,7 +194,8 @@
       "description": "Festivales de varios días y artistas",
       "active": true,
       "created_at": "2024-01-10T10:00:00Z",
-      "updated_at": "2024-01-10T10:00:00Z"
+      "updated_at": "2024-01-10T10:00:00Z",
+      "id": "TnMKFh7K52g"
     },
     {
       "id_category": "cat-03",
@@ -145,7 +203,8 @@
       "description": "Obras de teatro y espectáculos culturales",
       "active": true,
       "created_at": "2024-01-10T10:00:00Z",
-      "updated_at": "2024-01-10T10:00:00Z"
+      "updated_at": "2024-01-10T10:00:00Z",
+      "id": "uPO19ca-B2Q"
     },
     {
       "id_category": "cat-04",
@@ -153,7 +212,8 @@
       "description": "Ferias gastronómicas y food trucks",
       "active": true,
       "created_at": "2024-01-10T10:00:00Z",
-      "updated_at": "2024-01-10T10:00:00Z"
+      "updated_at": "2024-01-10T10:00:00Z",
+      "id": "vHJCq08imx8"
     },
     {
       "id_category": "cat-05",
@@ -161,7 +221,8 @@
       "description": "Conferencias y ferias de tecnología",
       "active": true,
       "created_at": "2024-01-10T10:00:00Z",
-      "updated_at": "2024-01-10T10:00:00Z"
+      "updated_at": "2024-01-10T10:00:00Z",
+      "id": "gV48lnFzUOA"
     }
   ],
   "events": [
@@ -326,6 +387,63 @@
       "created_at": "2025-06-01T10:00:00Z",
       "updated_at": "2025-06-20T10:00:00Z",
       "id_organizer": 3
+    },
+    {
+      "id": "qoOXLGoEZHI",
+      "code": "EVT-3496",
+      "title": "Farmear Aura 2026 con Pablito67",
+      "category": "Festivales & Open Air",
+      "venue": "Jockey Club del Perú - Pelousse",
+      "city": "Lima",
+      "date": "2026-09-29",
+      "time": "20:00",
+      "bannerUrl": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=1200&auto=format&fit=crop&q=80",
+      "status": "published",
+      "active": true,
+      "capacity": 5000,
+      "ticketsSold": 0,
+      "totalRevenue": 0,
+      "featured": false,
+      "id_organizer": "eEcw-y80BEo",
+      "organizerId": "eEcw-y80BEo"
+    },
+    {
+      "id": "NmudP7JIdD0",
+      "code": "EVT-2938",
+      "title": "asdasd",
+      "category": "Música & Conciertos",
+      "venue": "Centro de Convenciones de Lima",
+      "city": "Lima",
+      "date": "2026-09-29",
+      "time": "20:00",
+      "bannerUrl": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=1200&auto=format&fit=crop&q=80",
+      "status": "published",
+      "active": true,
+      "capacity": 123123,
+      "ticketsSold": 0,
+      "totalRevenue": 0,
+      "featured": false,
+      "id_organizer": 1790636127698,
+      "organizerId": 1790636127698
+    },
+    {
+      "id": "tSL54D7afok",
+      "code": "EVT-4007",
+      "title": "asdasd",
+      "category": "Música & Conciertos",
+      "venue": "Arena 1 Costa Verde, San Miguel",
+      "city": "Lima",
+      "date": "2026-09-21",
+      "time": "20:00",
+      "bannerUrl": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=1200&auto=format&fit=crop&q=80",
+      "status": "published",
+      "active": true,
+      "capacity": 123131,
+      "ticketsSold": 0,
+      "totalRevenue": 0,
+      "featured": false,
+      "id_organizer": 1790636127698,
+      "organizerId": 1790636127698
     }
   ],
   "organizer_tickets": [
@@ -384,6 +502,48 @@
       "saleEndDate": "2025-12-06",
       "isPresale": true,
       "maxPerPurchase": 4
+    },
+    {
+      "id": "_-b9y5aem_Q",
+      "eventId": "qoOXLGoEZHI",
+      "name": "General",
+      "zone": "General",
+      "pricePEN": 100,
+      "capacity": 2500,
+      "isPresale": false,
+      "maxPerPurchase": 4,
+      "saleStartDate": "2026-09-29",
+      "saleEndDate": "2026-09-30",
+      "status": "active",
+      "soldCount": 0
+    },
+    {
+      "id": "S6dltQZ_kRg",
+      "eventId": "qoOXLGoEZHI",
+      "name": "ViP",
+      "zone": "VIP",
+      "pricePEN": 500,
+      "capacity": 1500,
+      "isPresale": false,
+      "maxPerPurchase": 2,
+      "saleStartDate": "2026-09-29",
+      "saleEndDate": "2026-09-29",
+      "status": "active",
+      "soldCount": 0
+    },
+    {
+      "id": "GDcSVuzvQEY",
+      "eventId": "EVT-2025-LIM-9812",
+      "name": "General",
+      "zone": "General",
+      "pricePEN": 150,
+      "capacity": 123123,
+      "isPresale": false,
+      "maxPerPurchase": 20,
+      "saleStartDate": "2026-09-29",
+      "saleEndDate": "2026-09-29",
+      "status": "active",
+      "soldCount": 0
     }
   ],
   "dailySales": [
@@ -391,43 +551,50 @@
       "day": "Lun",
       "date": "20 Sep",
       "totalPEN": 180000,
-      "ticketsSold": 890
+      "ticketsSold": 890,
+      "id": "FrH-yrY6uHA"
     },
     {
       "day": "Mar",
       "date": "21 Sep",
       "totalPEN": 243000,
-      "ticketsSold": 1120
+      "ticketsSold": 1120,
+      "id": "L_vdwhcrq3Y"
     },
     {
       "day": "Mié",
       "date": "22 Sep",
       "totalPEN": 337000,
-      "ticketsSold": 1540
+      "ticketsSold": 1540,
+      "id": "NdpU0LjB5ls"
     },
     {
       "day": "Jue",
       "date": "23 Sep",
       "totalPEN": 432000,
-      "ticketsSold": 1980
+      "ticketsSold": 1980,
+      "id": "_KkjPLUq1k4"
     },
     {
       "day": "Vie",
       "date": "24 Sep",
       "totalPEN": 725000,
-      "ticketsSold": 3210
+      "ticketsSold": 3210,
+      "id": "hTov8VQfcD4"
     },
     {
       "day": "Sáb",
       "date": "25 Sep",
       "totalPEN": 878000,
-      "ticketsSold": 3890
+      "ticketsSold": 3890,
+      "id": "zaWlXL9XlHY"
     },
     {
       "day": "Dom",
       "date": "26 Sep",
       "totalPEN": 590000,
-      "ticketsSold": 2650
+      "ticketsSold": 2650,
+      "id": "Va69TBNfJVM"
     }
   ],
   "admin_users": [
@@ -514,6 +681,31 @@
       "rol": "Cliente",
       "fechaRegistro": "03/07/2024",
       "estado": "Activo"
+    },
+    {
+      "id": "wTZOJy6Ljm4",
+      "codigo": "#2935",
+      "nombre": "Pepes SAC",
+      "email": "Pepito@surep.com",
+      "dni": "58749632",
+      "telefono": "987541236",
+      "rol": "Organizador",
+      "iniciales": "PS",
+      "fechaRegistro": "28/9/2026",
+      "estado": "Activo"
+    },
+    {
+      "id": "eEcw-y80BEo",
+      "codigo": "#3679",
+      "nombre": "Hijito123 ASD",
+      "email": "123@gmail.com",
+      "dni": "789456122",
+      "telefono": "99999999",
+      "rol": "Organizador",
+      "iniciales": "HA",
+      "fechaRegistro": "28/9/2026",
+      "estado": "Activo",
+      "password": "Pieor123+"
     }
   ],
   "admin_categories": [
@@ -605,27 +797,104 @@
       }
     ],
     "salesTrend": [
-      { "day": "Día 1", "ingresos": 1250, "formatted": "S/ 1,250" },
-      { "day": "Día 3", "ingresos": 1480, "formatted": "S/ 1,480" },
-      { "day": "Día 5", "ingresos": 1720, "formatted": "S/ 1,720" },
-      { "day": "Día 7", "ingresos": 2310, "formatted": "S/ 2,310" },
-      { "day": "Día 10", "ingresos": 2190, "formatted": "S/ 2,190" },
-      { "day": "Día 12", "ingresos": 2840, "formatted": "S/ 2,840" },
-      { "day": "Día 15", "ingresos": 3200, "formatted": "S/ 3,200" },
-      { "day": "Día 18", "ingresos": 2980, "formatted": "S/ 2,980" },
-      { "day": "Día 20", "ingresos": 3650, "formatted": "S/ 3,650" },
-      { "day": "Día 22", "ingresos": 4120, "formatted": "S/ 4,120" },
-      { "day": "Día 25", "ingresos": 4890, "formatted": "S/ 4,890" },
-      { "day": "Día 28", "ingresos": 5420, "formatted": "S/ 5,420" },
-      { "day": "Día 30", "ingresos": 6180, "formatted": "S/ 6,180" }
+      {
+        "day": "Día 1",
+        "ingresos": 1250,
+        "formatted": "S/ 1,250"
+      },
+      {
+        "day": "Día 3",
+        "ingresos": 1480,
+        "formatted": "S/ 1,480"
+      },
+      {
+        "day": "Día 5",
+        "ingresos": 1720,
+        "formatted": "S/ 1,720"
+      },
+      {
+        "day": "Día 7",
+        "ingresos": 2310,
+        "formatted": "S/ 2,310"
+      },
+      {
+        "day": "Día 10",
+        "ingresos": 2190,
+        "formatted": "S/ 2,190"
+      },
+      {
+        "day": "Día 12",
+        "ingresos": 2840,
+        "formatted": "S/ 2,840"
+      },
+      {
+        "day": "Día 15",
+        "ingresos": 3200,
+        "formatted": "S/ 3,200"
+      },
+      {
+        "day": "Día 18",
+        "ingresos": 2980,
+        "formatted": "S/ 2,980"
+      },
+      {
+        "day": "Día 20",
+        "ingresos": 3650,
+        "formatted": "S/ 3,650"
+      },
+      {
+        "day": "Día 22",
+        "ingresos": 4120,
+        "formatted": "S/ 4,120"
+      },
+      {
+        "day": "Día 25",
+        "ingresos": 4890,
+        "formatted": "S/ 4,890"
+      },
+      {
+        "day": "Día 28",
+        "ingresos": 5420,
+        "formatted": "S/ 5,420"
+      },
+      {
+        "day": "Día 30",
+        "ingresos": 6180,
+        "formatted": "S/ 6,180"
+      }
     ],
     "monthlyTickets": [
-      { "month": "Ene", "tickets": 1100, "displayLabel": "1.1k" },
-      { "month": "Feb", "tickets": 1250, "displayLabel": "1.2k" },
-      { "month": "Mar", "tickets": 1400, "displayLabel": "1.4k" },
-      { "month": "Abr", "tickets": 1750, "displayLabel": "1.7k" },
-      { "month": "May", "tickets": 2800, "displayLabel": "2.8k", "highlight": true },
-      { "month": "Jun", "tickets": 1950, "displayLabel": "1.9k" }
+      {
+        "month": "Ene",
+        "tickets": 1100,
+        "displayLabel": "1.1k"
+      },
+      {
+        "month": "Feb",
+        "tickets": 1250,
+        "displayLabel": "1.2k"
+      },
+      {
+        "month": "Mar",
+        "tickets": 1400,
+        "displayLabel": "1.4k"
+      },
+      {
+        "month": "Abr",
+        "tickets": 1750,
+        "displayLabel": "1.7k"
+      },
+      {
+        "month": "May",
+        "tickets": 2800,
+        "displayLabel": "2.8k",
+        "highlight": true
+      },
+      {
+        "month": "Jun",
+        "tickets": 1950,
+        "displayLabel": "1.9k"
+      }
     ],
     "activeEvents": [
       {
@@ -708,5 +977,6 @@
       }
     ],
     "totalActiveEventsCount": 42
-  }
+  },
+  "$schema": "./node_modules/json-server/schema.json"
 }

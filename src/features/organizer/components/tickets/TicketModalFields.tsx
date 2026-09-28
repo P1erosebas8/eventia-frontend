@@ -9,8 +9,8 @@ interface TicketModalFieldsProps {
   setCapacity: (v: number | "") => void;
   isPresale: boolean;
   setIsPresale: (v: boolean) => void;
-  maxPerPurchase: number;
-  setMaxPerPurchase: (v: number) => void;
+  maxPerPurchase: number | "";
+  setMaxPerPurchase: (v: number | "") => void;
   saleStartDate: string;
   setSaleStartDate: (v: string) => void;
   saleEndDate: string;
@@ -135,7 +135,10 @@ export default function TicketModalFields({
             min={1}
             max={20}
             value={maxPerPurchase}
-            onChange={(e) => setMaxPerPurchase(parseInt(e.target.value) || 4)}
+            onChange={(e) =>
+              setMaxPerPurchase(e.target.value === "" ? "" : parseInt(e.target.value) || "")
+            }
+            placeholder="Ej. 4"
             className="w-full bg-surface-container-low px-3.5 py-2.5 rounded-xl text-on-surface text-sm focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>

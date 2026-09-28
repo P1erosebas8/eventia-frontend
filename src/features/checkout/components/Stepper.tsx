@@ -1,6 +1,11 @@
 import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import PaymentMethodStep from "./PaymentMethodStep";
 import SummaryStep from "./SummaryStep";
+import { useCartContext } from "../hooks/useCartContext";
+import { useAuth } from "../../../context/AuthContext";
+import { checkoutService } from "../services/checkoutService";
+import { isPromoUser, PROMO_DISCOUNT_PCT } from "../../events/services/events.service";
 
 const steps = [
   { label: "Selección de Entradas" },
@@ -26,14 +31,86 @@ const CheckIcon = () => (
 
 function Stepper() {
   const [step, setStep] = useState(2);
+  const [submitting, setSubmitting] = useState(false);
+  const navigate = useNavigate();
+  const { items, totalAmount, clearCart } = useCartContext();
+  const { user } = useAuth();
+
   const isLastStep = step === steps.length;
+
+  const handleFinishPurchase = async () => {
+    if (items.length === 0) return;
+    setSubmitting(true);
+
+    const buyer = user
+      ? {
+          id_user: user.id,
+          first_name: user.firstName,
+          last_name: user.lastName,
+          email: user.email,
+        }
+      : {
+          id_user: 1,
+          first_name: "Carlos",
+          last_name: "Gerónimo Zapata",
+          email: "carlos.geronimo@gmail.com",
+        };
+
+    const fullName = `${buyer.first_name} ${buyer.last_name}`.trim();
+    const hasPromoDiscount = isPromoUser(fullName);
+    const discountAmount = hasPromoDiscount ? (totalAmount * PROMO_DISCOUNT_PCT) / 100 : 0;
+    const finalTotal = totalAmount - discountAmount;
+
+    try {
+      await checkoutService.processCheckout({
+        userId: buyer.id_user,
+        userName: fullName,
+        userEmail: buyer.email,
+        items,
+        paymentMethod: "CREDIT_CARD",
+        totalAmount: finalTotal,
+        discountAmount,
+      });
+
+      clearCart();
+      navigate("/mis-tickets", {
+        state: { purchaseSuccess: true, ticketsCount: items.reduce((a, i) => a + i.quantity, 0) },
+      });
+    } catch (err) {
+      console.error("Error al procesar compra:", err);
+      alert("Hubo un problema al procesar tu compra. Por favor intenta nuevamente.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   const handleNext = () => {
     if (isLastStep) {
-      alert("COMPRANDO CALICHIN");
+      handleFinishPurchase();
       return;
     }
     setStep((s) => Math.min(steps.length, s + 1));
   };
+
+  if (items.length === 0) {
+    return (
+      <div className="w-full text-center py-16 bg-white rounded-2xl border border-gray-100 p-8 shadow-sm space-y-4">
+        <div className="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mx-auto text-2xl font-bold">
+          🛒
+        </div>
+        <h2 className="text-xl font-extrabold text-gray-900">Tu carrito está vacío</h2>
+        <p className="text-sm text-gray-500 max-w-md mx-auto">
+          No tienes entradas seleccionadas para realizar el pago. Explora el catálogo de eventos para comenzar.
+        </p>
+        <Link
+          to="/"
+          className="inline-block px-6 py-3 bg-indigo-600 text-white font-bold text-sm rounded-xl shadow-md hover:bg-indigo-700 transition"
+        >
+          Explorar Catálogo de Eventos
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full">
@@ -86,18 +163,28 @@ function Stepper() {
       <div className="flex justify-between items-center">
         <button
           type="button"
-          className="px-4 py-2 border rounded disabled:opacity-40 disabled:cursor-not-allowed"
-          disabled={step <= 2}
+          className="px-4 py-2 border rounded-xl font-bold text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+          disabled={step <= 2 || submitting}
           onClick={() => setStep((s) => Math.max(2, s - 1))}
         >
-          Atras
+          Atrás
         </button>
         <button
           type="button"
-          className="px-4 py-2 bg-indigo-600 text-white border rounded hover:bg-indigo-700"
+          disabled={submitting}
+          className="px-6 py-2.5 bg-indigo-600 text-white font-bold text-sm rounded-xl shadow-md hover:bg-indigo-700 disabled:opacity-50 transition flex items-center gap-2"
           onClick={handleNext}
         >
-          {step === steps.length ? "Finalizar Compra" : "Siguiente"}
+          {submitting ? (
+            <>
+              <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+              Procesando pago...
+            </>
+          ) : step === steps.length ? (
+            "Finalizar Compra"
+          ) : (
+            "Siguiente"
+          )}
         </button>
       </div>
     </div>

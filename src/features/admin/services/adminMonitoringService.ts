@@ -1,4 +1,6 @@
 import api from "../../../shared/services/api";
+import db from "../../../../db.json";
+import { getStoredUsers } from "../../../shared/services/mockUserStorage";
 import type {
   ActiveEvent,
   KpiMetric,
@@ -8,181 +10,155 @@ import type {
 } from "../types/admin.types";
 
 /**
- * Datos semilla locales para métricas y gráficos del panel de monitoreo
- * utilizados como respaldo (fallback) si el servidor json-server está apagado.
- */
-const MOCK_KPIS: KpiMetric[] = [
-  {
-    id: "kpi-ingresos",
-    label: "INGRESOS TOTALES",
-    value: "S/ 142,850.00",
-    badge: {
-      text: "+12.4% vs. mes anterior",
-      positive: true,
-    },
-    iconName: "wallet",
-    colorVariant: "indigo",
-  },
-  {
-    id: "kpi-ordenes",
-    label: "ÓRDENES REGISTRADAS",
-    value: "3,842",
-    subtext: "Total compras en plataforma",
-    iconName: "receipt",
-    colorVariant: "blue",
-  },
-  {
-    id: "kpi-tickets",
-    label: "TICKETS EMITIDOS",
-    value: "8,490",
-    subtext: "Entradas digitales generadas",
-    iconName: "ticket",
-    colorVariant: "purple",
-  },
-  {
-    id: "kpi-usuarios",
-    label: "USUARIOS ACTIVOS",
-    value: "4,120",
-    subtext: "Clientes y organizadores activos",
-    iconName: "users",
-    colorVariant: "rose",
-  },
-];
-
-const MOCK_SALES_TREND: SalesTrend[] = [
-  { day: "Día 1", ingresos: 1250, formatted: "S/ 1,250" },
-  { day: "Día 3", ingresos: 1480, formatted: "S/ 1,480" },
-  { day: "Día 5", ingresos: 1720, formatted: "S/ 1,720" },
-  { day: "Día 7", ingresos: 2310, formatted: "S/ 2,310" },
-  { day: "Día 10", ingresos: 2190, formatted: "S/ 2,190" },
-  { day: "Día 12", ingresos: 2840, formatted: "S/ 2,840" },
-  { day: "Día 15", ingresos: 3200, formatted: "S/ 3,200" },
-  { day: "Día 18", ingresos: 2980, formatted: "S/ 2,980" },
-  { day: "Día 20", ingresos: 3650, formatted: "S/ 3,650" },
-  { day: "Día 22", ingresos: 4120, formatted: "S/ 4,120" },
-  { day: "Día 25", ingresos: 4890, formatted: "S/ 4,890" },
-  { day: "Día 28", ingresos: 5420, formatted: "S/ 5,420" },
-  { day: "Día 30", ingresos: 6180, formatted: "S/ 6,180" },
-];
-
-const MOCK_MONTHLY_TICKETS: MonthlyTicket[] = [
-  { month: "Ene", tickets: 1100, displayLabel: "1.1k" },
-  { month: "Feb", tickets: 1250, displayLabel: "1.2k" },
-  { month: "Mar", tickets: 1400, displayLabel: "1.4k" },
-  { month: "Abr", tickets: 1750, displayLabel: "1.7k" },
-  { month: "May", tickets: 2800, displayLabel: "2.8k", highlight: true },
-  { month: "Jun", tickets: 1950, displayLabel: "1.9k" },
-];
-
-const MOCK_ACTIVE_EVENTS: ActiveEvent[] = [
-  {
-    id: "evt-01",
-    titulo: "Festival de Salsa All Stars 2024",
-    categoria: "Conciertos",
-    organizador: "Live Producciones SAC",
-    ruc: "20548194321",
-    entradasVendidas: 3850,
-    aforoTotal: 5000,
-    recaudacion: 346500,
-    tasaComision: 0.08,
-    comision: 27720,
-    estado: "En Curso",
-  },
-  {
-    id: "evt-02",
-    titulo: "Tech Summit Lima 2024",
-    categoria: "Conferencias",
-    organizador: "Innovación Perú SAC",
-    ruc: "20601948231",
-    entradasVendidas: 820,
-    aforoTotal: 1000,
-    recaudacion: 123000,
-    tasaComision: 0.1,
-    comision: 12300,
-    estado: "Activo",
-  },
-  {
-    id: "evt-03",
-    titulo: "Obra Teatral: Bodas de Sangre",
-    categoria: "Teatro",
-    organizador: "Teatro Municipal de Lima",
-    ruc: "20100084729",
-    entradasVendidas: 450,
-    aforoTotal: 600,
-    recaudacion: 31500,
-    tasaComision: 0.07,
-    comision: 2205,
-    estado: "Activo",
-  },
-  {
-    id: "evt-04",
-    titulo: "Maratón Nocturna Miraflores 10K",
-    categoria: "Deportes",
-    organizador: "Club Deportivo Running Perú",
-    ruc: "20491823741",
-    entradasVendidas: 2900,
-    aforoTotal: 3000,
-    recaudacion: 145000,
-    tasaComision: 0.06,
-    comision: 8700,
-    estado: "Próximo",
-  },
-  {
-    id: "evt-05",
-    titulo: "Festival Gastronómico Sabores del Norte",
-    categoria: "Gastronomía",
-    organizador: "Asociación Culinaria del Perú",
-    ruc: "20391847291",
-    entradasVendidas: 1800,
-    aforoTotal: 2500,
-    recaudacion: 54000,
-    tasaComision: 0.05,
-    comision: 2700,
-    estado: "En Curso",
-  },
-  {
-    id: "evt-06",
-    titulo: "Expo Café & Chocolate 2024",
-    categoria: "Ferias",
-    organizador: "Cámara Peruana del Café",
-    ruc: "20100456789",
-    entradasVendidas: 4100,
-    aforoTotal: 5000,
-    recaudacion: 123000,
-    tasaComision: 0.1,
-    comision: 12300,
-    estado: "Activo",
-  },
-];
-
-/**
  * Servicio encargado de la comunicación con la API dummy (json-server / db.json)
- * para el panel de control operativo y KPIs de la plataforma.
+ * y cálculo dinámico de KPIs y métricas operativas de la plataforma.
  */
 export const adminMonitoringService = {
   /**
-   * Obtiene la data consolidada del panel de monitoreo desde GET /admin_monitoring
+   * Obtiene la data consolidada y dinámica del panel de monitoreo
    */
   async getDashboardData(): Promise<MonitoringDashboardData> {
     try {
-      const response = await api.get<MonitoringDashboardData>("/admin_monitoring");
-      if (response.data && response.data.kpis) {
-        return response.data;
-      }
+      const [ordersRes, ticketsRes, usersRes, eventsRes] = await Promise.allSettled([
+        api.get<any[]>("/orders"),
+        api.get<any[]>("/tickets"),
+        api.get<any[]>("/admin_users"),
+        api.get<any[]>("/events"),
+      ]);
+
+      const rawOrders: any[] =
+        ordersRes.status === "fulfilled" && Array.isArray(ordersRes.value.data)
+          ? ordersRes.value.data
+          : (db as any).orders || [];
+
+      const rawTickets: any[] =
+        ticketsRes.status === "fulfilled" && Array.isArray(ticketsRes.value.data)
+          ? ticketsRes.value.data
+          : (db as any).tickets || [];
+
+      const rawUsers: any[] =
+        usersRes.status === "fulfilled" && Array.isArray(usersRes.value.data)
+          ? usersRes.value.data
+          : (db as any).admin_users || getStoredUsers();
+
+      const rawEvents: any[] =
+        eventsRes.status === "fulfilled" && Array.isArray(eventsRes.value.data)
+          ? eventsRes.value.data
+          : (db as any).events || [];
+
+      // 1. Cálculos reales de KPIs
+      const totalRevenue = rawOrders.reduce(
+        (acc, ord) => acc + (typeof ord.total_amount === "number" ? ord.total_amount : 0),
+        0
+      );
+      const totalOrdersCount = rawOrders.length;
+      const totalTicketsCount = rawTickets.length;
+      const totalUsersCount = rawUsers.length;
+
+      const kpis: KpiMetric[] = [
+        {
+          id: "kpi-ingresos",
+          label: "INGRESOS TOTALES",
+          value: `S/ ${totalRevenue.toLocaleString("es-PE", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}`,
+          badge: {
+            text: `${totalOrdersCount} transacciones`,
+            positive: true,
+          },
+          iconName: "wallet",
+          colorVariant: "indigo",
+        },
+        {
+          id: "kpi-ordenes",
+          label: "ÓRDENES REGISTRADAS",
+          value: totalOrdersCount.toLocaleString("es-PE"),
+          subtext: "Compras procesadas en plataforma",
+          iconName: "receipt",
+          colorVariant: "blue",
+        },
+        {
+          id: "kpi-tickets",
+          label: "TICKETS EMITIDOS",
+          value: totalTicketsCount.toLocaleString("es-PE"),
+          subtext: "Entradas con QR generadas",
+          iconName: "ticket",
+          colorVariant: "purple",
+        },
+        {
+          id: "kpi-usuarios",
+          label: "USUARIOS ACTIVOS",
+          value: totalUsersCount.toLocaleString("es-PE"),
+          subtext: "Organizadores y clientes registrados",
+          iconName: "users",
+          colorVariant: "rose",
+        },
+      ];
+
+      // 2. Mapeo de eventos activos en la plataforma
+      const activeEvents: ActiveEvent[] = rawEvents
+        .filter((e) => e.active !== false)
+        .map((e) => {
+          const sold = e.ticketsSold || 0;
+          const capacity = e.capacity || 1000;
+          const revenue = e.totalRevenue || sold * 100;
+          const comisionRate = 0.08;
+          const comision = Math.round(revenue * comisionRate);
+
+          let estado: ActiveEvent["estado"] = "Activo";
+          if (sold >= capacity * 0.9) estado = "En Curso";
+          else if (e.status === "inactive" || e.active === false) estado = "Finalizado";
+          else estado = "Activo";
+
+          return {
+            id: String(e.id || e.id_event),
+            titulo: e.title || "Evento Eventia",
+            categoria: e.category || "Conciertos",
+            organizador: e.venue || "Organizador Autorizado",
+            ruc: "20601948231",
+            entradasVendidas: sold,
+            aforoTotal: capacity,
+            recaudacion: revenue,
+            tasaComision: comisionRate,
+            comision,
+            estado,
+          };
+        });
+
+      // 3. Tendencia de ventas
+      const salesTrend: SalesTrend[] = [
+        { day: "Día 1", ingresos: Math.round(totalRevenue * 0.05), formatted: `S/ ${Math.round(totalRevenue * 0.05).toLocaleString()}` },
+        { day: "Día 7", ingresos: Math.round(totalRevenue * 0.12), formatted: `S/ ${Math.round(totalRevenue * 0.12).toLocaleString()}` },
+        { day: "Día 14", ingresos: Math.round(totalRevenue * 0.28), formatted: `S/ ${Math.round(totalRevenue * 0.28).toLocaleString()}` },
+        { day: "Día 21", ingresos: Math.round(totalRevenue * 0.55), formatted: `S/ ${Math.round(totalRevenue * 0.55).toLocaleString()}` },
+        { day: "Día 30", ingresos: totalRevenue, formatted: `S/ ${totalRevenue.toLocaleString()}` },
+      ];
+
+      // 4. Emisión mensual de tickets
+      const monthlyTickets: MonthlyTicket[] = [
+        { month: "Ene", tickets: Math.round(totalTicketsCount * 0.1) || 10, displayLabel: `${Math.round(totalTicketsCount * 0.1) || 10}` },
+        { month: "Feb", tickets: Math.round(totalTicketsCount * 0.2) || 25, displayLabel: `${Math.round(totalTicketsCount * 0.2) || 25}` },
+        { month: "Mar", tickets: Math.round(totalTicketsCount * 0.35) || 50, displayLabel: `${Math.round(totalTicketsCount * 0.35) || 50}` },
+        { month: "Abr", tickets: Math.round(totalTicketsCount * 0.6) || 80, displayLabel: `${Math.round(totalTicketsCount * 0.6) || 80}` },
+        { month: "May", tickets: totalTicketsCount, displayLabel: `${totalTicketsCount}`, highlight: true },
+      ];
+
       return {
-        kpis: MOCK_KPIS,
-        salesTrend: MOCK_SALES_TREND,
-        monthlyTickets: MOCK_MONTHLY_TICKETS,
-        activeEvents: MOCK_ACTIVE_EVENTS,
-        totalActiveEventsCount: 42,
+        kpis,
+        salesTrend,
+        monthlyTickets,
+        activeEvents,
+        totalActiveEventsCount: activeEvents.length,
       };
-    } catch {
+    } catch (err) {
+      console.warn("Error al calcular datos dinámicos de monitoreo:", err);
       return {
-        kpis: MOCK_KPIS,
-        salesTrend: MOCK_SALES_TREND,
-        monthlyTickets: MOCK_MONTHLY_TICKETS,
-        activeEvents: MOCK_ACTIVE_EVENTS,
-        totalActiveEventsCount: 42,
+        kpis: [],
+        salesTrend: [],
+        monthlyTickets: [],
+        activeEvents: [],
+        totalActiveEventsCount: 0,
       };
     }
   },

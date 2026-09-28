@@ -13,7 +13,7 @@ export interface RegisterRequest {
 }
 
 export interface RegisterResponse {
-  id: number;
+  id: number | string;
   firstName: string;
   lastName: string;
   email: string;

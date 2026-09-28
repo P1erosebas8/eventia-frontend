@@ -1,5 +1,6 @@
 import api from "../../../shared/services/api";
 import type { AdminUser, UserFormData } from "../types/admin.types";
+import { saveOrganizerUser } from "../../../shared/services/mockUserStorage";
 
 /**
  * Datos semilla locales en memoria como respaldo (fallback)
@@ -157,7 +158,21 @@ export const adminUsersService = {
         .toUpperCase(),
       fechaRegistro: new Date().toLocaleDateString("es-PE"),
       estado: "Activo",
+      password: form.password?.trim() || "Password123!",
     };
+
+    // Sincronizar credenciales de acceso para permitir inicio de sesión
+    try {
+      saveOrganizerUser({
+        nombre: form.nombre,
+        email: form.email,
+        dni: form.dni,
+        telefono: form.telefono,
+        password: form.password?.trim() || "Password123!",
+      });
+    } catch {
+      // Ignorar
+    }
 
     try {
       const response = await api.post<AdminUser>("/admin_users", nuevoUsuario);

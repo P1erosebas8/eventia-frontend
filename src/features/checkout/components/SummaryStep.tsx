@@ -1,6 +1,8 @@
 import { useCartContext } from "../hooks/useCartContext";
+import { useAuth } from "../../../context/AuthContext";
+import { isPromoUser, PROMO_DISCOUNT_PCT } from "../../events/services/events.service";
 
-const CURRENT_USER = {
+const DEFAULT_USER = {
   id_user: 1,
   first_name: "Carlos",
   last_name: "Gerónimo Zapata",
@@ -9,16 +11,21 @@ const CURRENT_USER = {
 
 function SummaryStep() {
   const { items, totalAmount } = useCartContext();
+  const { user } = useAuth();
 
-  //REGLA DE NEGOCIO: EL USUARIO SE APELLIDA GENORIMO
-  const hasGeronimoDiscount = CURRENT_USER.last_name
-    .toLocaleLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .includes("geronimo");
+  const buyer = user
+    ? {
+        id_user: user.id,
+        first_name: user.firstName,
+        last_name: user.lastName,
+        email: user.email,
+      }
+    : DEFAULT_USER;
 
-  //SE APLICA DESCUENTO
-  const discountAmount = hasGeronimoDiscount ? totalAmount * 0.15 : 0;
+  const fullName = `${buyer.first_name} ${buyer.last_name}`.trim();
+  const hasPromoDiscount = isPromoUser(fullName);
+
+  const discountAmount = hasPromoDiscount ? (totalAmount * PROMO_DISCOUNT_PCT) / 100 : 0;
   const finalTotal = totalAmount - discountAmount;
 
   return (
@@ -30,8 +37,7 @@ function SummaryStep() {
             Entradas emitidas a:
           </span>
           <span>
-            {CURRENT_USER.first_name} {CURRENT_USER.last_name} •{" "}
-            {CURRENT_USER.email}
+            {buyer.first_name} {buyer.last_name} • {buyer.email}
           </span>
         </div>
       </div>
@@ -42,24 +48,28 @@ function SummaryStep() {
           Detalle del Pedido
         </h3>
 
-        {items.map((item) => (
-          <div
-            key={item.id_ticket_type}
-            className="flex justify-between items-center py-2 border-b border-gray-50 last:border-none text-sm"
-          >
-            <div>
-              <p className="font-semibold text-gray-800">
-                {item.quantity}x Entrada {item.ticket_name}
-              </p>
-              <p className="text-xs text-gray-400">
-                Precio unitario: S/ {item.unit_price.toFixed(2)}
-              </p>
+        {items.length === 0 ? (
+          <p className="text-xs text-gray-500 italic py-2">No hay entradas en el carrito.</p>
+        ) : (
+          items.map((item) => (
+            <div
+              key={item.id_ticket_type}
+              className="flex justify-between items-center py-2 border-b border-gray-50 last:border-none text-sm"
+            >
+              <div>
+                <p className="font-semibold text-gray-800">
+                  {item.quantity}x Entrada {item.ticket_name}
+                </p>
+                <p className="text-xs text-gray-400">
+                  {item.event_name} • Precio: S/ {item.unit_price.toFixed(2)}
+                </p>
+              </div>
+              <span className="font-bold text-gray-800">
+                S/ {(item.quantity * item.unit_price).toFixed(2)}
+              </span>
             </div>
-            <span className="font-bold text-gray-800">
-              S/ {(item.quantity * item.unit_price).toFixed(2)}
-            </span>
-          </div>
-        ))}
+          ))
+        )}
       </div>
 
       {/* Cálculo de importes y Descuento */}
@@ -69,9 +79,9 @@ function SummaryStep() {
           <span>S/ {totalAmount.toFixed(2)}</span>
         </div>
 
-        {hasGeronimoDiscount && (
+        {hasPromoDiscount && (
           <div className="flex justify-between text-emerald-600 font-medium">
-            <span>Descuento Especial (Apellido Gerónimo - 15%)</span>
+            <span>Descuento Especial (Promo Roberto/Gerónimo - {PROMO_DISCOUNT_PCT}%)</span>
             <span>- S/ {discountAmount.toFixed(2)}</span>
           </div>
         )}

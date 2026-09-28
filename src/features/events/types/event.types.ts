@@ -8,7 +8,7 @@ export type Category =
 
 /** Evento del catálogo (todos son elegibles para la promo futura). */
 export interface CatalogEvent {
-  id: number;
+  id: string | number;
   title: string;
   category: Category;
   /** Mes abreviado para la insignia de fecha (ej. "NOV"). */

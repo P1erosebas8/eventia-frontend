@@ -1,6 +1,7 @@
-import { useMemo, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
+import { useCartContext } from "../../checkout/hooks/useCartContext";
 import Footer from "../../../shared/layouts/Footer";
 import Breadcrumbs from "../components/Breadcrumbs";
 import CheckoutPanel from "../components/CheckoutPanel";
@@ -8,24 +9,36 @@ import ConcurrencyAlert from "../components/ConcurrencyAlert";
 import EventHero from "../components/EventHero";
 import EventTabs from "../components/EventTabs";
 import OrganizerCard from "../components/OrganizerCard";
-import { getEventDetail, MAX_TICKETS } from "../services/event-detail.service";
-import type { DetailTabId, TicketTierId } from "../types/event-detail.types";
+import { fetchEventDetail, getEventDetail, MAX_TICKETS } from "../services/event-detail.service";
+import type { DetailTabId, EventDetailData, TicketTierId } from "../types/event-detail.types";
 import { isPromoUser, PROMO_DISCOUNT_PCT } from "../../events/services/events.service";
 
 /**
  * Ficha del evento: hero, mapa de zonas y checkout lateral.
- * Todo sale de db.json vía el servicio según el `:id` de la ruta.
+ * Se sincroniza tanto con db.json estático como con la API en vivo.
  * El descuento de la promo depende del nombre de sesión.
  */
 export default function EventDetailPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
+  const { setCartItems } = useCartContext();
   const [activeTab, setActiveTab] = useState<DetailTabId>("zones");
   const [quantities, setQuantities] = useState<Record<TicketTierId, number>>({});
   const [highlightedTier, setHighlightedTier] = useState<TicketTierId | null>(null);
 
-  // Ficha desde el servicio (con respaldo al primer evento activo).
-  const detail = useMemo(() => getEventDetail(Number(id)), [id]);
+  // Ficha desde el servicio (con sincronización dinámica)
+  const [detail, setDetail] = useState<EventDetailData | null>(() => getEventDetail(id || ""));
+
+  useEffect(() => {
+    if (!id) return;
+    const local = getEventDetail(id);
+    if (local) setDetail(local);
+
+    fetchEventDetail(id).then((fresh) => {
+      if (fresh) setDetail(fresh);
+    });
+  }, [id]);
 
   /** Nombre de sesión o null si es visita anónima (sin input manual). */
   const sessionName =
@@ -34,9 +47,14 @@ export default function EventDetailPage() {
   const updateQuantity = (tier: TicketTierId, delta: number) => {
     setQuantities((prev) => {
       const total = Object.values(prev).reduce((acc, qty) => acc + qty, 0);
-      const next = (prev[tier] ?? 0) + delta;
+      const currentTier = detail?.tiers.find((t) => t.id === tier);
+      const tierMax = currentTier?.maxPerPurchase ?? MAX_TICKETS;
+      const currentQty = prev[tier] ?? 0;
+      const next = currentQty + delta;
       if (next < 0) return prev;
-      // Tope antirreventa: máximo MAX_TICKETS entre todas las zonas.
+      // Tope por tarifa según el límite por comprador configurado
+      if (delta > 0 && currentQty >= tierMax) return prev;
+      // Tope global antirreventa: máximo MAX_TICKETS entre todas las zonas.
       if (delta > 0 && total >= MAX_TICKETS) return prev;
       return { ...prev, [tier]: next };
     });
@@ -80,6 +98,24 @@ export default function EventDetailPage() {
     window.setTimeout(() => setHighlightedTier((current) => (current === tier ? null : current)), 1600);
   };
 
+  const handleProceedToCheckout = () => {
+    if (totals.count === 0) return;
+    const cartItems = detail.tiers
+      .filter((tier) => (quantities[tier.id] ?? 0) > 0)
+      .map((tier) => ({
+        id_ticket_type: tier.id.replace("t-", ""),
+        id_event: detail.id,
+        ticket_name: tier.name,
+        event_name: detail.title,
+        event_date: detail.dateLabel,
+        venue: detail.venue,
+        unit_price: tier.price,
+        quantity: quantities[tier.id],
+      }));
+    setCartItems(cartItems);
+    navigate("/checkout");
+  };
+
   return (
     <div className="min-h-screen bg-surface overflow-x-hidden">
       <main className="w-full pt-16 min-h-screen min-w-0">
@@ -93,6 +129,7 @@ export default function EventDetailPage() {
                 venue={detail.venue}
                 month={detail.month}
                 day={detail.day}
+                image={detail.image}
               />
               <EventTabs
                 activeTab={activeTab}
@@ -111,6 +148,7 @@ export default function EventDetailPage() {
                 totals={totals}
                 highlightedTier={highlightedTier}
                 sessionName={sessionName}
+                onProceedToCheckout={handleProceedToCheckout}
               />
             </div>
           </div>

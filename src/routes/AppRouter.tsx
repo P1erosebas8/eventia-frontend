@@ -13,6 +13,8 @@ import AdminCategoriesPage from "../features/admin/pages/AdminCategoriesPage";
 import AdminUsersPage from "../features/admin/pages/AdminUsersPage";
 import MisTicketsPage from "@/features/users/pages/MisTicketsPage";
 import PerfilPage from "@/features/users/pages/PerfilPage";
+import CheckoutPage from "../features/checkout/pages/CheckoutPage";
+import ProtectedRoute from "@/shared/components/ProtectedRoute";
 
 import ScrollToTop from "@/shared/components/ScrollToTop";
 
@@ -45,36 +47,46 @@ export default function AppRouter() {
     <Routes>
       {/* 1. Flujo Público y Cliente */}
       <Route element={<MainLayout />}>
+        {/* Rutas Públicas */}
         <Route path="/" element={<CatalogPage />} />
         <Route path="/event/:id" element={<EventDetailPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/registro" element={<RegisterPage />} />
-        <Route path="/mis-tickets" element={<MisTicketsPage />} />
-        <Route path="/perfil" element={<PerfilPage />} />
+
+        {/* Rutas Autenticadas de Cliente */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/mis-tickets" element={<MisTicketsPage />} />
+          <Route path="/perfil" element={<PerfilPage />} />
+        </Route>
       </Route>
 
-      {/* 2. Módulo de Administración */}
-      <Route path="/admin" element={<AdminLayout />}>
-        <Route index element={<Navigate to="monitoreo" replace />} />
-        <Route path="monitoreo" element={<AdminMonitoringPage />} />
-        <Route path="usuarios" element={<AdminUsersPage />} />
-        <Route path="categorias" element={<AdminCategoriesPage />} />
+      {/* 2. Módulo de Administración (Solo ADMIN) */}
+      <Route element={<ProtectedRoute allowedRoles={["ADMIN"]} />}>
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<Navigate to="monitoreo" replace />} />
+          <Route path="monitoreo" element={<AdminMonitoringPage />} />
+          <Route path="usuarios" element={<AdminUsersPage />} />
+          <Route path="categorias" element={<AdminCategoriesPage />} />
+        </Route>
+        <Route path="/admin/users" element={<UsersPage />} />
+        <Route path="/admin/categories" element={<CategoriesPage />} />
       </Route>
 
-      <Route path="/admin/users" element={<UsersPage />} />
-      <Route path="/admin/categories" element={<CategoriesPage />} />
-      <Route path="/usuarios-roles-categorias" element={<Navigate to="/admin/users" replace />} />
-      <Route path="/usuarios-categorias" element={<Navigate to="/admin/users" replace />} />
+      <Route path="/usuarios-roles-categorias" element={<Navigate to="/admin/usuarios" replace />} />
+      <Route path="/usuarios-categorias" element={<Navigate to="/admin/usuarios" replace />} />
 
-      {/* 3. Módulo del Organizador */}
-      <Route path="/organizador" element={<OrganizerLayout />}>
-        <Route index element={<Navigate to="dashboard" replace />} />
-        <Route path="dashboard" element={<OrganizerDashboardPage />} />
-        <Route path="eventos/nuevo" element={<EventCreatePage />} />
-        <Route path="eventos/:id/editar" element={<EventEditPage />} />
-        <Route path="eventos/:id/entradas" element={<EventTicketsPage />} />
-        <Route path="eventos/entradas" element={<EventTicketsPage />} />
-        <Route path="validar-qr" element={<QrValidatorPage />} />
+      {/* 3. Módulo del Organizador (Solo ORGANIZER) */}
+      <Route element={<ProtectedRoute allowedRoles={["ORGANIZER"]} />}>
+        <Route path="/organizador" element={<OrganizerLayout />}>
+          <Route index element={<Navigate to="dashboard" replace />} />
+          <Route path="dashboard" element={<OrganizerDashboardPage />} />
+          <Route path="eventos/nuevo" element={<EventCreatePage />} />
+          <Route path="eventos/:id/editar" element={<EventEditPage />} />
+          <Route path="eventos/:id/entradas" element={<EventTicketsPage />} />
+          <Route path="eventos/entradas" element={<EventTicketsPage />} />
+          <Route path="validar-qr" element={<QrValidatorPage />} />
+        </Route>
       </Route>
 
       {/* 404 */}

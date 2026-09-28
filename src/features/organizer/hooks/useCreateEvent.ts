@@ -1,9 +1,11 @@
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
 import { organizerService } from "../services/organizerService";
 import type { EventFormData, OrganizerEvent } from "../types/organizer.types";
 
 export function useCreateEvent() {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [creating, setCreating] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
@@ -70,20 +72,25 @@ export function useCreateEvent() {
           ? "published"
           : "hidden";
 
-      const createdEvent = await organizerService.createEvent({
-        title: formData.title,
-        category: formData.category,
-        capacity: formData.capacity,
-        venue: formData.venue,
-        city: "Lima",
-        date: formData.eventDate,
-        time: formData.showStart,
-        bannerUrl: formData.bannerDesktopUrl,
-        status,
-        active: true,
-        featured: false,
-        description: formData.description,
-      });
+      const createdEvent = await organizerService.createEvent(
+        {
+          title: formData.title,
+          category: formData.category,
+          capacity: formData.capacity,
+          venue: formData.venue,
+          city: "Lima",
+          date: formData.eventDate,
+          time: formData.showStart,
+          bannerUrl: formData.bannerDesktopUrl,
+          status,
+          active: true,
+          featured: false,
+          description: formData.description,
+          id_organizer: user?.id,
+          organizerId: user?.id,
+        },
+        user?.id
+      );
 
       showToast(asDraft ? "¡Borrador creado con éxito!" : "¡Evento publicado con éxito!");
 

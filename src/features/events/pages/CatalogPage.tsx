@@ -1,11 +1,11 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Footer from "../../../shared/layouts/Footer";
 import CatalogFilterBar from "../components/CatalogFilterBar";
 import CatalogToolbar from "../components/CatalogToolbar";
 import EventCard from "../components/EventCard";
 import Pagination from "../components/Pagination";
-import { CATEGORY_ORDER, EVENTS, PRICE_RANGES } from "../services/events.service";
-import type { Category, SortKey, ViewMode } from "../types/event.types";
+import { CATEGORY_ORDER, EVENTS, PRICE_RANGES, fetchCatalogEvents } from "../services/events.service";
+import type { CatalogEvent, Category, SortKey, ViewMode } from "../types/event.types";
 
 /** Cantidad de eventos visibles por página. */
 const PAGE_SIZE = 6;
@@ -16,6 +16,7 @@ const PAGE_SIZE = 6;
  * promo y nombre siempre desde la sesión (nunca de un input manual).
  */
 export default function CatalogPage() {
+  const [eventsList, setEventsList] = useState<CatalogEvent[]>(EVENTS);
   const [search, setSearch] = useState("");
   const [month, setMonth] = useState("ALL");
   const [location, setLocation] = useState("ALL");
@@ -25,18 +26,26 @@ export default function CatalogPage() {
   const [view, setView] = useState<ViewMode>("grid");
   const [page, setPage] = useState(1);
 
+  useEffect(() => {
+    fetchCatalogEvents().then((list) => {
+      if (list && list.length > 0) {
+        setEventsList(list);
+      }
+    });
+  }, []);
+
   // Opciones derivadas de los datos del servicio (sin valores fijos).
   const months = useMemo(
-    () => Array.from(new Set(EVENTS.map((event) => event.month))),
-    []
+    () => Array.from(new Set(eventsList.map((event) => event.month))),
+    [eventsList]
   );
   const locations = useMemo(
-    () => Array.from(new Set(EVENTS.map((event) => event.venue))),
-    []
+    () => Array.from(new Set(eventsList.map((event) => event.venue))),
+    [eventsList]
   );
   const categories = useMemo(
-    () => CATEGORY_ORDER.filter((name) => EVENTS.some((event) => event.category === name)),
-    []
+    () => CATEGORY_ORDER.filter((name) => eventsList.some((event) => event.category === name)),
+    [eventsList]
   );
   const priceRange =
     PRICE_RANGES.find((range) => range.id === priceRangeId) ?? PRICE_RANGES[0];
@@ -66,7 +75,7 @@ export default function CatalogPage() {
   const query = search.trim().toLowerCase();
   // Filtrado + orden memorizados: solo se recalculan si cambia un filtro.
   const filtered = useMemo(() => {
-    const result = EVENTS.filter((event) => {
+    const result = eventsList.filter((event) => {
       if (category !== "ALL" && event.category !== category) return false;
       if (month !== "ALL" && event.month !== month) return false;
       if (location !== "ALL" && event.venue !== location) return false;
@@ -82,7 +91,7 @@ export default function CatalogPage() {
       if (sort === "price-desc") return b.price - a.price;
       return b.soldPct - a.soldPct;
     });
-  }, [category, month, location, priceRange, query, sort]);
+  }, [eventsList, category, month, location, priceRange, query, sort]);
 
   // Paginación defensiva: la página actual nunca sale del rango válido.
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));

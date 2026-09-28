@@ -6,18 +6,27 @@ export const eventsService = {
   /**
    * Obtiene la lista completa de eventos del organizador
    */
-  async getEvents(): Promise<OrganizerEvent[]> {
+  async getEvents(organizerId?: string | number): Promise<OrganizerEvent[]> {
+    const filterByOrganizer = (list: OrganizerEvent[]) => {
+      if (!organizerId) return list;
+      return list.filter(
+        (e) =>
+          String(e.id_organizer) === String(organizerId) ||
+          String(e.organizerId) === String(organizerId)
+      );
+    };
+
     if (USE_MOCK_DATA) {
       await new Promise((r) => setTimeout(r, 80));
-      return [...MOCK_EVENTS];
+      return filterByOrganizer([...MOCK_EVENTS]);
     }
 
     try {
       const response = await apiClient.get<OrganizerEvent[]>("/events");
-      return response.data;
+      return filterByOrganizer(response.data || []);
     } catch (err) {
       console.warn("API offline, cargando eventos mock locales:", err);
-      return [...MOCK_EVENTS];
+      return filterByOrganizer([...MOCK_EVENTS]);
     }
   },
 
@@ -104,22 +113,29 @@ export const eventsService = {
   /**
    * Crea un nuevo evento
    */
-  async createEvent(data: {
-    title: string;
-    category?: string;
-    venue?: string;
-    city?: string;
-    date?: string;
-    time?: string;
-    bannerUrl?: string;
-    status?: OrganizerEvent["status"];
-    active?: boolean;
-    capacity?: number;
-    featured?: boolean;
-    description?: string;
-  }): Promise<OrganizerEvent> {
+  async createEvent(
+    data: {
+      title: string;
+      category?: string;
+      venue?: string;
+      city?: string;
+      date?: string;
+      time?: string;
+      bannerUrl?: string;
+      status?: OrganizerEvent["status"];
+      active?: boolean;
+      capacity?: number;
+      featured?: boolean;
+      description?: string;
+      id_organizer?: string | number;
+      organizerId?: string | number;
+    },
+    organizerId?: string | number
+  ): Promise<OrganizerEvent> {
     const year = new Date().getFullYear();
     const randomCodeNum = Math.floor(1000 + Math.random() * 9000);
+    const assignedOrganizerId = organizerId ?? data.id_organizer ?? data.organizerId;
+
     const newEvent: OrganizerEvent = {
       id: `EVT-${year}-LIM-${randomCodeNum}`,
       code: `EVT-${randomCodeNum}`,
@@ -138,6 +154,8 @@ export const eventsService = {
       ticketsSold: 0,
       totalRevenue: 0,
       featured: data.featured ?? false,
+      id_organizer: assignedOrganizerId,
+      organizerId: assignedOrganizerId,
     };
 
     if (USE_MOCK_DATA) {

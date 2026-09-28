@@ -19,7 +19,7 @@ export function useTicketFormModal({
   const [pricePEN, setPricePEN] = useState<number | "">("");
   const [capacity, setCapacity] = useState<number | "">("");
   const [isPresale, setIsPresale] = useState(false);
-  const [maxPerPurchase, setMaxPerPurchase] = useState<number>(4);
+  const [maxPerPurchase, setMaxPerPurchase] = useState<number | "">(4);
   const [saleStartDate, setSaleStartDate] = useState("");
   const [saleEndDate, setSaleEndDate] = useState("");
   const [status, setStatus] = useState<TicketType["status"]>("active");
@@ -67,6 +67,9 @@ export function useTicketFormModal({
       return;
     }
 
+    const maxNum = typeof maxPerPurchase === "number" ? maxPerPurchase : parseInt(maxPerPurchase);
+    const safeMax = isNaN(maxNum) || maxNum <= 0 ? 4 : maxNum;
+
     onSave({
       id: ticketToEdit?.id,
       eventId,
@@ -75,7 +78,7 @@ export function useTicketFormModal({
       pricePEN: priceNum,
       capacity: capNum,
       isPresale,
-      maxPerPurchase,
+      maxPerPurchase: safeMax,
       saleStartDate: saleStartDate || undefined,
       saleEndDate: saleEndDate || undefined,
       status,

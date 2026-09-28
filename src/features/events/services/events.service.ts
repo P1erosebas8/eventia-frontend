@@ -1,4 +1,5 @@
 import type { CatalogEvent, Category } from "../types/event.types";
+import apiClient from "../../../shared/services/api";
 // Fuente temporal: luego se reemplaza por el backend real.
 import db from "../../../../db.json";
 
@@ -14,43 +15,64 @@ interface DbCategory {
 
 /** Fila de `events` en db.json (ver diagrama ER). */
 interface DbEvent {
-  id_event: number;
+  id_event?: number;
+  id?: string | number;
   title: string;
-  description: string;
+  description?: string;
   date: string;
-  start_time: string;
-  end_time: string;
-  location: string;
-  city: string;
-  capacity: number;
-  available_capacity: number;
-  status: string;
-  active: boolean;
-  created_at: string;
-  updated_at: string;
-  id_category: string;
-  id_organizer: number;
+  start_time?: string;
+  end_time?: string;
+  location?: string;
+  venue?: string;
+  city?: string;
+  capacity?: number;
+  available_capacity?: number;
+  status?: string;
+  active?: boolean;
+  created_at?: string;
+  updated_at?: string;
+  id_category?: string;
+  category?: string;
+  id_organizer?: number;
+  bannerUrl?: string;
+  image?: string;
 }
 
 /** Fila de `ticket_types` en db.json (ver diagrama ER). */
 interface DbTicketType {
-  id: number;
-  id_event: number;
+  id: string | number;
+  id_event?: string | number;
   name: string;
   price: number;
-  stock: number;
+  stock?: number;
+}
+
+/** Fila de `organizer_tickets` en db.json */
+interface DbOrganizerTicket {
+  id: string | number;
+  eventId: string | number;
+  name: string;
+  zone?: string;
+  pricePEN?: number;
+  price?: number;
+  capacity?: number;
+  stock?: number;
+  soldCount?: number;
+  status?: string;
 }
 
 interface DbShape {
   categories?: DbCategory[];
   events?: DbEvent[];
   ticket_types?: DbTicketType[];
+  organizer_tickets?: DbOrganizerTicket[];
 }
 
 const dbData = db as DbShape;
 const DB_CATEGORIES = dbData.categories ?? [];
 const DB_EVENTS = dbData.events ?? [];
 const DB_TICKET_TYPES = dbData.ticket_types ?? [];
+const DB_ORGANIZER_TICKETS = dbData.organizer_tickets ?? [];
 
 /** Mes abreviado para la insignia de fecha (ej. "NOV"). */
 const MONTH_CODES = [
@@ -65,6 +87,8 @@ const TAG_BY_CATEGORY: Record<string, string> = {
   "Teatro & Artes": "Teatro",
   "Gastronomía & Ferias": "Gastronomía",
   "Tecnología & Startups": "Tecnología",
+  "Festivales & Open Air": "Festival",
+  "Música & Conciertos": "Concierto",
 };
 
 /** Insignia según aforo vendido (derivado, sin texto fijo por evento). */
@@ -75,38 +99,102 @@ function badgeFor(soldPct: number): string | undefined {
 }
 
 /**
- * Mapea una fila de db.json al modelo del catálogo:
- * categoría por join, fecha descompuesta, precio mínimo de sus
- * tipos de entrada y % vendido desde el aforo disponible.
+ * Normaliza y mapea una fila de evento y sus tipos de entrada al modelo del catálogo
  */
-function mapEvent(row: DbEvent): CatalogEvent {
+export function mapEventItem(
+  row: DbEvent,
+  categoriesList: DbCategory[] = DB_CATEGORIES,
+  ticketTypesList: DbTicketType[] = DB_TICKET_TYPES,
+  orgTicketsList: DbOrganizerTicket[] = DB_ORGANIZER_TICKETS
+): CatalogEvent {
+  const eventId = row.id ?? row.id_event ?? 0;
   const date = new Date(`${row.date}T00:00:00`);
-  const tickets = DB_TICKET_TYPES.filter((ticket) => ticket.id_event === row.id_event);
-  const categoryName = (DB_CATEGORIES.find((item) => item.id_category === row.id_category)?.name ??
-    "Conciertos") as Category;
+  const safeDate = !isNaN(date.getTime()) ? date : new Date();
+
+  // Buscar tickets asociados tanto en ticket_types como en organizer_tickets
+  const legacyTickets = ticketTypesList.filter(
+    (ticket) => String(ticket.id_event) === String(eventId) || (row.id_event && String(ticket.id_event) === String(row.id_event))
+  );
+  const orgTickets = orgTicketsList.filter(
+    (ticket) => String(ticket.eventId) === String(eventId) || (row.id && String(ticket.eventId) === String(row.id))
+  );
+
+  const prices: number[] = [
+    ...legacyTickets.map((t) => t.price),
+    ...orgTickets.map((t) => t.pricePEN ?? t.price ?? 0),
+  ].filter((p) => p > 0);
+
+  // Categoría
+  let categoryName: Category = "Conciertos";
+  if (row.id_category) {
+    const found = categoriesList.find((item) => item.id_category === row.id_category);
+    if (found) categoryName = found.name as Category;
+  } else if (row.category) {
+    if (row.category.includes("Festiv")) categoryName = "Festivales";
+    else if (row.category.includes("Teatro")) categoryName = "Teatro & Artes";
+    else if (row.category.includes("Tecno") || row.category.includes("Startup")) categoryName = "Tecnología & Startups";
+    else if (row.category.includes("Gastro") || row.category.includes("Feria")) categoryName = "Gastronomía & Ferias";
+    else categoryName = "Conciertos";
+  }
+
+  const capacity = row.capacity ?? 1000;
+  const available = row.available_capacity ?? capacity;
   const soldPct =
-    row.capacity > 0
-      ? Math.round(((row.capacity - row.available_capacity) / row.capacity) * 100)
-      : 0;
+    capacity > 0 ? Math.round(((capacity - available) / capacity) * 100) : 0;
+
+  const image =
+    row.bannerUrl ||
+    row.image ||
+    "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600&auto=format&fit=crop&q=80";
+
+  const venue = row.venue || row.location || "Lugar por confirmar";
+  const city = row.city || "Lima";
+
   return {
-    id: row.id_event,
+    id: eventId,
     title: row.title,
     category: categoryName,
-    month: MONTH_CODES[date.getMonth()] ?? "",
-    day: String(date.getDate()).padStart(2, "0"),
-    dateOrder: date.getTime(),
-    venue: row.location,
-    city: row.city,
-    price: tickets.length > 0 ? Math.min(...tickets.map((ticket) => ticket.price)) : 0,
+    month: MONTH_CODES[safeDate.getMonth()] ?? "ENE",
+    day: String(safeDate.getDate()).padStart(2, "0"),
+    dateOrder: safeDate.getTime(),
+    venue,
+    city,
+    price: prices.length > 0 ? Math.min(...prices) : 50,
     soldPct,
-    image: "",
-    tag: TAG_BY_CATEGORY[categoryName] ?? categoryName,
+    image,
+    tag: TAG_BY_CATEGORY[row.category ?? categoryName] ?? categoryName,
     badge: badgeFor(soldPct),
   };
 }
 
-/** Eventos leídos desde db.json (fuente temporal hasta el backend real). */
-export const EVENTS: CatalogEvent[] = DB_EVENTS.filter((row) => row.active).map(mapEvent);
+/** Eventos leídos desde db.json (fuente inicial). */
+export const EVENTS: CatalogEvent[] = DB_EVENTS.filter((row) => row.active !== false).map((row) =>
+  mapEventItem(row, DB_CATEGORIES, DB_TICKET_TYPES, DB_ORGANIZER_TICKETS)
+);
+
+/**
+ * Consulta dinámica a la API para obtener eventos y sus tarifas actualizadas
+ */
+export async function fetchCatalogEvents(): Promise<CatalogEvent[]> {
+  try {
+    const [eventsRes, ticketTypesRes, orgTicketsRes] = await Promise.allSettled([
+      apiClient.get<DbEvent[]>("/events"),
+      apiClient.get<DbTicketType[]>("/ticket_types"),
+      apiClient.get<DbOrganizerTicket[]>("/organizer_tickets"),
+    ]);
+
+    const rawEvents = eventsRes.status === "fulfilled" ? eventsRes.value.data : DB_EVENTS;
+    const rawTicketTypes = ticketTypesRes.status === "fulfilled" ? ticketTypesRes.value.data : DB_TICKET_TYPES;
+    const rawOrgTickets = orgTicketsRes.status === "fulfilled" ? orgTicketsRes.value.data : DB_ORGANIZER_TICKETS;
+
+    return rawEvents
+      .filter((row) => row.active !== false)
+      .map((row) => mapEventItem(row, DB_CATEGORIES, rawTicketTypes, rawOrgTickets));
+  } catch (err) {
+    console.warn("No se pudo obtener eventos en vivo, usando eventos predefinidos:", err);
+    return EVENTS;
+  }
+}
 
 /** Porcentaje de descuento de la promo (aplica solo a elegibles). */
 export const PROMO_DISCOUNT_PCT = 15;

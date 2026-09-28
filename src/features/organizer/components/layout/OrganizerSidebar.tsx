@@ -138,6 +138,15 @@ export default function OrganizerSidebar() {
 
       {/* Bottom info & Collapse Toggle */}
       <div className="flex flex-col gap-2.5 pt-4 border-t border-surface-container">
+        <NavLink
+          to="/"
+          className="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-semibold text-primary hover:bg-surface-container-high transition"
+          title="Ir al Catálogo Público"
+        >
+          <span className="material-symbols-outlined text-[18px]">storefront</span>
+          {!collapsed && <span>Catálogo Público</span>}
+        </NavLink>
+
 
         <button
           type="button"

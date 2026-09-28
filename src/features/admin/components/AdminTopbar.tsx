@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { Clock, Menu, Shield, User } from "lucide-react";
 import { getLimaCurrentTime } from "../utils/adminFormatters";
+import { useAuth } from "@/context/AuthContext";
 
 interface AdminTopbarProps {
   onToggleMobileSidebar?: () => void;
 }
 
 export default function AdminTopbar({ onToggleMobileSidebar }: AdminTopbarProps) {
+  const { user } = useAuth();
   const [time, setTime] = useState(getLimaCurrentTime());
 
   useEffect(() => {
@@ -15,6 +17,9 @@ export default function AdminTopbar({ onToggleMobileSidebar }: AdminTopbarProps)
     }, 1000);
     return () => clearInterval(timer);
   }, []);
+
+  const adminName = user ? `${user.firstName} ${user.lastName}`.trim() : "Admin Principal";
+  const adminEmail = user?.email || "admin@eventia.pe";
 
   return (
     <header className="w-full flex items-center justify-between py-3 px-4 sm:px-8 bg-surface-container-lowest/80 backdrop-blur-md border-b border-outline-variant/20 sticky top-0 z-20">
@@ -47,10 +52,10 @@ export default function AdminTopbar({ onToggleMobileSidebar }: AdminTopbarProps)
         <div className="flex items-center gap-3">
           <div className="text-right hidden sm:block">
             <div className="text-xs sm:text-sm font-bold text-on-surface leading-tight font-display">
-              Admin Principal
+              {adminName}
             </div>
             <div className="text-[11px] text-on-surface-variant font-medium">
-              admin@eventia.pe
+              {adminEmail}
             </div>
           </div>
 

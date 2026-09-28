@@ -12,6 +12,7 @@ interface CheckoutPanelProps {
   highlightedTier: TicketTierId | null;
   /** Nombre de sesión o null si es visita anónima (sin input manual). */
   sessionName: string | null;
+  onProceedToCheckout?: () => void;
 }
 
 /** Panel de compra: cantidades, resumen y pago. El nombre viene de la sesión. */
@@ -22,6 +23,7 @@ export default function CheckoutPanel({
   totals,
   highlightedTier,
   sessionName,
+  onProceedToCheckout,
 }: CheckoutPanelProps) {
   const empty = totals.count === 0;
   const promoUser = sessionName !== null && isPromoUser(sessionName);
@@ -66,7 +68,14 @@ export default function CheckoutPanel({
           }`}
         >
           <div className="flex justify-between items-center gap-2 min-w-0">
-            <span className="text-sm font-bold truncate">{tier.name}</span>
+            <div className="flex flex-col min-w-0">
+              <span className="text-sm font-bold truncate">{tier.name}</span>
+              {tier.maxPerPurchase && (
+                <span className="text-[10px] text-outline">
+                  Máx. {tier.maxPerPurchase} entradas por compra
+                </span>
+              )}
+            </div>
             <span className="text-sm font-extrabold text-primary whitespace-nowrap">
               {formatPEN(tier.price)}
             </span>
@@ -82,7 +91,7 @@ export default function CheckoutPanel({
               >
                 <span className="material-symbols-outlined text-[18px]">remove</span>
               </button>
-              <span className="w-8 text-center text-sm font-bold" aria-live="polite">{quantities[tier.id]}</span>
+              <span className="w-8 text-center text-sm font-bold" aria-live="polite">{quantities[tier.id] ?? 0}</span>
               <button
                 aria-label={`Aumentar ${tier.name}`}
                 onClick={() => onUpdateQuantity(tier.id, 1)}
@@ -118,6 +127,7 @@ export default function CheckoutPanel({
       <button
         disabled={empty}
         type="button"
+        onClick={onProceedToCheckout}
         className={`w-full py-3 px-4 rounded-xl font-bold shadow-md transition-all flex items-center justify-center gap-2 min-w-0 ${
           empty ? "bg-primary/50 text-white cursor-not-allowed" : "bg-primary text-on-primary hover:opacity-90"
         }`}
@@ -130,3 +140,4 @@ export default function CheckoutPanel({
     </div>
   );
 }
+

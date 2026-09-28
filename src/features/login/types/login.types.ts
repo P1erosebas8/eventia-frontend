@@ -5,9 +5,10 @@ export interface LoginRequest {
 
 export interface LoginResponse {
   accessToken: string;
-  id: number;
+  id: number | string;
   firstName: string;
   lastName: string;
   email: string;
+  rol: string;
   message: string;
 }

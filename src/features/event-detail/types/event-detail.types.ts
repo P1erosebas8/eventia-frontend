@@ -11,14 +11,16 @@ export interface TicketTier {
   regularPrice: number;
   /** Clase del punto de color en el checkout. */
   dot: string;
+  maxPerPurchase?: number;
 }
 
 /** Ficha del evento armada desde db.json para el detalle. */
 export interface EventDetailData {
-  id: number;
+  id: string | number;
   title: string;
   venue: string;
   city: string;
+  image?: string;
   /** Fecha legible (ej. "22 Nov 2025"). */
   dateLabel: string;
   /** Mes abreviado para la insignia (ej. "NOV"). */

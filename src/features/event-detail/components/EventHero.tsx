@@ -3,13 +3,21 @@ interface EventHeroProps {
   venue: string;
   month: string;
   day: string;
+  image?: string;
 }
 
 /** Portada del evento con datos de db.json: foto, título y recinto. */
-export default function EventHero({ title, venue, month, day }: EventHeroProps) {
+export default function EventHero({ title, venue, month, day, image }: EventHeroProps) {
   return (
     <div className="relative rounded-xl overflow-hidden shadow-sm bg-surface-container-lowest min-w-0">
       <div className="relative h-52 sm:h-64 w-full overflow-hidden bg-surface-container-high">
+        {image && (
+          <img
+            src={image}
+            alt={title}
+            className="w-full h-full object-cover absolute inset-0"
+          />
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent pointer-events-none"></div>
 
         <div className="absolute bottom-4 right-4 bg-white/95 rounded-lg p-3 text-center shadow-md shrink-0">

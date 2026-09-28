@@ -166,6 +166,26 @@ export default function UserModal({
             </div>
           </div>
 
+          {/* Contraseña de acceso */}
+          <div>
+            <label className="block text-xs font-semibold text-on-surface-variant mb-1.5">
+              Contraseña de acceso
+            </label>
+            <input
+              type="text"
+              name="password"
+              value={form.password || ""}
+              onChange={handleChange}
+              placeholder="Password123! (por defecto)"
+              className="w-full px-4 py-2.5 text-sm rounded-xl border border-outline-variant/40 bg-surface-container-low text-on-surface placeholder-on-surface-variant/50 outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/10 transition-all font-mono"
+            />
+            <p className="text-[11px] text-on-surface-variant/70 mt-1">
+              {isEditing
+                ? "Déjalo en blanco si no deseas cambiar la contraseña."
+                : 'Si se deja vacío, la contraseña por defecto será "Password123!"'}
+            </p>
+          </div>
+
           {/* Rol asignado */}
           <div className="bg-surface-container-low rounded-xl px-4 py-3 border border-outline-variant/30 flex items-center justify-between">
             <span className="text-xs font-semibold text-on-surface">Rol asignado</span>

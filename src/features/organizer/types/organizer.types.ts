@@ -16,6 +16,8 @@ export interface OrganizerEvent {
   ticketsSold: number;
   totalRevenue: number;
   featured?: boolean;
+  id_organizer?: string | number;
+  organizerId?: string | number;
 }
 
 export interface OrganizerKpi {

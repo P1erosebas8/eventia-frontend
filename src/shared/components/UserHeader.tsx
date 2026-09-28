@@ -93,7 +93,31 @@ export default function UserHeader() {
 
           {/* Menú desplegable */}
           {isMenuOpen && (
-            <div className="absolute right-0 top-full mt-3 w-52 bg-white border border-slate-200 rounded-xl shadow-lg py-2 z-50">
+            <div className="absolute right-0 top-full mt-3 w-56 bg-white border border-slate-200 rounded-2xl shadow-xl py-2 z-50 animate-in fade-in zoom-in-95">
+              {/* Información del usuario autenticado */}
+              <div className="px-4 py-2.5 border-b border-slate-100 space-y-1">
+                <p className="text-xs font-bold text-slate-900 truncate">
+                  {user ? `${user.firstName} ${user.lastName}` : "Usuario Eventia"}
+                </p>
+                <div className="flex items-center gap-1.5">
+                  <span
+                    className={`inline-block text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full ${
+                      user?.rol === "ADMIN"
+                        ? "bg-purple-100 text-purple-700"
+                        : user?.rol === "ORGANIZER"
+                        ? "bg-indigo-100 text-indigo-700"
+                        : "bg-slate-100 text-slate-600"
+                    }`}
+                  >
+                    {user?.rol === "ADMIN"
+                      ? "Administrador"
+                      : user?.rol === "ORGANIZER"
+                      ? "Organizador"
+                      : "Cliente"}
+                  </span>
+                </div>
+              </div>
+
               <Link
                 to="/perfil"
                 onClick={() => setIsMenuOpen(false)}
@@ -115,6 +139,37 @@ export default function UserHeader() {
                 </span>
                 Mis entradas
               </Link>
+
+              {/* Acceso condicional a Panel Organizador */}
+              {user?.rol === "ORGANIZER" && (
+                <>
+                  <div className="my-1 border-t border-slate-100" />
+                  <Link
+                    to="/organizador"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-indigo-700 hover:bg-indigo-50 transition"
+                  >
+                    <span className="material-symbols-outlined text-[20px] text-indigo-600">
+                      storefront
+                    </span>
+                    Panel Organizador
+                  </Link>
+                </>
+              )}
+
+              {/* Acceso condicional a Panel Administrador */}
+              {user?.rol === "ADMIN" && (
+                <Link
+                  to="/admin"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-purple-700 hover:bg-purple-50 transition"
+                >
+                  <span className="material-symbols-outlined text-[20px] text-purple-600">
+                    admin_panel_settings
+                  </span>
+                  Panel Administrador
+                </Link>
+              )}
 
               <div className="my-1 border-t border-slate-100" />
 

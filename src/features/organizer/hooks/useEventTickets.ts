@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
 import { organizerService } from "../services/organizerService";
 import type { OrganizerEvent, TicketType } from "../types/organizer.types";
 
 export function useEventTickets() {
+  const { user } = useAuth();
   const { id } = useParams<{ id?: string }>();
   const navigate = useNavigate();
 
@@ -33,7 +35,7 @@ export function useEventTickets() {
   useEffect(() => {
     async function loadEvents() {
       try {
-        const list = await organizerService.getEvents();
+        const list = await organizerService.getEvents(user?.id);
         setEvents(list);
         if (!selectedEventId && list.length > 0) {
           const initialId = id || list[0].id;
@@ -44,7 +46,7 @@ export function useEventTickets() {
       }
     }
     loadEvents();
-  }, [id, selectedEventId]);
+  }, [id, selectedEventId, user?.id]);
 
   // Evento actualmente seleccionado
   const currentEvent = useMemo(() => {
