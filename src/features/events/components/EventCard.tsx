@@ -1,19 +1,14 @@
 import { Link } from "react-router-dom";
-import { formatPrice, getPromoPrice, isPromoUser } from "../services/events.service";
+import { formatPrice } from "../services/events.service";
 import type { CatalogEvent, ViewMode } from "../types/event.types";
 
 interface EventCardProps {
   event: CatalogEvent;
   view: ViewMode;
-  /** Nombre de sesión; define si se muestra el precio con descuento. */
-  userName: string;
 }
 
 /** Tarjeta de evento: foto, fecha, título, recinto, precio y acceso al detalle. */
-export default function EventCard({ event, view, userName }: EventCardProps) {
-  // El descuento solo se refleja si el evento lo admite Y la sesión califica.
-  const showDiscount = event.isPromoEligible && isPromoUser(userName);
-  const finalPrice = showDiscount ? getPromoPrice(event.price) : event.price;
+export default function EventCard({ event, view }: EventCardProps) {
   const isList = view === "list";
 
   return (
@@ -64,11 +59,8 @@ export default function EventCard({ event, view, userName }: EventCardProps) {
         <div className="flex items-end justify-between gap-2 flex-wrap min-w-0">
           <div className="flex flex-col min-w-0">
             <span className="text-[11px] text-outline uppercase font-medium">Desde</span>
-            {showDiscount && (
-              <span className="text-xs text-outline line-through">{formatPrice(event.price)}</span>
-            )}
             <span className="font-display font-bold text-xl sm:text-[1.4rem] text-primary whitespace-nowrap">
-              {formatPrice(finalPrice)}
+              {formatPrice(event.price)}
             </span>
           </div>
           <Link

@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import { useAuth } from "../../../context/AuthContext";
 import Footer from "../../../shared/layouts/Footer";
 import CatalogFilterBar from "../components/CatalogFilterBar";
 import CatalogToolbar from "../components/CatalogToolbar";
@@ -17,7 +16,6 @@ const PAGE_SIZE = 6;
  * promo y nombre siempre desde la sesión (nunca de un input manual).
  */
 export default function CatalogPage() {
-  const { isAuthenticated, user } = useAuth();
   const [search, setSearch] = useState("");
   const [month, setMonth] = useState("ALL");
   const [location, setLocation] = useState("ALL");
@@ -26,12 +24,6 @@ export default function CatalogPage() {
   const [sort, setSort] = useState<SortKey>("popular");
   const [view, setView] = useState<ViewMode>("grid");
   const [page, setPage] = useState(1);
-
-  /** Nombre de sesión o null si es visita anónima. */
-  const sessionName =
-    isAuthenticated && user ? `${user.firstName} ${user.lastName}`.trim() : null;
-  /** Nombre efectivo para descuentos (vacío si no hay sesión). */
-  const effectiveName = sessionName ?? "";
 
   // Opciones derivadas de los datos del servicio (sin valores fijos).
   const months = useMemo(
@@ -186,9 +178,9 @@ export default function CatalogPage() {
                     : "flex flex-col gap-4 min-w-0"
                 }
               >
-                {paged.map((event) => (
-                  <EventCard key={event.id} event={event} view={view} userName={effectiveName} />
-                ))}
+                  {paged.map((event) => (
+                    <EventCard key={event.id} event={event} view={view} />
+                  ))}
               </div>
             )}
 
