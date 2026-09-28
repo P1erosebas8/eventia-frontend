@@ -47,6 +47,8 @@ export default function AppRouter() {
           {/* Usuario autenticado */}
           <Route path="/mis-tickets" element={<MisTicketsPage />} />
           <Route path="/perfil" element={<PerfilPage />} />
+          <Route path="/user-profile" element={<Navigate to="/perfil" replace />} />
+          <Route path="/profile" element={<Navigate to="/perfil" replace />} />
         </Route>
 
        {/* Administración */}

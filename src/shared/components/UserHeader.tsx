@@ -6,7 +6,7 @@ export default function UserHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -74,7 +74,7 @@ export default function UserHeader() {
             aria-haspopup="menu"
           >
             <span className="hidden lg:inline-block text-sm font-semibold text-slate-800">
-              Mi Cuenta
+              {user ? `${user.firstName} ${user.lastName}` : "Mi Cuenta"}
             </span>
 
             <span
@@ -88,7 +88,18 @@ export default function UserHeader() {
 
           {/* Menú desplegable */}
           {isMenuOpen && (
-            <div className="absolute right-0 top-full mt-3 w-48 bg-white border border-slate-200 rounded-xl shadow-lg py-2 z-50">
+            <div className="absolute right-0 top-full mt-3 w-52 bg-white border border-slate-200 rounded-xl shadow-lg py-2 z-50">
+              <Link
+                to="/perfil"
+                onClick={() => setIsMenuOpen(false)}
+                className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition"
+              >
+                <span className="material-symbols-outlined text-[20px] text-slate-500">
+                  person
+                </span>
+                Mi Perfil
+              </Link>
+
               <Link
                 to="/mis-tickets"
                 onClick={() => setIsMenuOpen(false)}
