@@ -1,5 +1,5 @@
 import type { AccountStatus, DirectoryUser, Role } from "../types/user.types";
-import { isPromoUser } from "../../events/utils/promo.utils";
+import { isPromoUser } from "../../events/services/events.service";
 
 const ROLE_PILL: Record<Role, string> = {
   Administrador: "bg-primary-fixed text-primary",

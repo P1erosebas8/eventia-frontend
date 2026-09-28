@@ -10,7 +10,7 @@ import EventTabs from "../components/EventTabs";
 import OrganizerCard from "../components/OrganizerCard";
 import { getEventDetail, MAX_TICKETS } from "../services/event-detail.service";
 import type { DetailTabId, TicketTierId } from "../types/event-detail.types";
-import { isPromoUser, PROMO_DISCOUNT_PCT } from "../../events/utils/promo.utils";
+import { isPromoUser, PROMO_DISCOUNT_PCT } from "../../events/services/events.service";
 
 /**
  * Ficha del evento: hero, mapa de zonas y checkout lateral.
