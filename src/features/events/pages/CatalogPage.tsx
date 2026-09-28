@@ -97,6 +97,11 @@ export default function CatalogPage() {
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const safePage = Math.min(Math.max(1, page), totalPages);
   const paged = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+  // Ciudades de los resultados (sin texto fijo).
+  const locationLabel = useMemo(
+    () => Array.from(new Set(filtered.map((event) => event.city))).join(" · "),
+    [filtered]
+  );
 
   return (
     <div className="min-h-screen bg-surface overflow-x-hidden">
@@ -148,9 +153,10 @@ export default function CatalogPage() {
           </div>
 
           <div id="catalog-results" className="flex flex-col gap-4 sm:gap-6 min-w-0 scroll-mt-24">
-            <CatalogToolbar
-              total={filtered.length}
-              sort={sort}
+              <CatalogToolbar
+                total={filtered.length}
+                locationLabel={locationLabel}
+                sort={sort}
               onSortChange={handleSortChange}
               view={view}
               onViewChange={setView}
