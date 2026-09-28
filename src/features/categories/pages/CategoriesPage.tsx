@@ -59,7 +59,7 @@ export default function CategoriesPage() {
                 <h1 className="font-display font-bold text-2xl sm:text-3xl tracking-tight text-balance">
                   Gestión de categorías
                 </h1>
-                <p className="text-[0.9375rem] text-on-surface-variant max-w-2xl break-words">
+                <p className="text-[0.9375rem] text-on-surface-variant max-w-2xl wrap-break-word">
                   Taxonomías operativas del catálogo y su estado en cartelera.
                 </p>
               </div>
