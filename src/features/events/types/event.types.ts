@@ -4,7 +4,7 @@ export type Category =
   | "Festivales"
   | "Teatro & Artes"
   | "Tecnología & Startups"
-  | "Gastronomía";
+  | "Gastronomía & Ferias";
 
 /** Evento del catálogo. `isPromoEligible` indica si admite el descuento promo. */
 export interface CatalogEvent {

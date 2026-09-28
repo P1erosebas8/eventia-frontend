@@ -22,12 +22,15 @@ export default function EventCard({ event, view }: EventCardProps) {
           isList ? "w-full sm:w-52 lg:w-56 aspect-video sm:aspect-auto sm:min-h-[190px]" : "w-full aspect-video"
         }`}
       >
-        <img
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 absolute inset-0"
-          src={event.image}
-          alt={event.title}
-          loading="lazy"
-        />
+        {/* Sin imagen en db.json se muestra el fondo con gradiente. */}
+        {event.image !== "" && (
+          <img
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 absolute inset-0"
+            src={event.image}
+            alt={event.title}
+            loading="lazy"
+          />
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none"></div>
         {/* Etiqueta de categoría sobre la foto. */}
         {event.tag && (
