@@ -1,5 +1,6 @@
 import type { EventDetailData, TicketTier } from "../types/event-detail.types";
 import apiClient from "../../../shared/services/api";
+import { getMockEvents, getMockTickets } from "../../organizer/services/organizerMock";
 // Fuente temporal: luego se reemplaza por el backend real.
 import db from "../../../../db.json";
 
@@ -185,13 +186,22 @@ function buildEventDetail(
  */
 export function getEventDetail(eventId: string | number): EventDetailData | null {
   const strId = String(eventId);
+  const localMockEvents = getMockEvents();
+  const localMockTickets = getMockTickets();
+  const allLocalTickets = Object.values(localMockTickets).flat();
+
+  const allEventsList = [...(localMockEvents as any), ...DB_EVENTS];
   const row =
-    DB_EVENTS.find((item) => String(item.id) === strId || String(item.id_event) === strId) ??
-    DB_EVENTS.find((item) => item.active !== false) ??
+    allEventsList.find((item) => String(item.id) === strId || String(item.id_event) === strId) ??
+    allEventsList.find((item) => item.active !== false) ??
     null;
   if (!row) return null;
 
-  return buildEventDetail(row, DB_TICKET_TYPES, DB_ORGANIZER_TICKETS);
+  return buildEventDetail(
+    row,
+    DB_TICKET_TYPES,
+    allLocalTickets.length > 0 ? (allLocalTickets as any) : DB_ORGANIZER_TICKETS
+  );
 }
 
 /**
@@ -199,6 +209,10 @@ export function getEventDetail(eventId: string | number): EventDetailData | null
  */
 export async function fetchEventDetail(eventId: string | number): Promise<EventDetailData | null> {
   const strId = String(eventId);
+  const localMockEvents = getMockEvents();
+  const localMockTickets = getMockTickets();
+  const eventTickets = localMockTickets[strId] || Object.values(localMockTickets).flat();
+
   try {
     const [eventRes, ticketTypesRes, orgTicketsRes] = await Promise.allSettled([
       apiClient.get<DbEvent>(`/events/${strId}`),
@@ -221,7 +235,12 @@ export async function fetchEventDetail(eventId: string | number): Promise<EventD
     }
 
     if (!eventRow) {
-      return getEventDetail(eventId);
+      const foundInLocal = localMockEvents.find((e) => String(e.id) === strId);
+      if (foundInLocal) {
+        eventRow = foundInLocal as any;
+      } else {
+        return getEventDetail(eventId);
+      }
     }
 
     const rawTicketTypes =
@@ -229,9 +248,9 @@ export async function fetchEventDetail(eventId: string | number): Promise<EventD
     const rawOrgTickets =
       orgTicketsRes.status === "fulfilled" && orgTicketsRes.value.data.length > 0
         ? orgTicketsRes.value.data
-        : DB_ORGANIZER_TICKETS;
+        : (eventTickets.length > 0 ? (eventTickets as any) : DB_ORGANIZER_TICKETS);
 
-    return buildEventDetail(eventRow, rawTicketTypes, rawOrgTickets);
+    return buildEventDetail(eventRow!, rawTicketTypes, rawOrgTickets);
   } catch (err) {
     console.warn("Fallo al obtener detalle del evento de la API, usando respaldo:", err);
     return getEventDetail(eventId);

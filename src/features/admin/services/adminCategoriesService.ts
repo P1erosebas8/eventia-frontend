@@ -70,6 +70,33 @@ let categoriesMemory: AdminCategory[] = [
   },
 ];
 
+const ADMIN_CATEGORIES_STORAGE_KEY = "eventia_admin_categories";
+
+function getStoredCategories(): AdminCategory[] {
+  if (typeof window === "undefined") return [...categoriesMemory];
+  try {
+    const stored = localStorage.getItem(ADMIN_CATEGORIES_STORAGE_KEY);
+    if (!stored) {
+      localStorage.setItem(ADMIN_CATEGORIES_STORAGE_KEY, JSON.stringify(categoriesMemory));
+      return [...categoriesMemory];
+    }
+    const parsed: AdminCategory[] = JSON.parse(stored);
+    return Array.isArray(parsed) && parsed.length > 0 ? parsed : [...categoriesMemory];
+  } catch {
+    return [...categoriesMemory];
+  }
+}
+
+function saveStoredCategories(categories: AdminCategory[]): void {
+  if (typeof window !== "undefined") {
+    try {
+      localStorage.setItem(ADMIN_CATEGORIES_STORAGE_KEY, JSON.stringify(categories));
+    } catch (e) {
+      console.warn("Error saving admin categories to localStorage:", e);
+    }
+  }
+}
+
 /**
  * Servicio encargado de la comunicación con la API dummy (json-server / db.json)
  * para el catálogo de taxonomías y categorías de eventos.
@@ -79,15 +106,16 @@ export const adminCategoriesService = {
    * Obtiene la lista completa de categorías desde GET /admin_categories
    */
   async getCategories(): Promise<AdminCategory[]> {
+    const localCategories = getStoredCategories();
     try {
       const response = await api.get<AdminCategory[]>("/admin_categories");
       if (Array.isArray(response.data) && response.data.length > 0) {
-        categoriesMemory = response.data;
+        saveStoredCategories(response.data);
         return response.data;
       }
-      return categoriesMemory;
+      return localCategories;
     } catch {
-      return categoriesMemory;
+      return localCategories;
     }
   },
 
@@ -95,9 +123,10 @@ export const adminCategoriesService = {
    * Registra una nueva categoría en POST /admin_categories
    */
   async createCategory(formData: CategoryFormData): Promise<AdminCategory> {
+    const list = getStoredCategories();
     const nextNum =
-      categoriesMemory.length > 0
-        ? Math.max(...categoriesMemory.map((c) => c.numeroId)) + 1
+      list.length > 0
+        ? Math.max(...list.map((c) => c.numeroId)) + 1
         : 1;
 
     const nueva: AdminCategory = {
@@ -109,12 +138,13 @@ export const adminCategoriesService = {
       ultimaActualizacion: getFormattedDateTime(),
     };
 
+    list.unshift(nueva);
+    saveStoredCategories(list);
+
     try {
       const response = await api.post<AdminCategory>("/admin_categories", nueva);
-      categoriesMemory = [response.data, ...categoriesMemory];
       return response.data;
     } catch {
-      categoriesMemory = [nueva, ...categoriesMemory];
       return nueva;
     }
   },
@@ -130,15 +160,19 @@ export const adminCategoriesService = {
       ultimaActualizacion: getFormattedDateTime(),
     };
 
+    const list = getStoredCategories();
+    const index = list.findIndex((c) => c.id === id);
+    if (index !== -1) {
+      list[index] = { ...list[index], ...payload };
+      saveStoredCategories(list);
+    }
+
     try {
       const response = await api.patch<AdminCategory>(`/admin_categories/${id}`, payload);
-      categoriesMemory = categoriesMemory.map((c) => (c.id === id ? response.data : c));
       return response.data;
     } catch {
-      const index = categoriesMemory.findIndex((c) => c.id === id);
       if (index === -1) throw new Error("Categoría no encontrada");
-      categoriesMemory[index] = { ...categoriesMemory[index], ...payload };
-      return { ...categoriesMemory[index] };
+      return { ...list[index] };
     }
   },
 
@@ -151,15 +185,19 @@ export const adminCategoriesService = {
       ultimaActualizacion: getFormattedDateTime(),
     };
 
+    const list = getStoredCategories();
+    const index = list.findIndex((c) => c.id === id);
+    if (index !== -1) {
+      list[index] = { ...list[index], ...payload };
+      saveStoredCategories(list);
+    }
+
     try {
       const response = await api.patch<AdminCategory>(`/admin_categories/${id}`, payload);
-      categoriesMemory = categoriesMemory.map((c) => (c.id === id ? response.data : c));
       return response.data;
     } catch {
-      const index = categoriesMemory.findIndex((c) => c.id === id);
       if (index === -1) throw new Error("Categoría no encontrada");
-      categoriesMemory[index] = { ...categoriesMemory[index], ...payload };
-      return { ...categoriesMemory[index] };
+      return { ...list[index] };
     }
   },
 };

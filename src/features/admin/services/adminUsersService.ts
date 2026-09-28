@@ -93,6 +93,33 @@ let mockUsersMemory: AdminUser[] = [
   },
 ];
 
+const ADMIN_USERS_STORAGE_KEY = "eventia_admin_users";
+
+function getStoredAdminUsers(): AdminUser[] {
+  if (typeof window === "undefined") return [...mockUsersMemory];
+  try {
+    const stored = localStorage.getItem(ADMIN_USERS_STORAGE_KEY);
+    if (!stored) {
+      localStorage.setItem(ADMIN_USERS_STORAGE_KEY, JSON.stringify(mockUsersMemory));
+      return [...mockUsersMemory];
+    }
+    const parsed: AdminUser[] = JSON.parse(stored);
+    return Array.isArray(parsed) && parsed.length > 0 ? parsed : [...mockUsersMemory];
+  } catch {
+    return [...mockUsersMemory];
+  }
+}
+
+function saveStoredAdminUsers(users: AdminUser[]): void {
+  if (typeof window !== "undefined") {
+    try {
+      localStorage.setItem(ADMIN_USERS_STORAGE_KEY, JSON.stringify(users));
+    } catch (e) {
+      console.warn("Error saving admin users to localStorage:", e);
+    }
+  }
+}
+
 /**
  * Servicio encargado de la comunicación con la API dummy (json-server / db.json)
  * para la gestión de usuarios y alta de organizadores.
@@ -100,19 +127,25 @@ let mockUsersMemory: AdminUser[] = [
 export const adminUsersService = {
   /**
    * Obtiene la lista completa de usuarios registrados.
-   * Conecta con GET /admin_users del json-server.
+   * Conecta con GET /admin_users del json-server y sincroniza con almacenamiento local.
    */
   async getUsers(): Promise<AdminUser[]> {
+    const localUsers = getStoredAdminUsers();
     try {
       const response = await api.get<AdminUser[]>("/admin_users");
       if (Array.isArray(response.data) && response.data.length > 0) {
-        mockUsersMemory = response.data;
-        return response.data;
+        // Combinar usuarios de la API con los creados o registrados localmente
+        const apiUsers = response.data;
+        const apiUserIds = new Set(apiUsers.map((u) => String(u.id)));
+        const missingLocalUsers = localUsers.filter((u) => !apiUserIds.has(String(u.id)));
+        const combined = [...apiUsers, ...missingLocalUsers];
+        saveStoredAdminUsers(combined);
+        return combined;
       }
-      return mockUsersMemory;
+      return localUsers;
     } catch {
-      // Si la API dummy está offline, retorna la memoria local sin interrumpir la UI
-      return mockUsersMemory;
+      // Si la API dummy está offline, retorna los usuarios persistidos localmente
+      return localUsers;
     }
   },
 
@@ -121,18 +154,21 @@ export const adminUsersService = {
    * Conecta con PATCH /admin_users/:id en el json-server.
    */
   async toggleUserStatus(id: string, nuevoEstado: "Activo" | "Inactivo"): Promise<AdminUser> {
+    const list = getStoredAdminUsers();
+    const idx = list.findIndex((u) => String(u.id) === String(id));
+    if (idx !== -1) {
+      list[idx].estado = nuevoEstado;
+      saveStoredAdminUsers(list);
+    }
+
     try {
       const response = await api.patch<AdminUser>(`/admin_users/${id}`, {
         estado: nuevoEstado,
       });
-      mockUsersMemory = mockUsersMemory.map((u) => (u.id === id ? response.data : u));
       return response.data;
     } catch {
-      // Fallback local
-      const user = mockUsersMemory.find((u) => u.id === id);
-      if (!user) throw new Error("Usuario no encontrado");
-      user.estado = nuevoEstado;
-      return { ...user };
+      if (idx === -1) throw new Error("Usuario no encontrado");
+      return { ...list[idx] };
     }
   },
 
@@ -161,6 +197,11 @@ export const adminUsersService = {
       password: form.password?.trim() || "Password123!",
     };
 
+    // Guardar y sincronizar localmente
+    const list = getStoredAdminUsers();
+    list.unshift(nuevoUsuario);
+    saveStoredAdminUsers(list);
+
     // Sincronizar credenciales de acceso para permitir inicio de sesión
     try {
       saveOrganizerUser({
@@ -176,11 +217,8 @@ export const adminUsersService = {
 
     try {
       const response = await api.post<AdminUser>("/admin_users", nuevoUsuario);
-      mockUsersMemory = [response.data, ...mockUsersMemory];
       return response.data;
     } catch {
-      // Fallback local
-      mockUsersMemory = [nuevoUsuario, ...mockUsersMemory];
       return nuevoUsuario;
     }
   },
@@ -204,16 +242,19 @@ export const adminUsersService = {
         .toUpperCase(),
     };
 
+    const list = getStoredAdminUsers();
+    const idx = list.findIndex((u) => String(u.id) === String(id));
+    if (idx !== -1) {
+      list[idx] = { ...list[idx], ...payload };
+      saveStoredAdminUsers(list);
+    }
+
     try {
       const response = await api.patch<AdminUser>(`/admin_users/${id}`, payload);
-      mockUsersMemory = mockUsersMemory.map((u) => (u.id === id ? response.data : u));
       return response.data;
     } catch {
-      // Fallback local
-      const idx = mockUsersMemory.findIndex((u) => u.id === id);
       if (idx === -1) throw new Error("Usuario no encontrado");
-      mockUsersMemory[idx] = { ...mockUsersMemory[idx], ...payload };
-      return { ...mockUsersMemory[idx] };
+      return { ...list[idx] };
     }
   },
 };

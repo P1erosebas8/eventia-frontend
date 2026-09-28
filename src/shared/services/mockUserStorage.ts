@@ -118,6 +118,43 @@ export function saveUser(data: RegisterRequest): StoredUser {
     JSON.stringify(users)
   );
 
+  // Sincronizar automáticamente con la tabla de usuarios del Administrador
+  if (typeof window !== "undefined") {
+    try {
+      const adminUsersRaw = localStorage.getItem("eventia_admin_users");
+      const adminUsers = adminUsersRaw ? JSON.parse(adminUsersRaw) : [];
+      const fullName = `${data.firstName} ${data.lastName}`.trim();
+      const initials = `${data.firstName[0] || ""}${data.lastName[0] || ""}`.toUpperCase() || "CL";
+      const code = `#${Math.floor(Math.random() * 9000) + 1000}`;
+
+      const adminUserRecord = {
+        id: String(newUser.id),
+        codigo: code,
+        nombre: fullName,
+        email: data.email,
+        iniciales: initials,
+        dni: data.documentNumber || "",
+        telefono: data.phoneNumber || "",
+        rol: "Cliente",
+        fechaRegistro: new Date().toLocaleDateString("es-PE"),
+        estado: "Activo",
+        password: data.password,
+      };
+
+      const existingIdx = adminUsers.findIndex(
+        (u: any) => u.email && u.email.toLowerCase() === data.email.toLowerCase()
+      );
+      if (existingIdx !== -1) {
+        adminUsers[existingIdx] = { ...adminUsers[existingIdx], ...adminUserRecord };
+      } else {
+        adminUsers.unshift(adminUserRecord);
+      }
+      localStorage.setItem("eventia_admin_users", JSON.stringify(adminUsers));
+    } catch (e) {
+      console.warn("Error al sincronizar usuario con panel de administración:", e);
+    }
+  }
+
   return newUser;
 }
 

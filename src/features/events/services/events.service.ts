@@ -1,5 +1,6 @@
 import type { CatalogEvent, Category } from "../types/event.types";
 import apiClient from "../../../shared/services/api";
+import { getMockEvents, getMockTickets } from "../../organizer/services/organizerMock";
 // Fuente temporal: luego se reemplaza por el backend real.
 import db from "../../../../db.json";
 
@@ -176,6 +177,10 @@ export const EVENTS: CatalogEvent[] = DB_EVENTS.filter((row) => row.active !== f
  * Consulta dinámica a la API para obtener eventos y sus tarifas actualizadas
  */
 export async function fetchCatalogEvents(): Promise<CatalogEvent[]> {
+  const localMockEvents = getMockEvents();
+  const localMockTickets = getMockTickets();
+  const allLocalOrgTickets = Object.values(localMockTickets).flat();
+
   try {
     const [eventsRes, ticketTypesRes, orgTicketsRes] = await Promise.allSettled([
       apiClient.get<DbEvent[]>("/events"),
@@ -183,16 +188,28 @@ export async function fetchCatalogEvents(): Promise<CatalogEvent[]> {
       apiClient.get<DbOrganizerTicket[]>("/organizer_tickets"),
     ]);
 
-    const rawEvents = eventsRes.status === "fulfilled" ? eventsRes.value.data : DB_EVENTS;
-    const rawTicketTypes = ticketTypesRes.status === "fulfilled" ? ticketTypesRes.value.data : DB_TICKET_TYPES;
-    const rawOrgTickets = orgTicketsRes.status === "fulfilled" ? orgTicketsRes.value.data : DB_ORGANIZER_TICKETS;
+    const apiEvents = eventsRes.status === "fulfilled" && Array.isArray(eventsRes.value.data) ? eventsRes.value.data : [];
+    const baseEvents = apiEvents.length > 0 ? apiEvents : (localMockEvents.length > 0 ? (localMockEvents as any) : DB_EVENTS);
 
-    return rawEvents
-      .filter((row) => row.active !== false)
-      .map((row) => mapEventItem(row, DB_CATEGORIES, rawTicketTypes, rawOrgTickets));
+    const baseEventIds = new Set(baseEvents.map((e: any) => String(e.id || e.id_event)));
+    const additionalLocalEvents = (localMockEvents as any).filter((e: any) => !baseEventIds.has(String(e.id)));
+    const mergedEvents = [...baseEvents, ...additionalLocalEvents];
+
+    const rawTicketTypes = ticketTypesRes.status === "fulfilled" ? ticketTypesRes.value.data : DB_TICKET_TYPES;
+    const rawOrgTickets =
+      orgTicketsRes.status === "fulfilled" && Array.isArray(orgTicketsRes.value.data) && orgTicketsRes.value.data.length > 0
+        ? orgTicketsRes.value.data
+        : (allLocalOrgTickets.length > 0 ? (allLocalOrgTickets as any) : DB_ORGANIZER_TICKETS);
+
+    return mergedEvents
+      .filter((row: any) => row.active !== false && row.status !== "draft" && row.status !== "inactive")
+      .map((row: any) => mapEventItem(row, DB_CATEGORIES, rawTicketTypes, rawOrgTickets));
   } catch (err) {
-    console.warn("No se pudo obtener eventos en vivo, usando eventos predefinidos:", err);
-    return EVENTS;
+    console.warn("No se pudo obtener eventos en vivo, usando eventos persistidos locales:", err);
+    const baseEvents = localMockEvents.length > 0 ? (localMockEvents as any) : DB_EVENTS;
+    return baseEvents
+      .filter((row: any) => row.active !== false && row.status !== "draft" && row.status !== "inactive")
+      .map((row: any) => mapEventItem(row, DB_CATEGORIES, DB_TICKET_TYPES, allLocalOrgTickets as any));
   }
 }
 
