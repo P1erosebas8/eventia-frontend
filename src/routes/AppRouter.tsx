@@ -14,6 +14,8 @@ import AdminUsersPage from "../features/admin/pages/AdminUsersPage";
 import MisTicketsPage from "@/features/users/pages/MisTicketsPage";
 import PerfilPage from "@/features/users/pages/PerfilPage";
 
+import ScrollToTop from  "@/shared/components/ScrollToTop";
+
 
 function NotFound() {
   return (
@@ -32,6 +34,8 @@ function NotFound() {
 
 export default function AppRouter() {
   return (
+    <>
+    <ScrollToTop />
     <Routes>
      <Route element={<MainLayout />}>
           {/* Catálogo */}
@@ -67,5 +71,6 @@ export default function AppRouter() {
        {/* 404 */}
       <Route path="*" element={<NotFound />} />
     </Routes>
+    </>
   );
 }
