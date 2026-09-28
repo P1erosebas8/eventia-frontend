@@ -36,59 +36,70 @@ function Stepper() {
   };
 
   return (
-    <div>
-      <section className="w-full max-w-4xl mx-auto p-5">
-        <div>
-          {/*-----------------------------------------------*/}
-          {/*Pasos del Formulario*/}
-          <div className="flex justify-center p-3 gap-10">
-            {steps.map((item, index) => {
-              const stepNumber = index + 1;
-              const isActive = step === stepNumber;
-              const isCompleted = step > stepNumber;
+    <div className="w-full">
+      {/*-----------------------------------------------*/}
+      {/*Pasos del Formulario*/}
+      <div className="flex justify-between items-center pb-6 border-b border-gray-100">
+        {steps.map((item, index) => {
+          const stepNumber = index + 1;
+          const isActive = step === stepNumber;
+          const isCompleted = step > stepNumber;
 
-              return (
-                <div key={item.label} className="flex p-3 gap-1.5">
-                  <span
-                    className={`rounded-full w-10 h-10 flex justify-center items-center font-bold transition-colors ${isActive || isCompleted ? "bg-indigo-600 text-white" : "bg-gray-200 text-gray-500"} ${isActive ? "ring-2 ring-indigo-200" : ""}`}
-                  >
-                    {isCompleted ? <CheckIcon /> : stepNumber}
-                  </span>
-                  <div className="flex flex-col items-start">
-                    <p className="text-xs tracking-wide">PASO {index + 1}</p>
-                    <p className="font-bold">{item.label}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-          {/*-----------------------------------------------*/}
-          {/*Vistas*/}
-          <div className="my-6 p-4 rounded-lg min-h-25 flex items-center justify-center bg-white shadow-sm">
-            {step === 2 && (<PaymentMethodStep/>)}
-            {step === 3 && (<SummaryStep/>)}
-          </div>
-          {/*-----------------------------------------------*/}
-          {/*Botones para Retroceder o Avanzar*/}
-          <div className="w-full flex justify-between">
-            <button
-              type="button"
-              className="px-4 py-2 border rounded disabled:opacity-40 disabled:cursor-not-allowed"
-              disabled={step === 1}
-              onClick={() => setStep((s) => Math.max(2, s - 1))}
-            >
-              Atras
-            </button>
-            <button
-              type="button"
-              className="px-4 py-2 bg-indigo-600 text-white border rounded hover:bg-indigo-700"
-              onClick={handleNext}
-            >
-              {step === steps.length ? "Finalizar Compra" : "Siguiente"}
-            </button>
-          </div>
-        </div>
-      </section>
+          return (
+            <div key={item.label} className="flex items-center gap-2">
+              <span
+                className={`rounded-full w-8 h-8 sm:w-9 sm:h-9 text-xs sm:text-sm shrink-0 flex justify-center items-center font-bold transition-all 
+                  ${
+                    isActive || isCompleted
+                      ? "bg-indigo-600 text-white"
+                      : "bg-gray-200 text-gray-500"
+                  } 
+                  ${isActive ? "ring-2 ring-indigo-200" : ""}`}
+              >
+                {isCompleted ? <CheckIcon /> : stepNumber}
+              </span>
+
+              <div className="hidden sm:flex flex-col text-left leading-tight">
+                <p className="text-[10px] uppercase font-semibold text-gray-400 tracking-wider">
+                  PASO {index + 1}
+                </p>
+                <p
+                  className={`text-sm font-semibold ${
+                    isActive ? "text-indigo-600" : "text-gray-700"
+                  }`}
+                >
+                  {item.label}
+                </p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      {/*-----------------------------------------------*/}
+      {/*Vistas*/}
+      <div className="my-6 p-4 sm:p-6 rounded-xl bg-white shadow-sm border border-gray-100">
+        {step === 2 && <PaymentMethodStep />}
+        {step === 3 && <SummaryStep />}
+      </div>
+      {/*-----------------------------------------------*/}
+      {/*Botones para Retroceder o Avanzar*/}
+      <div className="flex justify-between items-center">
+        <button
+          type="button"
+          className="px-4 py-2 border rounded disabled:opacity-40 disabled:cursor-not-allowed"
+          disabled={step <= 2}
+          onClick={() => setStep((s) => Math.max(2, s - 1))}
+        >
+          Atras
+        </button>
+        <button
+          type="button"
+          className="px-4 py-2 bg-indigo-600 text-white border rounded hover:bg-indigo-700"
+          onClick={handleNext}
+        >
+          {step === steps.length ? "Finalizar Compra" : "Siguiente"}
+        </button>
+      </div>
     </div>
   );
 }
