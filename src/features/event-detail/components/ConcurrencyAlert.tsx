@@ -1,3 +1,4 @@
+/** Cinta de alta concurrencia (aviso estático, sin códigos internos). */
 export default function ConcurrencyAlert() {
   return (
     <div className="w-full bg-primary text-on-primary py-2.5 px-4 sm:px-6 shadow-sm overflow-hidden">

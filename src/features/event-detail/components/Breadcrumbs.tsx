@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 
+/** Migas de pan con rutas reales al catálogo. */
 export default function Breadcrumbs() {
   return (
     <nav

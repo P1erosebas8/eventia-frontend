@@ -46,6 +46,10 @@ function ZoneArea({
   );
 }
 
+/**
+ * Pestañas de la ficha. Las zonas del SVG son botones accesibles
+ * (click + teclado) que resaltan la localidad en el checkout.
+ */
 export default function EventTabs({ activeTab, onTabChange, onSelectTier }: EventTabsProps) {
   return (
     <div className="bg-surface-container-lowest rounded-xl p-4 shadow-sm min-w-0">
