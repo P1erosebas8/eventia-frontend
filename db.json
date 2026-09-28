@@ -1,0 +1,61 @@
+{
+  "orders": [
+    {
+      "id": "ord-1001",
+      "id_user": 1,
+      "order_date": "2026-09-23T19:30:00Z",
+      "payment_method": "CREDIT_CARD",
+      "total_amount": 180.0,
+      "status": "COMPLETED",
+      "order_details": [
+        {
+          "id_ticket_type": 1,
+          "ticket_name": "General",
+          "quantity": 2,
+          "unit_price": 100.0,
+          "discount_applied": 20.0
+        }
+      ]
+    }
+  ],
+  "tickets": [
+    {
+      "id": "tck-5001",
+      "id_order": "ord-1001",
+      "id_user": 1,
+      "event_title": "Festival Rock Lima 2026",
+      "ticket_type": "General",
+      "event_date": "2026-10-15T20:00:00Z",
+      "venue": "Estadio Nacional",
+      "qr_code": "EVT-ORD1001-TCK5001-SECURE",
+      "status": "VIGENTE"
+    },
+    {
+      "id": "tck-5002",
+      "id_order": "ord-1001",
+      "id_user": 1,
+      "event_title": "Festival Rock Lima 2026",
+      "ticket_type": "General",
+      "event_date": "2026-10-15T20:00:00Z",
+      "venue": "Estadio Nacional",
+      "qr_code": "EVT-ORD1001-TCK5002-SECURE",
+      "status": "ANULADO"
+    }
+  ],
+  "ticket_types": [
+    {
+      "id": 1,
+      "id_event": 101,
+      "name": "General",
+      "price": 100.0,
+      "stock": 50
+    },
+    {
+      "id": 2,
+      "id_event": 101,
+      "name": "VIP",
+      "price": 220.0,
+      "stock": 20
+    }
+  ]
+}
