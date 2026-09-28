@@ -4,6 +4,10 @@ interface HeroPromoProps {
   userName: string;
 }
 
+/**
+ * Banner de promo. La página solo lo monta si la sesión califica, por eso
+ * aquí se asume elegibilidad y se personaliza con el primer nombre.
+ */
 export default function HeroPromo({ userName }: HeroPromoProps) {
   const eligible = isPromoUser(userName);
   const firstName = userName.trim().split(/\s+/)[0];

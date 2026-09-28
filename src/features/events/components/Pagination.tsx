@@ -6,6 +6,7 @@ interface PaginationProps {
   onPageChange: (page: number) => void;
 }
 
+/** Navegación real: calcula rango visible y limita la página al rango válido. */
 export default function Pagination({
   page,
   totalPages,
@@ -13,6 +14,7 @@ export default function Pagination({
   pageSize,
   onPageChange,
 }: PaginationProps) {
+  // Rango "Mostrando X - Y de Z" derivado de página y tamaño.
   const safeTotalPages = Math.max(1, totalPages);
   const safePage = Math.min(Math.max(1, page), safeTotalPages);
   const start = totalItems === 0 ? 0 : (safePage - 1) * pageSize + 1;

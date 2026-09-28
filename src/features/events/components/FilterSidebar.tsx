@@ -32,6 +32,7 @@ export default function FilterSidebar(props: FilterSidebarProps) {
 
   const promoUser = sessionName !== null && isPromoUser(sessionName);
 
+  // Lleva la vista a los resultados sin recargar (filtros ya en vivo).
   const scrollToResults = () => {
     document.getElementById("catalog-results")?.scrollIntoView({ behavior: "smooth" });
   };
@@ -129,6 +130,7 @@ export default function FilterSidebar(props: FilterSidebarProps) {
         </label>
       </div>
 
+      {/* Categorías con conteo real calculado desde EVENTS. */}
       <div className="flex flex-col gap-2 min-w-0">
         <span className="text-xs font-semibold uppercase tracking-wider">Categorías</span>
         <div className="flex flex-col gap-1.5 min-w-0">

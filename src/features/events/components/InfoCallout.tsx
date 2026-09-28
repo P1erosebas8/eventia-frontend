@@ -1,3 +1,4 @@
+/** Aviso informativo de nominación de entradas (contenido estático). */
 export default function InfoCallout() {
   return (
     <aside

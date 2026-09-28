@@ -12,8 +12,14 @@ import { EVENTS, MAX_PRICE } from "../services/events.service";
 import type { Category, SortKey, ViewMode } from "../types/event.types";
 import { isPromoUser } from "../utils/promo.utils";
 
+/** Cantidad de eventos visibles por página. */
 const PAGE_SIZE = 6;
 
+/**
+ * Página del catálogo público de eventos.
+ * Orquesta búsqueda, filtros, orden, vista y paginación; el nombre para la
+ * promo siempre proviene de la sesión (nunca de un input manual).
+ */
 export default function CatalogPage() {
   const { isAuthenticated, user } = useAuth();
   const [search, setSearch] = useState("");
@@ -24,9 +30,12 @@ export default function CatalogPage() {
   const [view, setView] = useState<ViewMode>("grid");
   const [page, setPage] = useState(1);
 
+  /** Nombre de sesión o null si es visita anónima. */
   const sessionName =
     isAuthenticated && user ? `${user.firstName} ${user.lastName}`.trim() : null;
+  /** Nombre efectivo para descuentos (vacío si no hay sesión). */
   const effectiveName = sessionName ?? "";
+  /** El banner solo existe si la sesión cumple la promo. */
   const showPromoBanner = sessionName !== null && isPromoUser(sessionName);
 
   const toggleCategory = (category: Category) => {
@@ -36,6 +45,7 @@ export default function CatalogPage() {
     setPage(1);
   };
 
+  // Cada cambio de filtro vuelve a la primera página (evita páginas vacías).
   const handleSearchChange = (value: string) => {
     setSearch(value);
     setPage(1);
@@ -66,6 +76,7 @@ export default function CatalogPage() {
   };
 
   const query = search.trim().toLowerCase();
+  // Filtrado + orden memorizados: solo se recalculan si cambia un filtro.
   const filtered = useMemo(() => {
     const result = EVENTS.filter((event) => {
       if (promoOnly && !event.isPromoEligible) return false;
@@ -85,6 +96,7 @@ export default function CatalogPage() {
     });
   }, [promoOnly, selectedCategories, maxPrice, query, sort]);
 
+  // Paginación defensiva: la página actual nunca sale del rango válido.
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const safePage = Math.min(Math.max(1, page), totalPages);
   const paged = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
@@ -95,6 +107,7 @@ export default function CatalogPage() {
       <div className="w-full pt-16 min-h-screen min-w-0">
         <PromoTicker />
 
+        {/* gap estructural: si el banner se oculta no queda hueco. */}
         <section className="max-w-[1280px] w-full mx-auto px-4 sm:px-6 py-6 min-w-0 flex flex-col gap-4 sm:gap-6">
           {showPromoBanner && sessionName !== null && <HeroPromo userName={sessionName} />}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-start min-w-0">
@@ -121,6 +134,7 @@ export default function CatalogPage() {
               />
 
               {paged.length === 0 ? (
+                // Estado vacío con salida clara (limpiar filtros).
                 <div className="bg-surface-container-lowest p-10 rounded-xl text-center shadow-sm min-w-0">
                   <span className="material-symbols-outlined text-5xl text-outline">
                     search_off
