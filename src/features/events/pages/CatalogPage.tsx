@@ -24,7 +24,6 @@ export default function CatalogPage() {
   const [location, setLocation] = useState("ALL");
   const [priceRangeId, setPriceRangeId] = useState("ALL");
   const [category, setCategory] = useState<Category | "ALL">("ALL");
-  const [promoOnly, setPromoOnly] = useState(false);
   const [sort, setSort] = useState<SortKey>("popular");
   const [view, setView] = useState<ViewMode>("grid");
   const [page, setPage] = useState(1);
@@ -65,7 +64,6 @@ export default function CatalogPage() {
     setLocation("ALL");
     setPriceRangeId("ALL");
     setCategory("ALL");
-    setPromoOnly(false);
     setSort("popular");
     setPage(1);
   };
@@ -78,7 +76,6 @@ export default function CatalogPage() {
   // Filtrado + orden memorizados: solo se recalculan si cambia un filtro.
   const filtered = useMemo(() => {
     const result = EVENTS.filter((event) => {
-      if (promoOnly && !event.isPromoEligible) return false;
       if (category !== "ALL" && event.category !== category) return false;
       if (month !== "ALL" && event.month !== month) return false;
       if (location !== "ALL" && event.venue !== location) return false;
@@ -94,7 +91,7 @@ export default function CatalogPage() {
       if (sort === "price-desc") return b.price - a.price;
       return b.soldPct - a.soldPct;
     });
-  }, [promoOnly, category, month, location, priceRange, query, sort]);
+  }, [category, month, location, priceRange, query, sort]);
 
   // Paginación defensiva: la página actual nunca sale del rango válido.
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
@@ -138,22 +135,8 @@ export default function CatalogPage() {
             onSubmit={scrollToResults}
           />
 
-          {/* Fila compacta: promo y limpiar. */}
+          {/* Fila compacta: limpiar filtros. */}
           <div className="flex flex-wrap items-center gap-2 sm:gap-3 min-w-0">
-            <label className="inline-flex items-center gap-2 bg-surface-container-lowest px-3 py-1.5 rounded-full shadow-sm cursor-pointer whitespace-nowrap">
-              <input
-                type="checkbox"
-                className="sr-only peer"
-                checked={promoOnly}
-                onChange={(e) => {
-                  setPromoOnly(e.target.checked);
-                  resetPage();
-                }}
-              />
-              <span className="w-9 h-5 bg-surface-container-high rounded-full peer-checked:bg-secondary relative transition-colors after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-4 shrink-0" />
-              <span className="text-xs font-bold text-on-surface">Solo promo 15%</span>
-            </label>
-
             <button
               onClick={clearFilters}
               type="button"
