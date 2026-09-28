@@ -1,5 +1,6 @@
 import type { TicketTier } from "../types/event-detail.types";
 
+/** Localidades dummy (reemplazar por el backend real). */
 export const TICKET_TIERS: TicketTier[] = [
   {
     id: "vip",
@@ -30,8 +31,10 @@ export const TICKET_TIERS: TicketTier[] = [
   },
 ];
 
+/** Tope antirreventa por orden de compra. */
 export const MAX_TICKETS = 10;
 
+/** Formato moneda peruana (ej. "S/ 320.00"). */
 export function formatPEN(value: number): string {
   return `S/ ${value.toFixed(2)}`;
 }

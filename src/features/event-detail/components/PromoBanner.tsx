@@ -4,6 +4,10 @@ interface PromoBannerProps {
   userName: string;
 }
 
+/**
+ * Banner de promo del detalle. Se personaliza si la sesión califica;
+ * en otro caso muestra la condición (Roberto o Gerónimo).
+ */
 export default function PromoBanner({ userName }: PromoBannerProps) {
   const eligible = isPromoUser(userName);
   const firstName = userName.trim().split(/\s+/)[0];

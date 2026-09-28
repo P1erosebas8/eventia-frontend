@@ -11,6 +11,10 @@ import { TICKET_TIERS, MAX_TICKETS } from "../services/event-detail.service";
 import type { DetailTabId, TicketTierId } from "../types/event-detail.types";
 import { isPromoUser, PROMO_DISCOUNT_PCT } from "../../events/utils/promo.utils";
 
+/**
+ * Ficha del evento con mapa de zonas y checkout lateral.
+ * El descuento de la promo depende del nombre de sesión (ver promo.utils).
+ */
 export default function EventDetailPage() {
   const [activeTab, setActiveTab] = useState<DetailTabId>("zones");
   const [quantities, setQuantities] = useState<Record<TicketTierId, number>>({
@@ -26,6 +30,7 @@ export default function EventDetailPage() {
       const total = prev.vip + prev.general + prev.west;
       const next = prev[tier] + delta;
       if (next < 0) return prev;
+      // Tope antirreventa: máximo MAX_TICKETS entre todas las zonas.
       if (delta > 0 && total >= MAX_TICKETS) return prev;
       return { ...prev, [tier]: next };
     });
@@ -33,11 +38,13 @@ export default function EventDetailPage() {
 
   const count = quantities.vip + quantities.general + quantities.west;
   const subtotal = TICKET_TIERS.reduce((acc, tier) => acc + tier.price * quantities[tier.id], 0);
+  // Sin sesión que califique no hay descuento (total = subtotal).
   const discount = isPromoUser(userName) ? (subtotal * PROMO_DISCOUNT_PCT) / 100 : 0;
   const totals = { count, subtotal, discount, total: subtotal - discount };
 
   const handleSelectTier = (tier: TicketTierId) => {
     setHighlightedTier(tier);
+    // Lleva la zona al checkout y la resalta; el resaltado se apaga solo.
     document
       .getElementById(`tier-${tier}-container`)
       ?.scrollIntoView({ behavior: "smooth", block: "center" });

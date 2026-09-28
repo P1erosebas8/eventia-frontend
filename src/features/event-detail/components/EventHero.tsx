@@ -5,6 +5,7 @@ const META = [
   { icon: "badge", label: "Acceso", value: "+18 Años (DNI)" },
 ];
 
+/** Portada del evento: foto, insignias, fecha y datos clave. */
 export default function EventHero() {
   return (
     <div className="relative rounded-xl overflow-hidden shadow-sm bg-surface-container-lowest min-w-0">

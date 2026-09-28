@@ -1,3 +1,4 @@
+/** Tarjeta del organizador verificado. */
 export default function OrganizerCard() {
   return (
     <div className="bg-surface-container-lowest p-4 rounded-xl shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 min-w-0">

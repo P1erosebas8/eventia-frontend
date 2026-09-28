@@ -3,8 +3,10 @@ import { TICKET_TIERS, formatPEN, MAX_TICKETS } from "../services/event-detail.s
 import type { OrderTotals, TicketTierId } from "../types/event-detail.types";
 import { isPromoUser, PROMO_DISCOUNT_PCT } from "../../events/utils/promo.utils";
 
+/** Reserva simulada: 15 minutos para completar la compra. */
 const HOLD_SECONDS = 15 * 60;
 
+/** Formatea segundos a "MM:SS". */
 function formatCountdown(totalSeconds: number): string {
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
@@ -20,6 +22,7 @@ interface CheckoutPanelProps {
   onUserNameChange: (value: string) => void;
 }
 
+/** Panel de compra: cantidades, nombre del comprador, resumen y pago. */
 export default function CheckoutPanel({
   quantities,
   onUpdateQuantity,
@@ -32,6 +35,7 @@ export default function CheckoutPanel({
   const promoUser = isPromoUser(userName);
   const [secondsLeft, setSecondsLeft] = useState(HOLD_SECONDS);
 
+  // Reloj en vivo con limpieza al desmontar (evita timers huérfanos).
   useEffect(() => {
     const timer = window.setInterval(() => {
       setSecondsLeft((prev) => (prev > 0 ? prev - 1 : 0));
