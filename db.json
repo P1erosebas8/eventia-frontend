@@ -40,6 +40,28 @@
       "venue": "Estadio Nacional",
       "qr_code": "EVT-ORD1001-TCK5002-SECURE",
       "status": "ANULADO"
+    },
+    {
+      "id": "tck-5003",
+      "id_order": "ord-1002",
+      "id_user": 2,
+      "event_title": "Festival Rock Lima 2026",
+      "ticket_type": "VIP",
+      "event_date": "2026-10-15T20:00:00Z",
+      "venue": "Estadio Nacional",
+      "qr_code": "EVT-ORD1002-TCK5003-SECURE",
+      "status": "USADO"
+    },
+    {
+      "id": "tck-5004",
+      "id_order": "ord-1003",
+      "id_user": 3,
+      "event_title": "Festival Rock Lima 2026",
+      "ticket_type": "General",
+      "event_date": "2026-10-15T20:00:00Z",
+      "venue": "Estadio Nacional",
+      "qr_code": "EVT-ORD1003-TCK5004-SECURE",
+      "status": "VIGENTE"
     }
   ],
   "ticket_types": [

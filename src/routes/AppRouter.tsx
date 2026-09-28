@@ -21,6 +21,7 @@ import OrganizerDashboardPage from "../features/organizer/pages/OrganizerDashboa
 import EventEditPage from "../features/organizer/pages/EventEditPage";
 import EventCreatePage from "../features/organizer/pages/EventCreatePage";
 import EventTicketsPage from "../features/organizer/pages/EventTicketsPage";
+import QrValidatorPage from "../features/organizer/pages/QrValidatorPage";
 
 function NotFound() {
   return (
@@ -73,6 +74,7 @@ export default function AppRouter() {
         <Route path="eventos/:id/editar" element={<EventEditPage />} />
         <Route path="eventos/:id/entradas" element={<EventTicketsPage />} />
         <Route path="eventos/entradas" element={<EventTicketsPage />} />
+        <Route path="validar-qr" element={<QrValidatorPage />} />
       </Route>
 
       {/* 404 */}
