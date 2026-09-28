@@ -4,7 +4,6 @@ import Footer from "../../../shared/layouts/Footer";
 import CatalogFilterBar from "../components/CatalogFilterBar";
 import CatalogToolbar from "../components/CatalogToolbar";
 import EventCard from "../components/EventCard";
-import InfoCallout from "../components/InfoCallout";
 import Pagination from "../components/Pagination";
 import { CATEGORY_ORDER, EVENTS, PRICE_RANGES } from "../services/events.service";
 import type { Category, SortKey, ViewMode } from "../types/event.types";
@@ -199,9 +198,8 @@ export default function CatalogPage() {
               totalItems={filtered.length}
               pageSize={PAGE_SIZE}
               onPageChange={setPage}
-            />
-            <InfoCallout />
-          </div>
+              />
+            </div>
         </section>
       </div>
 
