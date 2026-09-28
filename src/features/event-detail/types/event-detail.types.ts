@@ -1,5 +1,5 @@
-/** Zonas vendibles del estadio. */
-export type TicketTierId = "vip" | "general" | "west";
+/** Identificador de localidad (viene de `ticket_types` en db.json). */
+export type TicketTierId = string;
 
 /** Localidad con precios (base y regular tachado) para el checkout. */
 export interface TicketTier {
@@ -11,6 +11,21 @@ export interface TicketTier {
   regularPrice: number;
   /** Clase del punto de color en el checkout. */
   dot: string;
+}
+
+/** Ficha del evento armada desde db.json para el detalle. */
+export interface EventDetailData {
+  id: number;
+  title: string;
+  venue: string;
+  city: string;
+  /** Fecha legible (ej. "22 Nov 2025"). */
+  dateLabel: string;
+  /** Mes abreviado para la insignia (ej. "NOV"). */
+  month: string;
+  /** Día con dos dígitos para la insignia. */
+  day: string;
+  tiers: TicketTier[];
 }
 
 /** Pestañas de la ficha: mapa, artistas y políticas. */
