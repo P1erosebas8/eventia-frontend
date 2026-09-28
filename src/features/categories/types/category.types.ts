@@ -1,3 +1,4 @@
+/** Categoría administrable. Solo admite baja lógica (`isActive`). */
 export interface AdminCategory {
   id: string;
   name: string;
@@ -9,6 +10,7 @@ export interface AdminCategory {
   isActive: boolean;
 }
 
+/** Datos que pide el modal para crear una categoría. */
 export interface NewAdminCategory {
   name: string;
 }

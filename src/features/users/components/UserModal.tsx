@@ -9,6 +9,10 @@ interface UserModalProps {
   onSubmit: (input: NewDirectoryUser) => void;
 }
 
+/**
+ * Modal controlado de alta. Si el nombre califica (Roberto/Gerónimo),
+ * avisa que tendrá la promo del 15%.
+ */
 export default function UserModal({ open, onClose, onSubmit }: UserModalProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");

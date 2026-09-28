@@ -14,6 +14,10 @@ import {
 } from "../services/users.service";
 import type { AccountStatus, NewDirectoryUser, Role } from "../types/user.types";
 
+/**
+ * Gestión de usuarios: directorio filtrable con paginación, alta real,
+ * cambio de estado y exporte CSV. Todo el estado vive en la página.
+ */
 export default function UsersPage() {
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState<Role | "ALL">("ALL");
@@ -23,6 +27,7 @@ export default function UsersPage() {
   const [userModalOpen, setUserModalOpen] = useState(false);
   const [toast, setToast] = useState<ToastData | null>(null);
 
+  // Toast autodestruible para confirmar cada acción.
   const showToast = (title: string, description: string) => {
     setToast({ title, description });
     window.setTimeout(() => setToast(null), 4000);
@@ -37,6 +42,7 @@ export default function UsersPage() {
     return true;
   });
 
+  // Alterna Activo/Suspendido sin borrar (baja lógica).
   const toggleUserStatus = (id: string) =>
     setUsers((prev) =>
       prev.map((user) =>
@@ -46,6 +52,7 @@ export default function UsersPage() {
       ),
     );
 
+  // Inserta al inicio, vuelve a pág. 1 y confirma con toast.
   const createUser = (input: NewDirectoryUser) => {
     setUsers((prev) => [buildUser(`U-${String(prev.length + 1).padStart(2, "0")}`, input), ...prev]);
     setPage(1);

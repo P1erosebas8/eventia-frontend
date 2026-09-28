@@ -1,5 +1,6 @@
 import type { AdminCategory, NewAdminCategory } from "../types/category.types";
 
+/** Categorías dummy iniciales. */
 export const INITIAL_CATEGORIES: AdminCategory[] = [
   {
     id: "CAT-01",
@@ -63,6 +64,7 @@ export const INITIAL_CATEGORIES: AdminCategory[] = [
   },
 ];
 
+/** Convierte un nombre en slug URL ("Música & Conciertos" → "musica-conciertos"). */
 export function slugify(value: string): string {
   return value
     .trim()
@@ -73,6 +75,7 @@ export function slugify(value: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
+/** Construye una categoría nueva, activa y sin eventos. */
 export function buildCategory(id: string, input: NewAdminCategory): AdminCategory {
   return {
     id,

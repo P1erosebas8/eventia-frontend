@@ -10,6 +10,10 @@ import CategoryModal from "../components/CategoryModal";
 import { INITIAL_CATEGORIES, buildCategory } from "../services/categories.service";
 import type { NewAdminCategory } from "../types/category.types";
 
+/**
+ * Gestión de categorías con baja lógica: desactivar oculta de cartelera
+ * sin borrar historial. Incluye KPIs en vivo y alta con slug automático.
+ */
 export default function CategoriesPage() {
   const [categories, setCategories] = useState(INITIAL_CATEGORIES);
   const [categoryModalOpen, setCategoryModalOpen] = useState(false);
