@@ -6,6 +6,7 @@ interface CategoryManagerProps {
   onToast: (title: string, description: string) => void;
 }
 
+/** Tabla de categorías con activar/desactivar seguro (sin DELETE físico). */
 export default function CategoryManager({ categories, onToggle, onToast }: CategoryManagerProps) {
   return (
     <section className="flex flex-col gap-4 mt-4 min-w-0">

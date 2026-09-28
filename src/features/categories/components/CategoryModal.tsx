@@ -7,6 +7,7 @@ interface CategoryModalProps {
   onSubmit: (input: NewAdminCategory) => void;
 }
 
+/** Modal controlado de alta de categoría (el slug se genera solo). */
 export default function CategoryModal({ open, onClose, onSubmit }: CategoryModalProps) {
   const [name, setName] = useState("");
 

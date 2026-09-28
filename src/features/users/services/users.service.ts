@@ -1,5 +1,6 @@
 import type { DirectoryUser, NewDirectoryUser, Role } from "../types/user.types";
 
+/** Usuarios dummy iniciales (incluye un Roberto para demo de la promo). */
 export const INITIAL_USERS: DirectoryUser[] = [
   {
     id: "U-01",
@@ -71,6 +72,7 @@ export const INITIAL_USERS: DirectoryUser[] = [
 
 export const USER_ROLES: Role[] = ["Administrador", "Organizador", "Staff", "Cliente"];
 
+/** Construye un usuario nuevo con iniciales y estado activo. */
 export function buildUser(id: string, input: NewDirectoryUser): DirectoryUser {
   const parts = input.name.trim().split(/\s+/);
   const initials = parts
@@ -90,6 +92,7 @@ export function buildUser(id: string, input: NewDirectoryUser): DirectoryUser {
   };
 }
 
+/** Genera el CSV del directorio con comillas escapadas. */
 export function exportUsersCsv(users: DirectoryUser[]): string {
   const header = "id,nombre,email,rol,documento,estado";
   const rows = users.map((user) =>
@@ -100,6 +103,7 @@ export function exportUsersCsv(users: DirectoryUser[]): string {
   return [header, ...rows].join("\n");
 }
 
+/** Descarga un CSV en el navegador vía Blob (sin backend). */
 export function downloadCsv(filename: string, content: string): void {
   const blob = new Blob([content], { type: "text/csv;charset=utf-8" });
   const url = URL.createObjectURL(blob);

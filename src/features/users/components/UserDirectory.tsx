@@ -15,6 +15,7 @@ const ROLE_ICON: Record<Role, string> = {
   Cliente: "shopping_bag",
 };
 
+/** Tamaño de página del directorio. */
 export const USERS_PAGE_SIZE = 4;
 
 interface UserDirectoryProps {
@@ -32,6 +33,7 @@ interface UserDirectoryProps {
   onExport: () => void;
 }
 
+/** Tabla de usuarios: filtros, badge promo, acciones y paginación funcional. */
 export default function UserDirectory(props: UserDirectoryProps) {
   const {
     users,
