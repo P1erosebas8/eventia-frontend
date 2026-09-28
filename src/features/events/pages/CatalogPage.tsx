@@ -8,7 +8,7 @@ import EventCard from "../components/EventCard";
 import HeroPromo from "../components/HeroPromo";
 import InfoCallout from "../components/InfoCallout";
 import Pagination from "../components/Pagination";
-import { CATEGORIES, EVENTS, PRICE_RANGES } from "../services/events.service";
+import { CATEGORY_ORDER, EVENTS, PRICE_RANGES } from "../services/events.service";
 import type { Category, SortKey, ViewMode } from "../types/event.types";
 import { isPromoUser } from "../utils/promo.utils";
 
@@ -41,13 +41,17 @@ export default function CatalogPage() {
   const showPromoBanner = sessionName !== null && isPromoUser(sessionName);
   const sessionPromo = sessionName !== null && isPromoUser(sessionName);
 
-  // Opciones derivadas de los datos (sin valores fijos).
+  // Opciones derivadas de los datos del servicio (sin valores fijos).
   const months = useMemo(
     () => Array.from(new Set(EVENTS.map((event) => event.month))),
     []
   );
   const locations = useMemo(
     () => Array.from(new Set(EVENTS.map((event) => event.venue))),
+    []
+  );
+  const categories = useMemo(
+    () => CATEGORY_ORDER.filter((name) => EVENTS.some((event) => event.category === name)),
     []
   );
   const priceRange =
@@ -139,7 +143,7 @@ export default function CatalogPage() {
               setCategory(value as Category | "ALL");
               resetPage();
             }}
-            categories={CATEGORIES.map((item) => item.name)}
+            categories={categories}
             onSubmit={scrollToResults}
           />
 
