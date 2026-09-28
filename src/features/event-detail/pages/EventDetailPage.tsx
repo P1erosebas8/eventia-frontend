@@ -18,7 +18,7 @@ import { isPromoUser, PROMO_DISCOUNT_PCT } from "../../events/utils/promo.utils"
 export default function EventDetailPage() {
   const [activeTab, setActiveTab] = useState<DetailTabId>("zones");
   const [quantities, setQuantities] = useState<Record<TicketTierId, number>>({
-    vip: 2,
+    vip: 0,
     general: 0,
     west: 0,
   });
