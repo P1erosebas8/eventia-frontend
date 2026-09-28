@@ -6,14 +6,6 @@ export default function Footer() {
         <span className="font-display font-semibold text-primary whitespace-nowrap">
           Eventia S.A.C.
         </span>
-        <div className="flex items-center gap-4 text-sm font-medium text-on-surface-variant">
-          <a className="hover:text-on-surface transition-colors" href="#">
-            Términos
-          </a>
-          <a className="hover:text-on-surface transition-colors" href="mailto:soporte@eventia.pe">
-            Contacto
-          </a>
-        </div>
         <span className="text-xs text-outline whitespace-nowrap">© 2025 Eventia · Lima, Perú</span>
       </div>
     </footer>
