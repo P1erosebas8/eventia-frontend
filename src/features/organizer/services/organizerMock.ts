@@ -3,124 +3,39 @@ import type {
   DailySalesDataPoint,
   TicketType,
 } from "../types/organizer.types";
+import db from "../../../../db.json";
 
 export const USE_MOCK_DATA = import.meta.env.VITE_USE_MOCK_DATA !== "false";
 
 const EVENTS_STORAGE_KEY = "eventia_organizer_events";
 const TICKETS_STORAGE_KEY = "eventia_organizer_tickets";
 
-export const INITIAL_EVENTS: OrganizerEvent[] = [
-  {
-    id: "EVT-2025-LIM-9812",
-    code: "EVT-9812",
-    title: "Lima Live Sessions 2025",
-    category: "Conciertos",
-    venue: "Arena 1 Costa Verde",
-    city: "Lima",
-    date: "2025-11-15",
-    time: "20:00",
-    bannerUrl:
-      "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600&auto=format&fit=crop&q=80",
-    status: "published",
-    active: true,
-    capacity: 15000,
-    ticketsSold: 12600,
-    totalRevenue: 3420000,
-    featured: true,
-  },
-  {
-    id: "EVT-2025-AQP-4410",
-    code: "EVT-4410",
-    title: "Festival Gastronómico Sabores del Sur",
-    category: "Festivales",
-    venue: "Jardín de la Cerveza",
-    city: "Arequipa",
-    date: "2025-10-28",
-    time: "12:00",
-    bannerUrl:
-      "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&auto=format&fit=crop&q=80",
-    status: "almost_sold_out",
-    active: true,
-    capacity: 8000,
-    ticketsSold: 7420,
-    totalRevenue: 890400,
-    featured: false,
-  },
-  {
-    id: "EVT-2025-CUS-1022",
-    code: "EVT-1022",
-    title: "Cusco Electro Andino Fest",
-    category: "Música Electrónica",
-    venue: "Valle Sagrado Soundpark",
-    city: "Cusco",
-    date: "2025-12-05",
-    time: "18:00",
-    bannerUrl:
-      "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600&auto=format&fit=crop&q=80",
-    status: "published",
-    active: true,
-    capacity: 5000,
-    ticketsSold: 3100,
-    totalRevenue: 620000,
-    featured: false,
-  },
-  {
-    id: "EVT-2025-LIM-3321",
-    code: "EVT-3321",
-    title: "Conferencia Internacional Tech Horizons Perú",
-    category: "Conferencias & Tech",
-    venue: "Centro de Convenciones de Lima",
-    city: "Lima",
-    date: "2025-09-30",
-    time: "09:00",
-    bannerUrl:
-      "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&auto=format&fit=crop&q=80",
-    status: "sold_out",
-    active: true,
-    capacity: 2500,
-    ticketsSold: 2500,
-    totalRevenue: 1250000,
-    featured: false,
-  },
-  {
-    id: "EVT-2025-TRU-7729",
-    code: "EVT-7729",
-    title: "Noche de Gala Marinera Trujillana",
-    category: "Cultura & Danza",
-    venue: "Coliseo Gran Chimú",
-    city: "Trujillo",
-    date: "2025-11-20",
-    time: "19:30",
-    bannerUrl:
-      "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=600&auto=format&fit=crop&q=80",
-    status: "draft",
-    active: true,
-    capacity: 4000,
-    ticketsSold: 0,
-    totalRevenue: 0,
-    featured: false,
-  },
-  {
-    id: "EVT-2025-LIM-0091",
-    code: "EVT-0091",
-    title: "Expo Comic & Anime Fest",
-    category: "Convenciones",
-    venue: "Parque de la Exposición",
-    city: "Lima",
-    date: "2025-08-10",
-    time: "10:00",
-    bannerUrl:
-      "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop&q=80",
-    status: "inactive",
-    active: false,
-    capacity: 6000,
-    ticketsSold: 1200,
-    totalRevenue: 96000,
-    featured: false,
-  },
-];
+// Inicializar eventos semilla directamente desde db.json
+const rawDbEvents: any[] = (db as any).events || [];
+export const INITIAL_EVENTS: OrganizerEvent[] = rawDbEvents.map((e: any) => ({
+  id: String(e.id || e.id_event),
+  code: e.code || `EVT-${e.id || e.id_event}`,
+  title: e.title,
+  category: e.category || "Música & Conciertos",
+  venue: e.venue || e.location || "Lima",
+  city: e.city || "Lima",
+  date: e.date,
+  time: e.time || e.start_time || "20:00",
+  bannerUrl:
+    e.bannerUrl ||
+    e.image ||
+    "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600&auto=format&fit=crop&q=80",
+  status: (e.status as any) || "published",
+  active: e.active ?? true,
+  capacity: e.capacity || 5000,
+  ticketsSold: e.ticketsSold || 0,
+  totalRevenue: e.totalRevenue || 0,
+  featured: e.featured ?? false,
+  id_organizer: e.id_organizer,
+  organizerId: e.organizerId || e.id_organizer,
+}));
 
-export const MOCK_DAILY_SALES: DailySalesDataPoint[] = [
+export const MOCK_DAILY_SALES: DailySalesDataPoint[] = (db as any).dailySales || [
   { day: "Lun", date: "20 Sep", totalPEN: 180000, ticketsSold: 890 },
   { day: "Mar", date: "21 Sep", totalPEN: 243000, ticketsSold: 1120 },
   { day: "Mié", date: "22 Sep", totalPEN: 337000, ticketsSold: 1540 },
@@ -130,80 +45,31 @@ export const MOCK_DAILY_SALES: DailySalesDataPoint[] = [
   { day: "Dom", date: "26 Sep", totalPEN: 590000, ticketsSold: 2650 },
 ];
 
-export const INITIAL_TICKETS: Record<string, TicketType[]> = {
-  "EVT-2025-LIM-9812": [
-    {
-      id: "TCK-9812-01",
-      eventId: "EVT-2025-LIM-9812",
-      name: "Campo VIP Platinum",
-      zone: "VIP Platinum",
-      pricePEN: 420,
-      capacity: 4000,
-      soldCount: 3850,
-      status: "active",
-      saleStartDate: "2025-08-01",
-      saleEndDate: "2025-11-15",
-      isPresale: false,
-      maxPerPurchase: 4,
-    },
-    {
-      id: "TCK-9812-02",
-      eventId: "EVT-2025-LIM-9812",
-      name: "Campo General - Fase 2",
-      zone: "General",
-      pricePEN: 220,
-      capacity: 7000,
-      soldCount: 6200,
-      status: "active",
-      saleStartDate: "2025-08-15",
-      saleEndDate: "2025-11-15",
-      isPresale: false,
-      maxPerPurchase: 6,
-    },
-    {
-      id: "TCK-9812-03",
-      eventId: "EVT-2025-LIM-9812",
-      name: "Tribuna Occidente Numerada",
-      zone: "Tribuna",
-      pricePEN: 290,
-      capacity: 2000,
-      soldCount: 1450,
-      status: "active",
-      saleStartDate: "2025-08-01",
-      saleEndDate: "2025-11-15",
-      isPresale: false,
-      maxPerPurchase: 4,
-    },
-    {
-      id: "TCK-9812-04",
-      eventId: "EVT-2025-LIM-9812",
-      name: "Tribuna Oriente",
-      zone: "Tribuna",
-      pricePEN: 290,
-      capacity: 2000,
-      soldCount: 1100,
-      status: "active",
-      saleStartDate: "2025-08-01",
-      saleEndDate: "2025-11-15",
-      isPresale: false,
-      maxPerPurchase: 4,
-    },
-    {
-      id: "TCK-9812-05",
-      eventId: "EVT-2025-LIM-9812",
-      name: "Early Bird - Preventa BBVA",
-      zone: "General",
-      pricePEN: 175,
-      capacity: 1000,
-      soldCount: 1000,
-      status: "sold_out",
-      saleStartDate: "2025-07-15",
-      saleEndDate: "2025-07-31",
-      isPresale: true,
-      maxPerPurchase: 2,
-    },
-  ],
-};
+// Agrupar tickets iniciales por eventId desde db.json
+const rawDbTickets: any[] = (db as any).organizer_tickets || [];
+const initialTicketsMap: Record<string, TicketType[]> = {};
+for (const t of rawDbTickets) {
+  const evtId = String(t.eventId);
+  if (!initialTicketsMap[evtId]) {
+    initialTicketsMap[evtId] = [];
+  }
+  initialTicketsMap[evtId].push({
+    id: String(t.id),
+    eventId: evtId,
+    name: t.name,
+    zone: t.zone || t.name,
+    pricePEN: t.pricePEN ?? t.price ?? 100,
+    capacity: t.capacity || 1000,
+    soldCount: t.soldCount || 0,
+    status: t.status || "active",
+    saleStartDate: t.saleStartDate || "2025-08-01",
+    saleEndDate: t.saleEndDate || "2025-11-15",
+    isPresale: t.isPresale ?? false,
+    maxPerPurchase: t.maxPerPurchase || 4,
+  });
+}
+
+export const INITIAL_TICKETS: Record<string, TicketType[]> = initialTicketsMap;
 
 export function getMockEvents(): OrganizerEvent[] {
   if (typeof window === "undefined") return [...INITIAL_EVENTS];

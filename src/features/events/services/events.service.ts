@@ -169,9 +169,9 @@ export function mapEventItem(
 }
 
 /** Eventos leídos desde db.json (fuente inicial). */
-export const EVENTS: CatalogEvent[] = DB_EVENTS.filter((row) => row.active !== false).map((row) =>
-  mapEventItem(row, DB_CATEGORIES, DB_TICKET_TYPES, DB_ORGANIZER_TICKETS)
-);
+export const EVENTS: CatalogEvent[] = DB_EVENTS.filter(
+  (row) => row.active !== false && row.status !== "draft" && row.status !== "inactive"
+).map((row) => mapEventItem(row, DB_CATEGORIES, DB_TICKET_TYPES, DB_ORGANIZER_TICKETS));
 
 /**
  * Consulta dinámica a la API para obtener eventos y sus tarifas actualizadas
@@ -188,14 +188,23 @@ export async function fetchCatalogEvents(): Promise<CatalogEvent[]> {
       apiClient.get<DbOrganizerTicket[]>("/organizer_tickets"),
     ]);
 
-    const apiEvents = eventsRes.status === "fulfilled" && Array.isArray(eventsRes.value.data) ? eventsRes.value.data : [];
-    const baseEvents = apiEvents.length > 0 ? apiEvents : (localMockEvents.length > 0 ? (localMockEvents as any) : DB_EVENTS);
+    const apiEvents =
+      eventsRes.status === "fulfilled" && Array.isArray(eventsRes.value.data) && eventsRes.value.data.length > 0
+        ? eventsRes.value.data
+        : DB_EVENTS;
 
-    const baseEventIds = new Set(baseEvents.map((e: any) => String(e.id || e.id_event)));
-    const additionalLocalEvents = (localMockEvents as any).filter((e: any) => !baseEventIds.has(String(e.id)));
-    const mergedEvents = [...baseEvents, ...additionalLocalEvents];
+    // Agregar eventos adicionales creados por el organizador en sesión
+    const baseEventIds = new Set(apiEvents.map((e: any) => String(e.id || e.id_event)));
+    const customLocalEvents = (localMockEvents as any).filter(
+      (e: any) => !baseEventIds.has(String(e.id))
+    );
+    const mergedEvents = [...apiEvents, ...customLocalEvents];
 
-    const rawTicketTypes = ticketTypesRes.status === "fulfilled" ? ticketTypesRes.value.data : DB_TICKET_TYPES;
+    const rawTicketTypes =
+      ticketTypesRes.status === "fulfilled" && Array.isArray(ticketTypesRes.value.data) && ticketTypesRes.value.data.length > 0
+        ? ticketTypesRes.value.data
+        : DB_TICKET_TYPES;
+
     const rawOrgTickets =
       orgTicketsRes.status === "fulfilled" && Array.isArray(orgTicketsRes.value.data) && orgTicketsRes.value.data.length > 0
         ? orgTicketsRes.value.data
@@ -206,10 +215,22 @@ export async function fetchCatalogEvents(): Promise<CatalogEvent[]> {
       .map((row: any) => mapEventItem(row, DB_CATEGORIES, rawTicketTypes, rawOrgTickets));
   } catch (err) {
     console.warn("No se pudo obtener eventos en vivo, usando eventos persistidos locales:", err);
-    const baseEvents = localMockEvents.length > 0 ? (localMockEvents as any) : DB_EVENTS;
-    return baseEvents
+    const baseEventIds = new Set(DB_EVENTS.map((e: any) => String(e.id || e.id_event)));
+    const customLocalEvents = (localMockEvents as any).filter(
+      (e: any) => !baseEventIds.has(String(e.id))
+    );
+    const mergedEvents = [...DB_EVENTS, ...customLocalEvents];
+
+    return mergedEvents
       .filter((row: any) => row.active !== false && row.status !== "draft" && row.status !== "inactive")
-      .map((row: any) => mapEventItem(row, DB_CATEGORIES, DB_TICKET_TYPES, allLocalOrgTickets as any));
+      .map((row: any) =>
+        mapEventItem(
+          row,
+          DB_CATEGORIES,
+          DB_TICKET_TYPES,
+          allLocalOrgTickets.length > 0 ? (allLocalOrgTickets as any) : DB_ORGANIZER_TICKETS
+        )
+      );
   }
 }
 
