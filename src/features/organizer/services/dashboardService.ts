@@ -6,7 +6,7 @@ import type {
   ZoneDistributionDataPoint,
   TicketType,
 } from "../types/organizer.types";
-import { USE_MOCK_DATA, MOCK_EVENTS } from "./organizerMock";
+import { USE_MOCK_DATA, getMockEvents, getMockTickets } from "./organizerMock";
 
 export const dashboardService = {
   /**
@@ -112,7 +112,7 @@ export const dashboardService = {
 
     if (USE_MOCK_DATA) {
       await new Promise((r) => setTimeout(r, 120));
-      return calculateMetricsFromEvents(MOCK_EVENTS);
+      return calculateMetricsFromEvents(getMockEvents(), Object.values(getMockTickets()).flat());
     }
 
     try {
@@ -123,8 +123,9 @@ export const dashboardService = {
       return calculateMetricsFromEvents(eventsRes.data || [], ticketsRes.data || []);
     } catch (err) {
       console.warn("API offline o endpoint no disponible, cargando datos mock locales:", err);
-      return calculateMetricsFromEvents(MOCK_EVENTS);
+      return calculateMetricsFromEvents(getMockEvents(), Object.values(getMockTickets()).flat());
     }
   },
 };
+
 

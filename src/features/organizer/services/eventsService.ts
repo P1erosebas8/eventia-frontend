@@ -1,6 +1,6 @@
 import apiClient from "../../../shared/services/api";
 import type { OrganizerEvent } from "../types/organizer.types";
-import { USE_MOCK_DATA, MOCK_EVENTS } from "./organizerMock";
+import { USE_MOCK_DATA, getMockEvents, saveMockEvents } from "./organizerMock";
 
 export const eventsService = {
   /**
@@ -18,15 +18,15 @@ export const eventsService = {
 
     if (USE_MOCK_DATA) {
       await new Promise((r) => setTimeout(r, 80));
-      return filterByOrganizer([...MOCK_EVENTS]);
+      return filterByOrganizer(getMockEvents());
     }
 
     try {
       const response = await apiClient.get<OrganizerEvent[]>("/events");
       return filterByOrganizer(response.data || []);
     } catch (err) {
-      console.warn("API offline, cargando eventos mock locales:", err);
-      return filterByOrganizer([...MOCK_EVENTS]);
+      console.warn("API offline, cargando eventos persistidos locales:", err);
+      return filterByOrganizer(getMockEvents());
     }
   },
 
@@ -36,7 +36,7 @@ export const eventsService = {
   async getEventById(id: string): Promise<OrganizerEvent | null> {
     if (USE_MOCK_DATA) {
       await new Promise((r) => setTimeout(r, 60));
-      const event = MOCK_EVENTS.find((e) => e.id === id);
+      const event = getMockEvents().find((e) => e.id === id);
       return event ? { ...event } : null;
     }
 
@@ -44,8 +44,8 @@ export const eventsService = {
       const response = await apiClient.get<OrganizerEvent>(`/events/${id}`);
       return response.data;
     } catch (err) {
-      console.warn("API offline, cargando detalle mock local:", err);
-      const event = MOCK_EVENTS.find((e) => e.id === id);
+      console.warn("API offline, cargando detalle persistido local:", err);
+      const event = getMockEvents().find((e) => e.id === id);
       return event ? { ...event } : null;
     }
   },
@@ -56,10 +56,12 @@ export const eventsService = {
   async toggleEventStatus(id: string, newStatus: OrganizerEvent["status"]): Promise<OrganizerEvent> {
     if (USE_MOCK_DATA) {
       await new Promise((r) => setTimeout(r, 100));
-      const index = MOCK_EVENTS.findIndex((e) => e.id === id);
+      const list = getMockEvents();
+      const index = list.findIndex((e) => e.id === id);
       if (index !== -1) {
-        MOCK_EVENTS[index].status = newStatus;
-        return { ...MOCK_EVENTS[index] };
+        list[index].status = newStatus;
+        saveMockEvents(list);
+        return { ...list[index] };
       }
       throw new Error("Evento no encontrado");
     }
@@ -76,11 +78,13 @@ export const eventsService = {
   async deactivateEvent(id: string, _reason: string): Promise<OrganizerEvent> {
     if (USE_MOCK_DATA) {
       await new Promise((r) => setTimeout(r, 120));
-      const index = MOCK_EVENTS.findIndex((e) => e.id === id);
+      const list = getMockEvents();
+      const index = list.findIndex((e) => e.id === id);
       if (index !== -1) {
-        MOCK_EVENTS[index].active = false;
-        MOCK_EVENTS[index].status = "inactive";
-        return { ...MOCK_EVENTS[index] };
+        list[index].active = false;
+        list[index].status = "inactive";
+        saveMockEvents(list);
+        return { ...list[index] };
       }
       throw new Error("Evento no encontrado");
     }
@@ -98,10 +102,12 @@ export const eventsService = {
   async updateEvent(id: string, data: Partial<OrganizerEvent>): Promise<OrganizerEvent> {
     if (USE_MOCK_DATA) {
       await new Promise((r) => setTimeout(r, 150));
-      const index = MOCK_EVENTS.findIndex((e) => e.id === id);
+      const list = getMockEvents();
+      const index = list.findIndex((e) => e.id === id);
       if (index !== -1) {
-        MOCK_EVENTS[index] = { ...MOCK_EVENTS[index], ...data };
-        return { ...MOCK_EVENTS[index] };
+        list[index] = { ...list[index], ...data };
+        saveMockEvents(list);
+        return { ...list[index] };
       }
       throw new Error("Evento no encontrado");
     }
@@ -160,11 +166,22 @@ export const eventsService = {
 
     if (USE_MOCK_DATA) {
       await new Promise((r) => setTimeout(r, 180));
-      MOCK_EVENTS.unshift(newEvent);
+      const list = getMockEvents();
+      list.unshift(newEvent);
+      saveMockEvents(list);
       return newEvent;
     }
 
-    const response = await apiClient.post<OrganizerEvent>("/events", newEvent);
-    return response.data;
+    try {
+      const response = await apiClient.post<OrganizerEvent>("/events", newEvent);
+      return response.data;
+    } catch {
+      // Fallback a almacenamiento local persistente
+      const list = getMockEvents();
+      list.unshift(newEvent);
+      saveMockEvents(list);
+      return newEvent;
+    }
   },
 };
+

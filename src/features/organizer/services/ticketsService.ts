@@ -1,6 +1,6 @@
 import apiClient from "../../../shared/services/api";
 import type { TicketType } from "../types/organizer.types";
-import { USE_MOCK_DATA, MOCK_TICKETS } from "./organizerMock";
+import { USE_MOCK_DATA, getMockTickets, saveMockTickets } from "./organizerMock";
 
 export const ticketsService = {
   /**
@@ -9,15 +9,17 @@ export const ticketsService = {
   async getTicketsByEvent(eventId: string): Promise<TicketType[]> {
     if (USE_MOCK_DATA) {
       await new Promise((r) => setTimeout(r, 90));
-      return MOCK_TICKETS[eventId] ? [...MOCK_TICKETS[eventId]] : [];
+      const ticketsMap = getMockTickets();
+      return ticketsMap[eventId] ? [...ticketsMap[eventId]] : [];
     }
 
     try {
       const response = await apiClient.get<TicketType[]>(`/organizer_tickets?eventId=${eventId}`);
       return response.data;
     } catch (err) {
-      console.warn("API offline, cargando tarifas mock locales:", err);
-      return MOCK_TICKETS[eventId] ? [...MOCK_TICKETS[eventId]] : [];
+      console.warn("API offline, cargando tarifas persistidas locales:", err);
+      const ticketsMap = getMockTickets();
+      return ticketsMap[eventId] ? [...ticketsMap[eventId]] : [];
     }
   },
 
@@ -37,15 +39,27 @@ export const ticketsService = {
 
     if (USE_MOCK_DATA) {
       await new Promise((r) => setTimeout(r, 120));
-      if (!MOCK_TICKETS[ticketData.eventId]) {
-        MOCK_TICKETS[ticketData.eventId] = [];
+      const ticketsMap = getMockTickets();
+      if (!ticketsMap[ticketData.eventId]) {
+        ticketsMap[ticketData.eventId] = [];
       }
-      MOCK_TICKETS[ticketData.eventId].push(newTicket);
+      ticketsMap[ticketData.eventId].push(newTicket);
+      saveMockTickets(ticketsMap);
       return newTicket;
     }
 
-    const response = await apiClient.post<TicketType>("/organizer_tickets", newTicket);
-    return response.data;
+    try {
+      const response = await apiClient.post<TicketType>("/organizer_tickets", newTicket);
+      return response.data;
+    } catch {
+      const ticketsMap = getMockTickets();
+      if (!ticketsMap[ticketData.eventId]) {
+        ticketsMap[ticketData.eventId] = [];
+      }
+      ticketsMap[ticketData.eventId].push(newTicket);
+      saveMockTickets(ticketsMap);
+      return newTicket;
+    }
   },
 
   /**
@@ -58,20 +72,36 @@ export const ticketsService = {
   ): Promise<TicketType> {
     if (USE_MOCK_DATA) {
       await new Promise((r) => setTimeout(r, 120));
-      const list = MOCK_TICKETS[eventId] || [];
+      const ticketsMap = getMockTickets();
+      const list = ticketsMap[eventId] || [];
       const index = list.findIndex((t) => t.id === ticketId);
       if (index !== -1) {
         list[index] = { ...list[index], ...ticketData };
+        ticketsMap[eventId] = list;
+        saveMockTickets(ticketsMap);
         return { ...list[index] };
       }
       throw new Error("Tarifa no encontrada");
     }
 
-    const response = await apiClient.patch<TicketType>(
-      `/organizer_tickets/${ticketId}`,
-      ticketData
-    );
-    return response.data;
+    try {
+      const response = await apiClient.patch<TicketType>(
+        `/organizer_tickets/${ticketId}`,
+        ticketData
+      );
+      return response.data;
+    } catch {
+      const ticketsMap = getMockTickets();
+      const list = ticketsMap[eventId] || [];
+      const index = list.findIndex((t) => t.id === ticketId);
+      if (index !== -1) {
+        list[index] = { ...list[index], ...ticketData };
+        ticketsMap[eventId] = list;
+        saveMockTickets(ticketsMap);
+        return { ...list[index] };
+      }
+      throw new Error("Tarifa no encontrada");
+    }
   },
 
   /**
@@ -84,22 +114,38 @@ export const ticketsService = {
   ): Promise<TicketType> {
     if (USE_MOCK_DATA) {
       await new Promise((r) => setTimeout(r, 100));
-      const list = MOCK_TICKETS[eventId] || [];
+      const ticketsMap = getMockTickets();
+      const list = ticketsMap[eventId] || [];
       const index = list.findIndex((t) => t.id === ticketId);
       if (index !== -1) {
         list[index].status = newStatus;
+        ticketsMap[eventId] = list;
+        saveMockTickets(ticketsMap);
         return { ...list[index] };
       }
       throw new Error("Tarifa no encontrada");
     }
 
-    const response = await apiClient.patch<TicketType>(
-      `/organizer_tickets/${ticketId}`,
-      {
-        status: newStatus,
+    try {
+      const response = await apiClient.patch<TicketType>(
+        `/organizer_tickets/${ticketId}`,
+        {
+          status: newStatus,
+        }
+      );
+      return response.data;
+    } catch {
+      const ticketsMap = getMockTickets();
+      const list = ticketsMap[eventId] || [];
+      const index = list.findIndex((t) => t.id === ticketId);
+      if (index !== -1) {
+        list[index].status = newStatus;
+        ticketsMap[eventId] = list;
+        saveMockTickets(ticketsMap);
+        return { ...list[index] };
       }
-    );
-    return response.data;
+      throw new Error("Tarifa no encontrada");
+    }
   },
 
   /**
@@ -108,13 +154,25 @@ export const ticketsService = {
   async deleteTicketType(eventId: string, ticketId: string): Promise<boolean> {
     if (USE_MOCK_DATA) {
       await new Promise((r) => setTimeout(r, 100));
-      if (MOCK_TICKETS[eventId]) {
-        MOCK_TICKETS[eventId] = MOCK_TICKETS[eventId].filter((t) => t.id !== ticketId);
+      const ticketsMap = getMockTickets();
+      if (ticketsMap[eventId]) {
+        ticketsMap[eventId] = ticketsMap[eventId].filter((t) => t.id !== ticketId);
+        saveMockTickets(ticketsMap);
       }
       return true;
     }
 
-    await apiClient.delete(`/organizer_tickets/${ticketId}`);
-    return true;
+    try {
+      await apiClient.delete(`/organizer_tickets/${ticketId}`);
+      return true;
+    } catch {
+      const ticketsMap = getMockTickets();
+      if (ticketsMap[eventId]) {
+        ticketsMap[eventId] = ticketsMap[eventId].filter((t) => t.id !== ticketId);
+        saveMockTickets(ticketsMap);
+      }
+      return true;
+    }
   },
 };
+

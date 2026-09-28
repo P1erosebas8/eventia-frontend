@@ -6,7 +6,10 @@ import type {
 
 export const USE_MOCK_DATA = import.meta.env.VITE_USE_MOCK_DATA !== "false";
 
-export const MOCK_EVENTS: OrganizerEvent[] = [
+const EVENTS_STORAGE_KEY = "eventia_organizer_events";
+const TICKETS_STORAGE_KEY = "eventia_organizer_tickets";
+
+export const INITIAL_EVENTS: OrganizerEvent[] = [
   {
     id: "EVT-2025-LIM-9812",
     code: "EVT-9812",
@@ -127,7 +130,7 @@ export const MOCK_DAILY_SALES: DailySalesDataPoint[] = [
   { day: "Dom", date: "26 Sep", totalPEN: 590000, ticketsSold: 2650 },
 ];
 
-export const MOCK_TICKETS: Record<string, TicketType[]> = {
+export const INITIAL_TICKETS: Record<string, TicketType[]> = {
   "EVT-2025-LIM-9812": [
     {
       id: "TCK-9812-01",
@@ -201,3 +204,55 @@ export const MOCK_TICKETS: Record<string, TicketType[]> = {
     },
   ],
 };
+
+export function getMockEvents(): OrganizerEvent[] {
+  if (typeof window === "undefined") return [...INITIAL_EVENTS];
+  try {
+    const stored = localStorage.getItem(EVENTS_STORAGE_KEY);
+    if (!stored) {
+      localStorage.setItem(EVENTS_STORAGE_KEY, JSON.stringify(INITIAL_EVENTS));
+      return [...INITIAL_EVENTS];
+    }
+    return JSON.parse(stored);
+  } catch {
+    return [...INITIAL_EVENTS];
+  }
+}
+
+export function saveMockEvents(events: OrganizerEvent[]): void {
+  if (typeof window !== "undefined") {
+    try {
+      localStorage.setItem(EVENTS_STORAGE_KEY, JSON.stringify(events));
+    } catch (e) {
+      console.warn("Error saving mock events to localStorage:", e);
+    }
+  }
+}
+
+export function getMockTickets(): Record<string, TicketType[]> {
+  if (typeof window === "undefined") return { ...INITIAL_TICKETS };
+  try {
+    const stored = localStorage.getItem(TICKETS_STORAGE_KEY);
+    if (!stored) {
+      localStorage.setItem(TICKETS_STORAGE_KEY, JSON.stringify(INITIAL_TICKETS));
+      return { ...INITIAL_TICKETS };
+    }
+    return JSON.parse(stored);
+  } catch {
+    return { ...INITIAL_TICKETS };
+  }
+}
+
+export function saveMockTickets(tickets: Record<string, TicketType[]>): void {
+  if (typeof window !== "undefined") {
+    try {
+      localStorage.setItem(TICKETS_STORAGE_KEY, JSON.stringify(tickets));
+    } catch (e) {
+      console.warn("Error saving mock tickets to localStorage:", e);
+    }
+  }
+}
+
+export const MOCK_EVENTS = getMockEvents();
+export const MOCK_TICKETS = getMockTickets();
+
