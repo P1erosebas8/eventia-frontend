@@ -14,10 +14,8 @@ import AdminUsersPage from "../features/admin/pages/AdminUsersPage";
 import MisTicketsPage from "@/features/users/pages/MisTicketsPage";
 import PerfilPage from "@/features/users/pages/PerfilPage";
 
-import ScrollToTop from  "@/shared/components/ScrollToTop";
+import ScrollToTop from "@/shared/components/ScrollToTop";
 
-import MisTicketsPage from "../features/users/pages/MisTicketsPage";
-import PerfilPage from "../features/users/pages/PerfilPage";
 import OrganizerLayout from "../features/organizer/components/layout/OrganizerLayout";
 import OrganizerDashboardPage from "../features/organizer/pages/OrganizerDashboardPage";
 import EventEditPage from "../features/organizer/pages/EventEditPage";
