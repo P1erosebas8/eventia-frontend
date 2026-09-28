@@ -48,19 +48,6 @@ export default function UserHeader() {
           </div>
         </Link>
 
-        {/* Buscador */}
-        <div className="hidden xl:flex items-center flex-1 max-w-xs relative">
-          <span className="material-symbols-outlined absolute left-3 text-slate-400 text-[20px] pointer-events-none">
-            search
-          </span>
-
-          <input
-            className="w-full bg-slate-100 text-slate-800 text-sm pl-10 pr-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder:text-slate-400 transition"
-            placeholder="Buscar conciertos, obras, festivales..."
-            type="text"
-          />
-        </div>
-
         {/* Navegación */}
         <nav className="hidden md:flex items-center gap-2">
           <NavLink
