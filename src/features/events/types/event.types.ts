@@ -6,7 +6,7 @@ export type Category =
   | "Tecnología & Startups"
   | "Gastronomía & Ferias";
 
-/** Evento del catálogo. `isPromoEligible` indica si admite el descuento promo. */
+/** Evento del catálogo (todos son elegibles para la promo futura). */
 export interface CatalogEvent {
   id: number;
   title: string;
@@ -26,7 +26,6 @@ export interface CatalogEvent {
   image: string;
   tag?: string;
   badge?: string;
-  isPromoEligible: boolean;
 }
 
 /** Criterios de orden del toolbar. */

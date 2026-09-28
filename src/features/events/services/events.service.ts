@@ -102,7 +102,6 @@ function mapEvent(row: DbEvent): CatalogEvent {
     image: "",
     tag: TAG_BY_CATEGORY[categoryName] ?? categoryName,
     badge: badgeFor(soldPct),
-    isPromoEligible: row.status === "EN_PROMO",
   };
 }
 
