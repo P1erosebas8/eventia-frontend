@@ -23,9 +23,9 @@ const PAGE_SIZE = 6;
 export default function CatalogPage() {
   const { isAuthenticated, user } = useAuth();
   const [search, setSearch] = useState("");
-  const [promoOnly, setPromoOnly] = useState(true);
-  const [selectedCategories, setSelectedCategories] = useState<Category[]>(["Conciertos"]);
-  const [maxPrice, setMaxPrice] = useState(450);
+  const [promoOnly, setPromoOnly] = useState(false);
+  const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
+  const [maxPrice, setMaxPrice] = useState(MAX_PRICE);
   const [sort, setSort] = useState<SortKey>("popular");
   const [view, setView] = useState<ViewMode>("grid");
   const [page, setPage] = useState(1);
