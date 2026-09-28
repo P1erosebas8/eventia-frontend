@@ -87,7 +87,7 @@ export default function UpdateAccountForm({ user, onUpdate }: UpdateAccountFormP
 
       await onUpdate(updates);
 
-      setSuccessMessage("¡Tus datos de cuenta (correo / contraseña) han sido actualizados exitosamente!");
+      setSuccessMessage("¡Tus datos de cuenta han sido actualizados exitosamente!");
       
       // Limpiar campos de contraseña tras éxito
       if (passwordChanged) {

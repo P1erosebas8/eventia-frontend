@@ -31,7 +31,7 @@ export default function ReadOnlyUserInfo({ user }: ReadOnlyUserInfoProps) {
       <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-50/80 border border-amber-200/70 text-amber-900 text-xs leading-relaxed">
         <ShieldAlert className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
         <div>
-          <span className="font-bold">Datos de identidad protegidos:</span> Por motivos de seguridad nominativa de tickets y validación biometria, tus datos personales no se pueden modificar directamente desde la plataforma. Si requieres una rectificación formal, contacta al centro de ayuda.
+          <span className="font-bold">Datos de identidad protegidos:</span> Por motivos de seguridad nominativa de entradas, tus datos personales no se pueden modificar directamente desde la plataforma.
         </div>
       </div>
 

@@ -1,5 +1,5 @@
 import type { StoredUser } from "@/shared/services/mockUserStorage";
-import { ShieldCheck, UserCheck, Mail, IdCard } from "lucide-react";
+import {  Mail, IdCard } from "lucide-react";
 
 interface ProfileHeaderProps {
   user: StoredUser;
