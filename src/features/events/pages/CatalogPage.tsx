@@ -2,7 +2,6 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import Footer from "../../../shared/layouts/Footer";
-import PromoTicker from "../../../shared/layouts/PromoTicker";
 import CatalogFilterBar from "../components/CatalogFilterBar";
 import CatalogToolbar from "../components/CatalogToolbar";
 import EventCard from "../components/EventCard";
@@ -108,8 +107,6 @@ export default function CatalogPage() {
     <div className="min-h-screen bg-surface overflow-x-hidden">
 
       <div className="w-full pt-16 min-h-screen min-w-0">
-        <PromoTicker />
-
         {/* gap estructural: si el banner se oculta no queda hueco. */}
         <section className="max-w-[1280px] w-full mx-auto px-4 sm:px-6 py-6 min-w-0 flex flex-col gap-4 sm:gap-6">
           {showPromoBanner && sessionName !== null && <HeroPromo userName={sessionName} />}
