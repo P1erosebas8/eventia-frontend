@@ -2,6 +2,8 @@ import type { SortKey, ViewMode } from "../types/event.types";
 
 interface CatalogToolbarProps {
   total: number;
+  /** Ciudades distintas de los resultados (derivado de los datos). */
+  locationLabel: string;
   sort: SortKey;
   onSortChange: (value: SortKey) => void;
   view: ViewMode;
@@ -11,6 +13,7 @@ interface CatalogToolbarProps {
 /** Barra de resultados: conteo, orden y densidad (cuadrícula/lista). */
 export default function CatalogToolbar({
   total,
+  locationLabel,
   sort,
   onSortChange,
   view,
@@ -23,8 +26,8 @@ export default function CatalogToolbar({
           {total} {total === 1 ? "evento encontrado" : "eventos encontrados"}
         </h2>
         <span className="hidden sm:inline-block w-1.5 h-1.5 rounded-full bg-outline shrink-0"></span>
-        <span className="text-xs text-outline whitespace-nowrap hidden sm:inline">
-          Lima y provincias
+        <span className="text-xs text-outline whitespace-nowrap hidden sm:inline truncate max-w-[220px]">
+          {locationLabel}
         </span>
       </div>
 

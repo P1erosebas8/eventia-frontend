@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { USER_ROLES } from "../services/users.service";
 import type { NewDirectoryUser, Role } from "../types/user.types";
-import { isPromoUser } from "../../events/utils/promo.utils";
+import { isPromoUser } from "../../events/services/events.service";
 
 interface UserModalProps {
   open: boolean;
