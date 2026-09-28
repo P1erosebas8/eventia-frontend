@@ -130,40 +130,29 @@ export default function FilterSidebar(props: FilterSidebarProps) {
         </label>
       </div>
 
-      {/* Categorías con conteo real calculado desde EVENTS. */}
+      {/* Categorías como pills de un toque (multi-selección). */}
       <div className="flex flex-col gap-2 min-w-0">
         <span className="text-xs font-semibold uppercase tracking-wider">Categorías</span>
-        <div className="flex flex-col gap-1.5 min-w-0">
+        <div className="flex flex-wrap gap-2 min-w-0">
           {CATEGORIES.map((item) => {
             const active = selectedCategories.includes(item.name);
             return (
-              <label
+              <button
                 key={item.name}
-                className={`flex items-center justify-between gap-2 px-3 py-2 rounded-lg cursor-pointer transition-colors min-w-0 ${
-                  active ? "bg-surface-container-high/60" : "hover:bg-surface-container-low"
+                type="button"
+                onClick={() => onToggleCategory(item.name)}
+                aria-pressed={active}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold transition-colors min-w-0 max-w-full ${
+                  active
+                    ? "bg-primary text-on-primary shadow-sm"
+                    : "bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high"
                 }`}
               >
-                <span className="flex items-center gap-2 min-w-0">
-                  <input
-                    type="checkbox"
-                    className="w-4 h-4 accent-primary shrink-0"
-                    checked={active}
-                    onChange={() => onToggleCategory(item.name)}
-                  />
-                  <span
-                    className={`text-sm truncate ${active ? "font-medium" : "text-on-surface-variant"}`}
-                  >
-                    {item.name}
-                  </span>
-                </span>
-                <span
-                  className={`text-xs px-2 py-0.5 rounded-full font-bold shrink-0 ${
-                    active ? "bg-primary-container/20 text-primary" : "bg-surface-container-high"
-                  }`}
-                >
-                  {item.total}
-                </span>
-              </label>
+                {active && (
+                  <span className="material-symbols-outlined text-[16px] shrink-0">check</span>
+                )}
+                <span className="truncate">{item.name}</span>
+              </button>
             );
           })}
         </div>
