@@ -1,4 +1,4 @@
-import apiClient from "../../../services/api";
+import apiClient from "../../../shared/services/api";
 import type { TicketType } from "../types/organizer.types";
 import { USE_MOCK_DATA, MOCK_TICKETS } from "./organizerMock";
 
@@ -12,8 +12,13 @@ export const ticketsService = {
       return MOCK_TICKETS[eventId] ? [...MOCK_TICKETS[eventId]] : [];
     }
 
-    const response = await apiClient.get<TicketType[]>(`/organizer/events/${eventId}/tickets`);
-    return response.data;
+    try {
+      const response = await apiClient.get<TicketType[]>(`/organizer_tickets?eventId=${eventId}`);
+      return response.data;
+    } catch (err) {
+      console.warn("API offline, cargando tarifas mock locales:", err);
+      return MOCK_TICKETS[eventId] ? [...MOCK_TICKETS[eventId]] : [];
+    }
   },
 
   /**
@@ -22,16 +27,16 @@ export const ticketsService = {
   async createTicketType(
     ticketData: Omit<TicketType, "id" | "soldCount"> & { id?: string }
   ): Promise<TicketType> {
+    const randomId = `TCK-${Math.floor(1000 + Math.random() * 9000)}`;
+    const newTicket: TicketType = {
+      ...ticketData,
+      id: ticketData.id || randomId,
+      soldCount: 0,
+      status: ticketData.status || "active",
+    };
+
     if (USE_MOCK_DATA) {
       await new Promise((r) => setTimeout(r, 120));
-      const randomId = `TCK-${Math.floor(1000 + Math.random() * 9000)}`;
-      const newTicket: TicketType = {
-        ...ticketData,
-        id: ticketData.id || randomId,
-        soldCount: 0,
-        status: ticketData.status || "active",
-      };
-
       if (!MOCK_TICKETS[ticketData.eventId]) {
         MOCK_TICKETS[ticketData.eventId] = [];
       }
@@ -39,10 +44,7 @@ export const ticketsService = {
       return newTicket;
     }
 
-    const response = await apiClient.post<TicketType>(
-      `/organizer/events/${ticketData.eventId}/tickets`,
-      ticketData
-    );
+    const response = await apiClient.post<TicketType>("/organizer_tickets", newTicket);
     return response.data;
   },
 
@@ -65,8 +67,8 @@ export const ticketsService = {
       throw new Error("Tarifa no encontrada");
     }
 
-    const response = await apiClient.put<TicketType>(
-      `/organizer/events/${eventId}/tickets/${ticketId}`,
+    const response = await apiClient.patch<TicketType>(
+      `/organizer_tickets/${ticketId}`,
       ticketData
     );
     return response.data;
@@ -92,7 +94,7 @@ export const ticketsService = {
     }
 
     const response = await apiClient.patch<TicketType>(
-      `/organizer/events/${eventId}/tickets/${ticketId}/status`,
+      `/organizer_tickets/${ticketId}`,
       {
         status: newStatus,
       }
@@ -112,7 +114,7 @@ export const ticketsService = {
       return true;
     }
 
-    await apiClient.delete(`/organizer/events/${eventId}/tickets/${ticketId}`);
+    await apiClient.delete(`/organizer_tickets/${ticketId}`);
     return true;
   },
 };

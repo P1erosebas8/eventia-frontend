@@ -7,7 +7,7 @@ import EventsTable from "../components/dashboard/EventsTable";
 export default function OrganizerDashboardPage() {
   const { data, loading, refreshing, loadData } = useOrganizerDashboard();
 
-  if (loading || !data) {
+  if (loading) {
     return (
       <div className="py-20 flex flex-col items-center justify-center gap-3">
         <span className="material-symbols-outlined text-primary text-4xl animate-spin">
@@ -16,6 +16,25 @@ export default function OrganizerDashboardPage() {
         <span className="text-xs font-semibold text-outline">
           Cargando panel de control del organizador...
         </span>
+      </div>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div className="py-20 flex flex-col items-center justify-center gap-4 text-center">
+        <span className="material-symbols-outlined text-outline text-5xl">
+          error_outline
+        </span>
+        <p className="text-sm text-outline font-medium">
+          No se pudieron cargar los datos del panel del organizador.
+        </p>
+        <button
+          onClick={loadData}
+          className="px-4 py-2 bg-primary text-white rounded-xl text-xs font-bold hover:bg-primary-hover transition"
+        >
+          Reintentar
+        </button>
       </div>
     );
   }

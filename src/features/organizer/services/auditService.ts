@@ -1,4 +1,4 @@
-import apiClient from "../../../services/api";
+import apiClient from "../../../shared/services/api";
 import type { AuditLogEntry } from "../types/organizer.types";
 import { USE_MOCK_DATA } from "./organizerMock";
 

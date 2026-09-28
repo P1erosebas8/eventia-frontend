@@ -1,4 +1,4 @@
-import apiClient from "../../../services/api";
+import apiClient from "../../../shared/services/api";
 import type { OrganizerEvent } from "../types/organizer.types";
 import { USE_MOCK_DATA, MOCK_EVENTS } from "./organizerMock";
 
@@ -12,8 +12,13 @@ export const eventsService = {
       return [...MOCK_EVENTS];
     }
 
-    const response = await apiClient.get<OrganizerEvent[]>("/organizer/events");
-    return response.data;
+    try {
+      const response = await apiClient.get<OrganizerEvent[]>("/events");
+      return response.data;
+    } catch (err) {
+      console.warn("API offline, cargando eventos mock locales:", err);
+      return [...MOCK_EVENTS];
+    }
   },
 
   /**
@@ -26,8 +31,14 @@ export const eventsService = {
       return event ? { ...event } : null;
     }
 
-    const response = await apiClient.get<OrganizerEvent>(`/organizer/events/${id}`);
-    return response.data;
+    try {
+      const response = await apiClient.get<OrganizerEvent>(`/events/${id}`);
+      return response.data;
+    } catch (err) {
+      console.warn("API offline, cargando detalle mock local:", err);
+      const event = MOCK_EVENTS.find((e) => e.id === id);
+      return event ? { ...event } : null;
+    }
   },
 
   /**
@@ -44,7 +55,7 @@ export const eventsService = {
       throw new Error("Evento no encontrado");
     }
 
-    const response = await apiClient.patch<OrganizerEvent>(`/organizer/events/${id}/status`, {
+    const response = await apiClient.patch<OrganizerEvent>(`/events/${id}`, {
       status: newStatus,
     });
     return response.data;
@@ -53,7 +64,7 @@ export const eventsService = {
   /**
    * Inactiva un evento (soft delete - Regla RN04)
    */
-  async deactivateEvent(id: string, reason: string): Promise<OrganizerEvent> {
+  async deactivateEvent(id: string, _reason: string): Promise<OrganizerEvent> {
     if (USE_MOCK_DATA) {
       await new Promise((r) => setTimeout(r, 120));
       const index = MOCK_EVENTS.findIndex((e) => e.id === id);
@@ -65,8 +76,9 @@ export const eventsService = {
       throw new Error("Evento no encontrado");
     }
 
-    const response = await apiClient.patch<OrganizerEvent>(`/organizer/events/${id}/deactivate`, {
-      reason,
+    const response = await apiClient.patch<OrganizerEvent>(`/events/${id}`, {
+      active: false,
+      status: "inactive",
     });
     return response.data;
   },
@@ -85,7 +97,7 @@ export const eventsService = {
       throw new Error("Evento no encontrado");
     }
 
-    const response = await apiClient.put<OrganizerEvent>(`/organizer/events/${id}`, data);
+    const response = await apiClient.patch<OrganizerEvent>(`/events/${id}`, data);
     return response.data;
   },
 
@@ -106,34 +118,35 @@ export const eventsService = {
     featured?: boolean;
     description?: string;
   }): Promise<OrganizerEvent> {
+    const year = new Date().getFullYear();
+    const randomCodeNum = Math.floor(1000 + Math.random() * 9000);
+    const newEvent: OrganizerEvent = {
+      id: `EVT-${year}-LIM-${randomCodeNum}`,
+      code: `EVT-${randomCodeNum}`,
+      title: data.title || "Nuevo Evento",
+      category: data.category || "Música & Conciertos",
+      venue: data.venue || "Arena 1 Costa Verde, San Miguel",
+      city: data.city || "Lima",
+      date: data.date || new Date().toISOString().split("T")[0],
+      time: data.time || "20:00",
+      bannerUrl:
+        data.bannerUrl ||
+        "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600&auto=format&fit=crop&q=80",
+      status: data.status || "published",
+      active: data.active ?? true,
+      capacity: data.capacity || 5000,
+      ticketsSold: 0,
+      totalRevenue: 0,
+      featured: data.featured ?? false,
+    };
+
     if (USE_MOCK_DATA) {
       await new Promise((r) => setTimeout(r, 180));
-      const year = new Date().getFullYear();
-      const randomCodeNum = Math.floor(1000 + Math.random() * 9000);
-      const newEvent: OrganizerEvent = {
-        id: `EVT-${year}-LIM-${randomCodeNum}`,
-        code: `EVT-${randomCodeNum}`,
-        title: data.title || "Nuevo Evento",
-        category: data.category || "Música & Conciertos",
-        venue: data.venue || "Arena 1 Costa Verde, San Miguel",
-        city: data.city || "Lima",
-        date: data.date || new Date().toISOString().split("T")[0],
-        time: data.time || "20:00",
-        bannerUrl:
-          data.bannerUrl ||
-          "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600&auto=format&fit=crop&q=80",
-        status: data.status || "published",
-        active: data.active ?? true,
-        capacity: data.capacity || 5000,
-        ticketsSold: 0,
-        totalRevenue: 0,
-        featured: data.featured ?? false,
-      };
       MOCK_EVENTS.unshift(newEvent);
       return newEvent;
     }
 
-    const response = await apiClient.post<OrganizerEvent>("/organizer/events", data);
+    const response = await apiClient.post<OrganizerEvent>("/events", newEvent);
     return response.data;
   },
 };
