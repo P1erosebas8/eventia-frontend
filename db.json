@@ -1,1 +1,411 @@
-{  "orders": [    {      "id": "ord-1001",      "id_user": 1,      "order_date": "2026-09-23T19:30:00Z",      "payment_method": "CREDIT_CARD",      "total_amount": 180,      "status": "COMPLETED",      "order_details": [        {          "id_ticket_type": 1,          "ticket_name": "General",          "quantity": 2,          "unit_price": 100,          "discount_applied": 20        }      ]    }  ],  "tickets": [    {      "id": "tck-5001",      "id_order": "ord-1001",      "id_user": 1,      "event_title": "Festival Rock Lima 2026",      "ticket_type": "General",      "event_date": "2026-10-15T20:00:00Z",      "venue": "Estadio Nacional",      "qr_code": "EVT-ORD1001-TCK5001-SECURE",      "status": "VIGENTE"    },    {      "id": "tck-5002",      "id_order": "ord-1001",      "id_user": 1,      "event_title": "Festival Rock Lima 2026",      "ticket_type": "General",      "event_date": "2026-10-15T20:00:00Z",      "venue": "Estadio Nacional",      "qr_code": "EVT-ORD1001-TCK5002-SECURE",      "status": "ANULADO"    }  ],  "ticket_types": [    {      "id": 1,      "id_event": 100,      "name": "General",      "price": 100.0,      "stock": 50    },    {      "id": 2,      "id_event": 100,      "name": "VIP",      "price": 220.0,      "stock": 20    },    {      "id": 3,      "id_event": 101,      "name": "General",      "price": 120.0,      "stock": 1200    },    {      "id": 4,      "id_event": 102,      "name": "General",      "price": 85.0,      "stock": 900    },    {      "id": 5,      "id_event": 103,      "name": "General",      "price": 60.0,      "stock": 200    },    {      "id": 6,      "id_event": 104,      "name": "General",      "price": 45.0,      "stock": 1500    },    {      "id": 7,      "id_event": 105,      "name": "General",      "price": 140.0,      "stock": 1100    },    {      "id": 8,      "id_event": 106,      "name": "General",      "price": 210.0,      "stock": 400    }  ],  "categories": [    {      "id_category": "cat-01",      "name": "Conciertos",      "description": "Shows musicales en vivo",      "active": true,      "created_at": "2024-01-10T10:00:00Z",      "updated_at": "2024-01-10T10:00:00Z"    },    {      "id_category": "cat-02",      "name": "Festivales",      "description": "Festivales de varios días y artistas",      "active": true,      "created_at": "2024-01-10T10:00:00Z",      "updated_at": "2024-01-10T10:00:00Z"    },    {      "id_category": "cat-03",      "name": "Teatro & Artes",      "description": "Obras de teatro y espectáculos culturales",      "active": true,      "created_at": "2024-01-10T10:00:00Z",      "updated_at": "2024-01-10T10:00:00Z"    },    {      "id_category": "cat-04",      "name": "Gastronomía & Ferias",      "description": "Ferias gastronómicas y food trucks",      "active": true,      "created_at": "2024-01-10T10:00:00Z",      "updated_at": "2024-01-10T10:00:00Z"    },    {      "id_category": "cat-05",      "name": "Tecnología & Startups",      "description": "Conferencias y ferias de tecnología",      "active": true,      "created_at": "2024-01-10T10:00:00Z",      "updated_at": "2024-01-10T10:00:00Z"    }  ],  "events": [    {      "id_event": 101,      "title": "Illapu: 50 Años de Memoria",      "description": "Concierto por los 50 años de Illapu",      "date": "2025-11-22",      "start_time": "20:00",      "end_time": "23:00",      "location": "Estadio Nacional, Lima",      "city": "Lima Metropolitana",      "capacity": 45000,      "available_capacity": 3600,      "status": "EN_VENTA",      "active": true,      "created_at": "2025-01-15T10:00:00Z",      "updated_at": "2025-06-20T10:00:00Z",      "id_category": "cat-01",      "id_organizer": 1    },    {      "id_event": 102,      "title": "Sunsets Sessions Costa Verde",      "description": "Festival al atardecer frente al mar",      "date": "2025-12-06",      "start_time": "16:00",      "end_time": "23:00",      "location": "Arena 1, San Miguel",      "city": "Lima Metropolitana",      "capacity": 12000,      "available_capacity": 4200,      "status": "EN_VENTA",      "active": true,      "created_at": "2025-02-01T10:00:00Z",      "updated_at": "2025-06-20T10:00:00Z",      "id_category": "cat-02",      "id_organizer": 1    },    {      "id_event": 103,      "title": "La Ciudad y los Perros (Adaptación)",      "description": "Adaptación teatral de la novela",      "date": "2025-11-28",      "start_time": "19:30",      "end_time": "21:30",      "location": "Teatro Peruano Japonés",      "city": "Lima Metropolitana",      "capacity": 800,      "available_capacity": 96,      "status": "EN_VENTA",      "active": true,      "created_at": "2025-03-10T10:00:00Z",      "updated_at": "2025-06-20T10:00:00Z",      "id_category": "cat-03",      "id_organizer": 2    },    {      "id_event": 104,      "title": "Expo Sabor & Coctelería Andina",      "description": "Feria gastronómica con coctelería andina",      "date": "2025-12-14",      "start_time": "11:00",      "end_time": "22:00",      "location": "Jockey Club del Perú",      "city": "Lima Metropolitana",      "capacity": 5000,      "available_capacity": 3000,      "status": "EN_VENTA",      "active": true,      "created_at": "2025-04-05T10:00:00Z",      "updated_at": "2025-06-20T10:00:00Z",      "id_category": "cat-04",      "id_organizer": 2    },    {      "id_event": 105,      "title": "Trap & Latin Flow Live Tour",      "description": "Gira de trap y latin flow",      "date": "2026-01-18",      "start_time": "20:00",      "end_time": "23:30",      "location": "Arena 1, Costa Verde",      "city": "Lima Metropolitana",      "capacity": 15000,      "available_capacity": 600,      "status": "EN_VENTA",      "active": true,      "created_at": "2025-05-12T10:00:00Z",      "updated_at": "2025-06-20T10:00:00Z",      "id_category": "cat-01",      "id_organizer": 1    },    {      "id_event": 106,      "title": "Peru Tech Summit & Fintech 2025",      "description": "Cumbre de tecnología y fintech",      "date": "2026-01-25",      "start_time": "09:00",      "end_time": "18:00",      "location": "Centro de Convenciones 27 de Enero",      "city": "Lima Metropolitana",      "capacity": 3000,      "available_capacity": 1440,      "status": "EN_VENTA",      "active": true,      "created_at": "2025-06-01T10:00:00Z",      "updated_at": "2025-06-20T10:00:00Z",      "id_category": "cat-05",      "id_organizer": 3    }  ]}
+{
+  "orders": [
+    {
+      "id": "ord-1001",
+      "id_user": 1,
+      "order_date": "2026-09-23T19:30:00Z",
+      "payment_method": "CREDIT_CARD",
+      "total_amount": 180,
+      "status": "COMPLETED",
+      "order_details": [
+        {
+          "id_ticket_type": 1,
+          "ticket_name": "General",
+          "quantity": 2,
+          "unit_price": 100,
+          "discount_applied": 20
+        }
+      ]
+    }
+  ],
+  "tickets": [
+    {
+      "id": "tck-5001",
+      "id_order": "ord-1001",
+      "id_user": 1,
+      "event_title": "Festival Rock Lima 2026",
+      "ticket_type": "General",
+      "event_date": "2026-10-15T20:00:00Z",
+      "venue": "Estadio Nacional",
+      "qr_code": "EVT-ORD1001-TCK5001-SECURE",
+      "status": "VIGENTE"
+    },
+    {
+      "id": "tck-5002",
+      "id_order": "ord-1001",
+      "id_user": 1,
+      "event_title": "Festival Rock Lima 2026",
+      "ticket_type": "General",
+      "event_date": "2026-10-15T20:00:00Z",
+      "venue": "Estadio Nacional",
+      "qr_code": "EVT-ORD1001-TCK5002-SECURE",
+      "status": "ANULADO"
+    }
+  ],
+  "ticket_types": [
+    {
+      "id": 1,
+      "id_event": 100,
+      "name": "General",
+      "price": 100.0,
+      "stock": 50
+    },
+    {
+      "id": 2,
+      "id_event": 100,
+      "name": "VIP",
+      "price": 220.0,
+      "stock": 20
+    },
+    {
+      "id": 3,
+      "id_event": 101,
+      "name": "General",
+      "price": 120.0,
+      "stock": 1200
+    },
+    {
+      "id": 4,
+      "id_event": 102,
+      "name": "General",
+      "price": 85.0,
+      "stock": 900
+    },
+    {
+      "id": 5,
+      "id_event": 103,
+      "name": "General",
+      "price": 60.0,
+      "stock": 200
+    },
+    {
+      "id": 6,
+      "id_event": 104,
+      "name": "General",
+      "price": 45.0,
+      "stock": 1500
+    },
+    {
+      "id": 7,
+      "id_event": 105,
+      "name": "General",
+      "price": 140.0,
+      "stock": 1100
+    },
+    {
+      "id": 8,
+      "id_event": 106,
+      "name": "General",
+      "price": 210.0,
+      "stock": 400
+    }
+  ],
+  "categories": [
+    {
+      "id_category": "cat-01",
+      "name": "Conciertos",
+      "description": "Shows musicales en vivo",
+      "active": true,
+      "created_at": "2024-01-10T10:00:00Z",
+      "updated_at": "2024-01-10T10:00:00Z"
+    },
+    {
+      "id_category": "cat-02",
+      "name": "Festivales",
+      "description": "Festivales de varios días y artistas",
+      "active": true,
+      "created_at": "2024-01-10T10:00:00Z",
+      "updated_at": "2024-01-10T10:00:00Z"
+    },
+    {
+      "id_category": "cat-03",
+      "name": "Teatro & Artes",
+      "description": "Obras de teatro y espectáculos culturales",
+      "active": true,
+      "created_at": "2024-01-10T10:00:00Z",
+      "updated_at": "2024-01-10T10:00:00Z"
+    },
+    {
+      "id_category": "cat-04",
+      "name": "Gastronomía & Ferias",
+      "description": "Ferias gastronómicas y food trucks",
+      "active": true,
+      "created_at": "2024-01-10T10:00:00Z",
+      "updated_at": "2024-01-10T10:00:00Z"
+    },
+    {
+      "id_category": "cat-05",
+      "name": "Tecnología & Startups",
+      "description": "Conferencias y ferias de tecnología",
+      "active": true,
+      "created_at": "2024-01-10T10:00:00Z",
+      "updated_at": "2024-01-10T10:00:00Z"
+    }
+  ],
+  "events": [
+    {
+      "id": "101",
+      "id_event": 101,
+      "code": "EVT-101",
+      "title": "Illapu: 50 Años de Memoria",
+      "category": "Conciertos",
+      "id_category": "cat-01",
+      "venue": "Estadio Nacional, Lima",
+      "location": "Estadio Nacional, Lima",
+      "city": "Lima Metropolitana",
+      "date": "2025-11-22",
+      "time": "20:00",
+      "start_time": "20:00",
+      "end_time": "23:00",
+      "bannerUrl": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600&auto=format&fit=crop&q=80",
+      "status": "published",
+      "active": true,
+      "capacity": 45000,
+      "available_capacity": 3600,
+      "ticketsSold": 41400,
+      "totalRevenue": 4968000,
+      "featured": true,
+      "description": "Concierto por los 50 años de Illapu",
+      "created_at": "2025-01-15T10:00:00Z",
+      "updated_at": "2025-06-20T10:00:00Z",
+      "id_organizer": 1
+    },
+    {
+      "id": "102",
+      "id_event": 102,
+      "code": "EVT-102",
+      "title": "Sunsets Sessions Costa Verde",
+      "category": "Festivales",
+      "id_category": "cat-02",
+      "venue": "Arena 1, San Miguel",
+      "location": "Arena 1, San Miguel",
+      "city": "Lima Metropolitana",
+      "date": "2025-12-06",
+      "time": "16:00",
+      "start_time": "16:00",
+      "end_time": "23:00",
+      "bannerUrl": "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&auto=format&fit=crop&q=80",
+      "status": "almost_sold_out",
+      "active": true,
+      "capacity": 12000,
+      "available_capacity": 4200,
+      "ticketsSold": 7800,
+      "totalRevenue": 663000,
+      "featured": false,
+      "description": "Festival al atardecer frente al mar",
+      "created_at": "2025-02-01T10:00:00Z",
+      "updated_at": "2025-06-20T10:00:00Z",
+      "id_organizer": 1
+    },
+    {
+      "id": "103",
+      "id_event": 103,
+      "code": "EVT-103",
+      "title": "La Ciudad y los Perros (Adaptación)",
+      "category": "Teatro & Artes",
+      "id_category": "cat-03",
+      "venue": "Teatro Peruano Japonés",
+      "location": "Teatro Peruano Japonés",
+      "city": "Lima Metropolitana",
+      "date": "2025-11-28",
+      "time": "19:30",
+      "start_time": "19:30",
+      "end_time": "21:30",
+      "bannerUrl": "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=600&auto=format&fit=crop&q=80",
+      "status": "published",
+      "active": true,
+      "capacity": 800,
+      "available_capacity": 96,
+      "ticketsSold": 704,
+      "totalRevenue": 42240,
+      "featured": false,
+      "description": "Adaptación teatral de la novela",
+      "created_at": "2025-03-10T10:00:00Z",
+      "updated_at": "2025-06-20T10:00:00Z",
+      "id_organizer": 2
+    },
+    {
+      "id": "104",
+      "id_event": 104,
+      "code": "EVT-104",
+      "title": "Expo Sabor & Coctelería Andina",
+      "category": "Gastronomía & Ferias",
+      "id_category": "cat-04",
+      "venue": "Jockey Club del Perú",
+      "location": "Jockey Club del Perú",
+      "city": "Lima Metropolitana",
+      "date": "2025-12-14",
+      "time": "11:00",
+      "start_time": "11:00",
+      "end_time": "22:00",
+      "bannerUrl": "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&auto=format&fit=crop&q=80",
+      "status": "published",
+      "active": true,
+      "capacity": 5000,
+      "available_capacity": 3000,
+      "ticketsSold": 2000,
+      "totalRevenue": 90000,
+      "featured": false,
+      "description": "Feria gastronómica con coctelería andina",
+      "created_at": "2025-04-05T10:00:00Z",
+      "updated_at": "2025-06-20T10:00:00Z",
+      "id_organizer": 2
+    },
+    {
+      "id": "105",
+      "id_event": 105,
+      "code": "EVT-105",
+      "title": "Trap & Latin Flow Live Tour",
+      "category": "Conciertos",
+      "id_category": "cat-01",
+      "venue": "Arena 1, Costa Verde",
+      "location": "Arena 1, Costa Verde",
+      "city": "Lima Metropolitana",
+      "date": "2026-01-18",
+      "time": "20:00",
+      "start_time": "20:00",
+      "end_time": "23:30",
+      "bannerUrl": "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600&auto=format&fit=crop&q=80",
+      "status": "almost_sold_out",
+      "active": true,
+      "capacity": 15000,
+      "available_capacity": 600,
+      "ticketsSold": 14400,
+      "totalRevenue": 2016000,
+      "featured": false,
+      "description": "Gira de trap y latin flow",
+      "created_at": "2025-05-12T10:00:00Z",
+      "updated_at": "2025-06-20T10:00:00Z",
+      "id_organizer": 1
+    },
+    {
+      "id": "106",
+      "id_event": 106,
+      "code": "EVT-106",
+      "title": "Peru Tech Summit & Fintech 2025",
+      "category": "Tecnología & Startups",
+      "id_category": "cat-05",
+      "venue": "Centro de Convenciones 27 de Enero",
+      "location": "Centro de Convenciones 27 de Enero",
+      "city": "Lima Metropolitana",
+      "date": "2026-01-25",
+      "time": "09:00",
+      "start_time": "09:00",
+      "end_time": "18:00",
+      "bannerUrl": "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop&q=80",
+      "status": "published",
+      "active": true,
+      "capacity": 3000,
+      "available_capacity": 1440,
+      "ticketsSold": 1560,
+      "totalRevenue": 327600,
+      "featured": false,
+      "description": "Cumbre de tecnología y fintech",
+      "created_at": "2025-06-01T10:00:00Z",
+      "updated_at": "2025-06-20T10:00:00Z",
+      "id_organizer": 3
+    }
+  ],
+  "organizer_tickets": [
+    {
+      "id": "TCK-101-01",
+      "eventId": "101",
+      "name": "Campo VIP Platinum",
+      "zone": "VIP Platinum",
+      "pricePEN": 420,
+      "capacity": 4000,
+      "soldCount": 3850,
+      "status": "active",
+      "saleStartDate": "2025-08-01",
+      "saleEndDate": "2025-11-15",
+      "isPresale": false,
+      "maxPerPurchase": 4
+    },
+    {
+      "id": "TCK-101-02",
+      "eventId": "101",
+      "name": "Campo General - Fase 2",
+      "zone": "General",
+      "pricePEN": 220,
+      "capacity": 7000,
+      "soldCount": 6200,
+      "status": "active",
+      "saleStartDate": "2025-08-15",
+      "saleEndDate": "2025-11-15",
+      "isPresale": false,
+      "maxPerPurchase": 6
+    },
+    {
+      "id": "TCK-101-03",
+      "eventId": "101",
+      "name": "Tribuna Occidente Numerada",
+      "zone": "Tribuna",
+      "pricePEN": 290,
+      "capacity": 2000,
+      "soldCount": 1450,
+      "status": "active",
+      "saleStartDate": "2025-08-01",
+      "saleEndDate": "2025-11-15",
+      "isPresale": false,
+      "maxPerPurchase": 4
+    },
+    {
+      "id": "TCK-102-01",
+      "eventId": "102",
+      "name": "Early Bird - Preventa BBVA",
+      "zone": "General",
+      "pricePEN": 85,
+      "capacity": 5000,
+      "soldCount": 4200,
+      "status": "active",
+      "saleStartDate": "2025-07-15",
+      "saleEndDate": "2025-12-06",
+      "isPresale": true,
+      "maxPerPurchase": 4
+    }
+  ],
+  "dailySales": [
+    {
+      "day": "Lun",
+      "date": "20 Sep",
+      "totalPEN": 180000,
+      "ticketsSold": 890
+    },
+    {
+      "day": "Mar",
+      "date": "21 Sep",
+      "totalPEN": 243000,
+      "ticketsSold": 1120
+    },
+    {
+      "day": "Mié",
+      "date": "22 Sep",
+      "totalPEN": 337000,
+      "ticketsSold": 1540
+    },
+    {
+      "day": "Jue",
+      "date": "23 Sep",
+      "totalPEN": 432000,
+      "ticketsSold": 1980
+    },
+    {
+      "day": "Vie",
+      "date": "24 Sep",
+      "totalPEN": 725000,
+      "ticketsSold": 3210
+    },
+    {
+      "day": "Sáb",
+      "date": "25 Sep",
+      "totalPEN": 878000,
+      "ticketsSold": 3890
+    },
+    {
+      "day": "Dom",
+      "date": "26 Sep",
+      "totalPEN": 590000,
+      "ticketsSold": 2650
+    }
+  ]
+}
