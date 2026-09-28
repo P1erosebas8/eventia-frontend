@@ -1,16 +1,13 @@
 import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import Footer from "../../../shared/layouts/Footer";
 import CatalogFilterBar from "../components/CatalogFilterBar";
 import CatalogToolbar from "../components/CatalogToolbar";
 import EventCard from "../components/EventCard";
-import HeroPromo from "../components/HeroPromo";
 import InfoCallout from "../components/InfoCallout";
 import Pagination from "../components/Pagination";
 import { CATEGORY_ORDER, EVENTS, PRICE_RANGES } from "../services/events.service";
 import type { Category, SortKey, ViewMode } from "../types/event.types";
-import { isPromoUser } from "../utils/promo.utils";
 
 /** Cantidad de eventos visibles por página. */
 const PAGE_SIZE = 6;
@@ -37,9 +34,6 @@ export default function CatalogPage() {
     isAuthenticated && user ? `${user.firstName} ${user.lastName}`.trim() : null;
   /** Nombre efectivo para descuentos (vacío si no hay sesión). */
   const effectiveName = sessionName ?? "";
-  /** El banner solo existe si la sesión cumple la promo. */
-  const showPromoBanner = sessionName !== null && isPromoUser(sessionName);
-  const sessionPromo = sessionName !== null && isPromoUser(sessionName);
 
   // Opciones derivadas de los datos del servicio (sin valores fijos).
   const months = useMemo(
@@ -111,10 +105,7 @@ export default function CatalogPage() {
     <div className="min-h-screen bg-surface overflow-x-hidden">
 
       <div className="w-full pt-16 min-h-screen min-w-0">
-        {/* gap estructural: si el banner se oculta no queda hueco. */}
         <section className="max-w-[1280px] w-full mx-auto px-4 sm:px-6 py-6 min-w-0 flex flex-col gap-4 sm:gap-6">
-          {showPromoBanner && sessionName !== null && <HeroPromo userName={sessionName} />}
-
           <CatalogFilterBar
             search={search}
             onSearchChange={(value) => {
@@ -147,30 +138,8 @@ export default function CatalogPage() {
             onSubmit={scrollToResults}
           />
 
-          {/* Fila compacta: sesión, promo y limpiar. */}
+          {/* Fila compacta: promo y limpiar. */}
           <div className="flex flex-wrap items-center gap-2 sm:gap-3 min-w-0">
-            {sessionName !== null ? (
-              <span className="inline-flex items-center gap-1.5 bg-surface-container-lowest text-sm px-3 py-1.5 rounded-full shadow-sm min-w-0 max-w-full">
-                <span className="material-symbols-outlined text-primary text-[18px] shrink-0">
-                  verified_user
-                </span>
-                <span className="truncate font-semibold">{sessionName}</span>
-                <span
-                  className={`text-[11px] font-bold shrink-0 ${sessionPromo ? "text-primary" : "text-outline"}`}
-                >
-                  {sessionPromo ? "15% promo" : "Sin promo"}
-                </span>
-              </span>
-            ) : (
-              <Link
-                to="/login"
-                className="inline-flex items-center gap-1.5 bg-surface-container-lowest text-sm px-3 py-1.5 rounded-full shadow-sm text-primary font-semibold hover:bg-surface-container-high transition-colors whitespace-nowrap"
-              >
-                <span className="material-symbols-outlined text-[18px]">login</span>
-                Inicia sesión para tu descuento
-              </Link>
-            )}
-
             <label className="inline-flex items-center gap-2 bg-surface-container-lowest px-3 py-1.5 rounded-full shadow-sm cursor-pointer whitespace-nowrap">
               <input
                 type="checkbox"
