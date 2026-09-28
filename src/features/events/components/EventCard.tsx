@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
-import { formatPrice } from "../services/events.service";
+import { formatPrice, getPromoPrice, isPromoUser } from "../services/events.service";
 import type { CatalogEvent, ViewMode } from "../types/event.types";
-import { getPromoPrice, isPromoUser } from "../utils/promo.utils";
 
 interface EventCardProps {
   event: CatalogEvent;

@@ -10,11 +10,11 @@ import OrganizerCard from "../components/OrganizerCard";
 import PromoBanner from "../components/PromoBanner";
 import { TICKET_TIERS, MAX_TICKETS } from "../services/event-detail.service";
 import type { DetailTabId, TicketTierId } from "../types/event-detail.types";
-import { isPromoUser, PROMO_DISCOUNT_PCT } from "../../events/utils/promo.utils";
+import { isPromoUser, PROMO_DISCOUNT_PCT } from "../../events/services/events.service";
 
 /**
  * Ficha del evento con mapa de zonas y checkout lateral.
- * El descuento de la promo depende del nombre de sesión (ver promo.utils).
+ * El descuento de la promo depende del nombre de sesión (ver events.service).
  */
 export default function EventDetailPage() {
   const { isAuthenticated, user } = useAuth();

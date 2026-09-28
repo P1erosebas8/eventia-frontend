@@ -1,4 +1,4 @@
-import { isPromoUser, PROMO_DISCOUNT_PCT } from "../../events/utils/promo.utils";
+import { isPromoUser, PROMO_DISCOUNT_PCT } from "../../events/services/events.service";
 
 interface PromoBannerProps {
   userName: string;

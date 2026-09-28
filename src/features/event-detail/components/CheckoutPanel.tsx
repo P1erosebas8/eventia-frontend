@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { TICKET_TIERS, formatPEN, MAX_TICKETS } from "../services/event-detail.service";
 import type { OrderTotals, TicketTierId } from "../types/event-detail.types";
-import { isPromoUser, PROMO_DISCOUNT_PCT } from "../../events/utils/promo.utils";
+import { isPromoUser, PROMO_DISCOUNT_PCT } from "../../events/services/events.service";
 
 /** Reserva simulada: 15 minutos para completar la compra. */
 const HOLD_SECONDS = 15 * 60;
