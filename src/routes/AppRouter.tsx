@@ -5,11 +5,17 @@ import CatalogPage from "../features/events/pages/CatalogPage";
 import EventDetailPage from "../features/event-detail/pages/EventDetailPage";
 import LoginPage from "../features/login/pages/LoginPage";
 import RegisterPage from "../features/register/pages/RegisterPage";
+
 import UsersPage from "../features/users/pages/UsersPage";
 import AdminLayout from "../features/admin/components/AdminLayout";
 import AdminMonitoringPage from "../features/admin/pages/AdminMonitoringPage";
 import AdminCategoriesPage from "../features/admin/pages/AdminCategoriesPage";
 import AdminUsersPage from "../features/admin/pages/AdminUsersPage";
+import MisTicketsPage from "@/features/users/pages/MisTicketsPage";
+import PerfilPage from "@/features/users/pages/PerfilPage";
+
+import ScrollToTop from  "@/shared/components/ScrollToTop";
+
 import MisTicketsPage from "../features/users/pages/MisTicketsPage";
 import PerfilPage from "../features/users/pages/PerfilPage";
 import OrganizerLayout from "../features/organizer/components/layout/OrganizerLayout";
@@ -35,6 +41,8 @@ function NotFound() {
 
 export default function AppRouter() {
   return (
+    <>
+    <ScrollToTop />
     <Routes>
       {/* 1. Flujo Público y Cliente */}
       <Route element={<MainLayout />}>
@@ -72,5 +80,6 @@ export default function AppRouter() {
       {/* 404 */}
       <Route path="*" element={<NotFound />} />
     </Routes>
+    </>
   );
 }
