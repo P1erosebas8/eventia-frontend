@@ -3,7 +3,7 @@ function PaymentMethodStep() {
   const STYLE_LABEL = "block text-xs font-semibold text-gray-800 mb-1.5";
 
 
-  const handleForm=(e)=>{
+  const handleForm=(e: React.FormEvent<HTMLFormElement>)=>{
     e.preventDefault();
   }
 
