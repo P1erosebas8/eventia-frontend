@@ -1,13 +1,15 @@
 import type { CatalogEvent, Category } from "../types/event.types";
 
-export const CATEGORIES: { name: Category; total: number }[] = [
-  { name: "Conciertos", total: 18 },
-  { name: "Festivales", total: 9 },
-  { name: "Teatro & Artes", total: 6 },
-  { name: "Tecnología & Startups", total: 4 },
-  { name: "Gastronomía", total: 7 },
+/** Orden fijo de categorías en los filtros. */
+const CATEGORY_ORDER: Category[] = [
+  "Conciertos",
+  "Festivales",
+  "Teatro & Artes",
+  "Tecnología & Startups",
+  "Gastronomía",
 ];
 
+/** Datos dummy (reemplazar por el backend real). Precio base sin descuento. */
 export const EVENTS: CatalogEvent[] = [
   {
     id: 1,
@@ -113,8 +115,16 @@ export const EVENTS: CatalogEvent[] = [
   },
 ];
 
+/** Conteos por categoría calculados desde EVENTS (los badges nunca mienten). */
+export const CATEGORIES: { name: Category; total: number }[] = CATEGORY_ORDER.map((name) => ({
+  name,
+  total: EVENTS.filter((event) => event.category === name).length,
+}));
+
+/** Tope del slider de precio en filtros. */
 export const MAX_PRICE = 800;
 
+/** Formato moneda peruana (ej. "S/ 120.00"). */
 export function formatPrice(value: number): string {
   return `S/ ${value.toFixed(2)}`;
 }

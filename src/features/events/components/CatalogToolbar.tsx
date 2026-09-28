@@ -8,6 +8,7 @@ interface CatalogToolbarProps {
   onViewChange: (value: ViewMode) => void;
 }
 
+/** Barra de resultados: conteo, orden y densidad (cuadrícula/lista). */
 export default function CatalogToolbar({
   total,
   sort,

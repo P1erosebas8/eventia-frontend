@@ -6,16 +6,20 @@ import { getPromoPrice, isPromoUser, PROMO_DISCOUNT_PCT } from "../utils/promo.u
 interface EventCardProps {
   event: CatalogEvent;
   view: ViewMode;
+  /** Nombre de sesión; define si se muestra el precio con descuento. */
   userName: string;
 }
 
+/** Un evento es urgente cuando queda poco aforo. */
 function isUrgent(soldPct: number): boolean {
   return soldPct >= 85;
 }
 
+/** Tarjeta de evento con foto, disponibilidad, precio y acceso al detalle. */
 export default function EventCard({ event, view, userName }: EventCardProps) {
   const urgent = isUrgent(event.soldPct);
   const promoUser = isPromoUser(userName);
+  // El descuento solo se refleja si el evento lo admite Y la sesión califica.
   const showDiscount = event.isPromoEligible && promoUser;
   const finalPrice = showDiscount ? getPromoPrice(event.price) : event.price;
   const isList = view === "list";
@@ -38,6 +42,7 @@ export default function EventCard({ event, view, userName }: EventCardProps) {
           loading="lazy"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none"></div>
+        {/* Etiqueta de categoría sobre la foto. */}
         {event.tag && (
           <span className="absolute top-3 left-3 bg-primary-container/90 text-white text-[11px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider shadow-sm max-w-[45%] truncate">
             {event.tag}
@@ -57,6 +62,8 @@ export default function EventCard({ event, view, userName }: EventCardProps) {
             <span className="truncate">{event.badge}</span>
           </span>
         )}
+        {/* Insignia de promo: visible si el evento la admite (el precio
+            con descuento depende además de la sesión). */}
         {event.isPromoEligible && (
           <div className="absolute bottom-3 left-3 bg-surface/90 backdrop-blur-md px-2 py-0.5 rounded text-on-surface text-[11px] font-bold flex items-center gap-1 max-w-[calc(100%-1.5rem)]">
             <span className="material-symbols-outlined text-secondary text-[14px] shrink-0">
@@ -119,6 +126,7 @@ export default function EventCard({ event, view, userName }: EventCardProps) {
             )}
           </div>
           <Link
+            // Navega al detalle; el checkout valida ahí la promo con la sesión.
             to={`/event/${event.id}`}
             className="px-4 py-2 bg-primary hover:opacity-90 text-on-primary rounded-lg text-sm font-bold shadow-sm transition-all shrink-0"
           >

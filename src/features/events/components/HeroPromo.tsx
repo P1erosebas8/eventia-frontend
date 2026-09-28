@@ -4,12 +4,16 @@ interface HeroPromoProps {
   userName: string;
 }
 
+/**
+ * Banner de promo. La página solo lo monta si la sesión califica, por eso
+ * aquí se asume elegibilidad y se personaliza con el primer nombre.
+ */
 export default function HeroPromo({ userName }: HeroPromoProps) {
   const eligible = isPromoUser(userName);
   const firstName = userName.trim().split(/\s+/)[0];
 
   return (
-    <header className="relative overflow-hidden rounded-xl bg-gradient-to-r from-primary via-primary-container to-tertiary text-on-primary p-6 md:p-8 mb-6 shadow-xl">
+    <header className="relative overflow-hidden rounded-xl bg-gradient-to-r from-primary via-primary-container to-tertiary text-on-primary p-6 md:p-8 shadow-xl">
       <div className="absolute -right-16 -top-16 w-80 h-80 rounded-full bg-secondary/30 blur-3xl pointer-events-none"></div>
       <div className="absolute left-1/3 -bottom-20 w-64 h-64 rounded-full bg-white/10 blur-2xl pointer-events-none"></div>
 

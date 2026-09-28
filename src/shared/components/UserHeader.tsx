@@ -33,7 +33,7 @@ export default function UserHeader() {
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 bg-white/90 backdrop-blur-xl border-b border-slate-200 shadow-sm">
-      <div className="h-20 max-w-[1280px] mx-auto px-6 flex items-center justify-between gap-6">
+      <div className="h-16 max-w-[1280px] mx-auto px-6 flex items-center justify-between gap-6">
         
         {/* Logo */}
         <Link to="/" className="flex items-center gap-3">

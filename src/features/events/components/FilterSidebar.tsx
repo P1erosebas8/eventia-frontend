@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { CATEGORIES, MAX_PRICE, formatPrice } from "../services/events.service";
 import type { Category } from "../types/event.types";
 import { isPromoUser, PROMO_DISCOUNT_PCT } from "../utils/promo.utils";
@@ -5,8 +6,7 @@ import { isPromoUser, PROMO_DISCOUNT_PCT } from "../utils/promo.utils";
 interface FilterSidebarProps {
   search: string;
   onSearchChange: (value: string) => void;
-  userName: string;
-  onUserNameChange: (value: string) => void;
+  sessionName: string | null;
   promoOnly: boolean;
   onPromoOnlyChange: (value: boolean) => void;
   selectedCategories: Category[];
@@ -20,8 +20,7 @@ export default function FilterSidebar(props: FilterSidebarProps) {
   const {
     search,
     onSearchChange,
-    userName,
-    onUserNameChange,
+    sessionName,
     promoOnly,
     onPromoOnlyChange,
     selectedCategories,
@@ -31,8 +30,9 @@ export default function FilterSidebar(props: FilterSidebarProps) {
     onClear,
   } = props;
 
-  const promoUser = isPromoUser(userName);
+  const promoUser = sessionName !== null && isPromoUser(sessionName);
 
+  // Lleva la vista a los resultados sin recargar (filtros ya en vivo).
   const scrollToResults = () => {
     document.getElementById("catalog-results")?.scrollIntoView({ behavior: "smooth" });
   };
@@ -80,30 +80,31 @@ export default function FilterSidebar(props: FilterSidebarProps) {
       </div>
 
       <div className="flex flex-col gap-2 min-w-0">
-        <label htmlFor="user-name-input" className="text-xs font-semibold uppercase tracking-wider">
-          Tu nombre
-        </label>
-        <div className="relative min-w-0">
-          <span className="material-symbols-outlined absolute left-3 top-2.5 text-outline text-[20px] pointer-events-none">
-            person
-          </span>
-          <input
-            id="user-name-input"
-            value={userName}
-            onChange={(e) => onUserNameChange(e.target.value)}
-            className="w-full bg-surface-container-low text-sm pl-10 pr-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary placeholder:text-outline min-w-0"
-            placeholder="Ej. Roberto, Gerónimo, Ana..."
-            type="text"
-            autoComplete="given-name"
-          />
-        </div>
-        <p className={`text-xs ${promoUser ? "text-primary font-semibold" : "text-outline"}`}>
-          {userName.trim() === ""
-            ? `Escribe tu nombre para validar el ${PROMO_DISCOUNT_PCT}% de descuento.`
-            : promoUser
-              ? "Tienes descuento del 15% en eventos seleccionados."
+        <span className="text-xs font-semibold uppercase tracking-wider">Tu nombre</span>
+        {sessionName !== null ? (
+          <div className="flex items-center gap-2 bg-surface-container-low text-sm pl-3 pr-4 py-2.5 rounded-lg min-w-0">
+            <span className="material-symbols-outlined text-primary text-[20px] shrink-0">
+              verified_user
+            </span>
+            <span className="truncate font-semibold">{sessionName}</span>
+            <span className="text-[11px] text-outline shrink-0">(sesión)</span>
+          </div>
+        ) : (
+          <Link
+            to="/login"
+            className="flex items-center gap-2 bg-surface-container-low text-sm px-3 py-2.5 rounded-lg text-primary font-semibold hover:bg-surface-container-high transition-colors min-w-0"
+          >
+            <span className="material-symbols-outlined text-[20px] shrink-0">login</span>
+            <span className="truncate">Inicia sesión para validar tu descuento</span>
+          </Link>
+        )}
+        {sessionName !== null && (
+          <p className={`text-xs ${promoUser ? "text-primary font-semibold" : "text-outline"}`}>
+            {promoUser
+              ? "Tu sesión tiene 15% de descuento en eventos seleccionados."
               : "Esta promo solo aplica para Roberto o Gerónimo."}
-        </p>
+          </p>
+        )}
       </div>
 
       <div className="bg-secondary-fixed/50 p-3 rounded-lg flex items-center justify-between gap-2 min-w-0">
@@ -129,6 +130,7 @@ export default function FilterSidebar(props: FilterSidebarProps) {
         </label>
       </div>
 
+      {/* Categorías con conteo real calculado desde EVENTS. */}
       <div className="flex flex-col gap-2 min-w-0">
         <span className="text-xs font-semibold uppercase tracking-wider">Categorías</span>
         <div className="flex flex-col gap-1.5 min-w-0">
