@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { TICKET_TIERS, formatPEN, MAX_TICKETS } from "../services/event-detail.service";
 import type { OrderTotals, TicketTierId } from "../types/event-detail.types";
 import { isPromoUser, PROMO_DISCOUNT_PCT } from "../../events/utils/promo.utils";
@@ -18,21 +19,20 @@ interface CheckoutPanelProps {
   onUpdateQuantity: (tier: TicketTierId, delta: number) => void;
   totals: OrderTotals;
   highlightedTier: TicketTierId | null;
-  userName: string;
-  onUserNameChange: (value: string) => void;
+  /** Nombre de sesión o null si es visita anónima (sin input manual). */
+  sessionName: string | null;
 }
 
-/** Panel de compra: cantidades, nombre del comprador, resumen y pago. */
+/** Panel de compra: cantidades, resumen y pago. El nombre viene de la sesión. */
 export default function CheckoutPanel({
   quantities,
   onUpdateQuantity,
   totals,
   highlightedTier,
-  userName,
-  onUserNameChange,
+  sessionName,
 }: CheckoutPanelProps) {
   const empty = totals.count === 0;
-  const promoUser = isPromoUser(userName);
+  const promoUser = sessionName !== null && isPromoUser(sessionName);
   const [secondsLeft, setSecondsLeft] = useState(HOLD_SECONDS);
 
   // Reloj en vivo con limpieza al desmontar (evita timers huérfanos).
@@ -64,30 +64,31 @@ export default function CheckoutPanel({
       </div>
 
       <div className="flex flex-col gap-2 min-w-0">
-        <label htmlFor="buyer-name-input" className="text-xs font-semibold uppercase tracking-wider">
-          Nombre del comprador
-        </label>
-        <div className="relative min-w-0">
-          <span className="material-symbols-outlined absolute left-3 top-2.5 text-outline text-[20px] pointer-events-none">
-            person
-          </span>
-          <input
-            id="buyer-name-input"
-            value={userName}
-            onChange={(e) => onUserNameChange(e.target.value)}
-            className="w-full bg-surface-container-low text-sm pl-10 pr-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary placeholder:text-outline min-w-0"
-            placeholder="Ej. Roberto, Gerónimo..."
-            type="text"
-            autoComplete="given-name"
-          />
-        </div>
-        <p className={`text-xs ${promoUser ? "text-primary font-semibold" : "text-outline"}`}>
-          {userName.trim() === ""
-            ? `Escribe tu nombre para validar el ${PROMO_DISCOUNT_PCT}% de descuento.`
-            : promoUser
-              ? "Tienes 15% de descuento aplicado en el resumen."
+        <span className="text-xs font-semibold uppercase tracking-wider">Comprador</span>
+        {sessionName !== null ? (
+          <div className="flex items-center gap-2 bg-surface-container-low text-sm pl-3 pr-4 py-2.5 rounded-lg min-w-0">
+            <span className="material-symbols-outlined text-primary text-[20px] shrink-0">
+              verified_user
+            </span>
+            <span className="truncate font-semibold">{sessionName}</span>
+            <span className="text-[11px] text-outline shrink-0">(sesión)</span>
+          </div>
+        ) : (
+          <Link
+            to="/login"
+            className="flex items-center gap-2 bg-surface-container-low text-sm px-3 py-2.5 rounded-lg text-primary font-semibold hover:bg-surface-container-high transition-colors min-w-0"
+          >
+            <span className="material-symbols-outlined text-[20px] shrink-0">login</span>
+            <span className="truncate">Inicia sesión para validar tu descuento</span>
+          </Link>
+        )}
+        {sessionName !== null && (
+          <p className={`text-xs ${promoUser ? "text-primary font-semibold" : "text-outline"}`}>
+            {promoUser
+              ? "Tu sesión tiene 15% de descuento aplicado en el resumen."
               : "La promo de 15% solo aplica para Roberto o Gerónimo."}
-        </p>
+          </p>
+        )}
       </div>
 
       {TICKET_TIERS.map((tier) => (

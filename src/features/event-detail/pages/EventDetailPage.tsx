@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useAuth } from "../../../context/AuthContext";
 import Footer from "../../../shared/layouts/Footer";
 import Breadcrumbs from "../components/Breadcrumbs";
 import CheckoutPanel from "../components/CheckoutPanel";
@@ -16,6 +17,7 @@ import { isPromoUser, PROMO_DISCOUNT_PCT } from "../../events/utils/promo.utils"
  * El descuento de la promo depende del nombre de sesión (ver promo.utils).
  */
 export default function EventDetailPage() {
+  const { isAuthenticated, user } = useAuth();
   const [activeTab, setActiveTab] = useState<DetailTabId>("zones");
   const [quantities, setQuantities] = useState<Record<TicketTierId, number>>({
     vip: 0,
@@ -23,7 +25,10 @@ export default function EventDetailPage() {
     west: 0,
   });
   const [highlightedTier, setHighlightedTier] = useState<TicketTierId | null>(null);
-  const [userName, setUserName] = useState("Roberto");
+
+  /** Nombre de sesión o null si es visita anónima (sin input manual). */
+  const sessionName =
+    isAuthenticated && user ? `${user.firstName} ${user.lastName}`.trim() : null;
 
   const updateQuantity = (tier: TicketTierId, delta: number) => {
     setQuantities((prev) => {
@@ -39,7 +44,10 @@ export default function EventDetailPage() {
   const count = quantities.vip + quantities.general + quantities.west;
   const subtotal = TICKET_TIERS.reduce((acc, tier) => acc + tier.price * quantities[tier.id], 0);
   // Sin sesión que califique no hay descuento (total = subtotal).
-  const discount = isPromoUser(userName) ? (subtotal * PROMO_DISCOUNT_PCT) / 100 : 0;
+  const discount =
+    sessionName !== null && isPromoUser(sessionName)
+      ? (subtotal * PROMO_DISCOUNT_PCT) / 100
+      : 0;
   const totals = { count, subtotal, discount, total: subtotal - discount };
 
   const handleSelectTier = (tier: TicketTierId) => {
@@ -60,7 +68,7 @@ export default function EventDetailPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-start min-w-0">
             <div className="lg:col-span-7 flex flex-col gap-4 sm:gap-6 min-w-0">
               <EventHero />
-              <PromoBanner userName={userName} />
+              <PromoBanner userName={sessionName ?? ""} />
               <EventTabs activeTab={activeTab} onTabChange={setActiveTab} onSelectTier={handleSelectTier} />
               <OrganizerCard />
             </div>
@@ -70,8 +78,7 @@ export default function EventDetailPage() {
                 onUpdateQuantity={updateQuantity}
                 totals={totals}
                 highlightedTier={highlightedTier}
-                userName={userName}
-                onUserNameChange={setUserName}
+                sessionName={sessionName}
               />
             </div>
           </div>
