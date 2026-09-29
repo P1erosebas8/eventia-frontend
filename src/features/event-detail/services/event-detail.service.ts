@@ -142,8 +142,10 @@ function buildEventDetail(
   const orgTiers = orgTickets
     .filter(
       (ticket) =>
-        String(ticket.eventId) === String(eventId) ||
-        (row.id && String(ticket.eventId) === String(row.id))
+        (String(ticket.eventId) === String(eventId) ||
+          (row.id && String(ticket.eventId) === String(row.id)) ||
+          (row.id_event && String(ticket.eventId) === String(row.id_event))) &&
+        ticket.status !== "inactive"
     )
     .map((t, idx) => mapOrgTicket(t, idx, legacyTiers.length));
 
@@ -197,11 +199,13 @@ export function getEventDetail(eventId: string | number): EventDetailData | null
     null;
   if (!row) return null;
 
-  return buildEventDetail(
-    row,
-    DB_TICKET_TYPES,
-    allLocalTickets.length > 0 ? (allLocalTickets as any) : DB_ORGANIZER_TICKETS
-  );
+  // Unificar tickets de db.json y de localStorage
+  const ticketsMap = new Map<string, any>();
+  DB_ORGANIZER_TICKETS.forEach((t) => ticketsMap.set(String(t.id), t));
+  allLocalTickets.forEach((t) => ticketsMap.set(String(t.id), t));
+  const mergedOrgTickets = Array.from(ticketsMap.values());
+
+  return buildEventDetail(row, DB_TICKET_TYPES, mergedOrgTickets);
 }
 
 /**
@@ -211,7 +215,7 @@ export async function fetchEventDetail(eventId: string | number): Promise<EventD
   const strId = String(eventId);
   const localMockEvents = getMockEvents();
   const localMockTickets = getMockTickets();
-  const eventTickets = localMockTickets[strId] || Object.values(localMockTickets).flat();
+  const allLocalTickets = Object.values(localMockTickets).flat();
 
   try {
     const [eventRes, ticketTypesRes, orgTicketsRes] = await Promise.allSettled([
@@ -245,12 +249,20 @@ export async function fetchEventDetail(eventId: string | number): Promise<EventD
 
     const rawTicketTypes =
       ticketTypesRes.status === "fulfilled" ? ticketTypesRes.value.data : DB_TICKET_TYPES;
-    const rawOrgTickets =
-      orgTicketsRes.status === "fulfilled" && orgTicketsRes.value.data.length > 0
-        ? orgTicketsRes.value.data
-        : (eventTickets.length > 0 ? (eventTickets as any) : DB_ORGANIZER_TICKETS);
 
-    return buildEventDetail(eventRow!, rawTicketTypes, rawOrgTickets);
+    // Unir tickets obtenidos de la API con los guardados en localStorage y db.json
+    const apiOrgTickets =
+      orgTicketsRes.status === "fulfilled" && Array.isArray(orgTicketsRes.value.data)
+        ? orgTicketsRes.value.data
+        : [];
+
+    const ticketsMap = new Map<string, any>();
+    DB_ORGANIZER_TICKETS.forEach((t) => ticketsMap.set(String(t.id), t));
+    apiOrgTickets.forEach((t) => ticketsMap.set(String(t.id), t));
+    allLocalTickets.forEach((t) => ticketsMap.set(String(t.id), t));
+    const mergedOrgTickets = Array.from(ticketsMap.values());
+
+    return buildEventDetail(eventRow!, rawTicketTypes, mergedOrgTickets);
   } catch (err) {
     console.warn("Fallo al obtener detalle del evento de la API, usando respaldo:", err);
     return getEventDetail(eventId);
