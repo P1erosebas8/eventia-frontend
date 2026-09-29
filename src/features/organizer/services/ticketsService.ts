@@ -50,6 +50,12 @@ export const ticketsService = {
 
     try {
       const response = await apiClient.post<TicketType>("/organizer_tickets", newTicket);
+      const ticketsMap = getMockTickets();
+      if (!ticketsMap[ticketData.eventId]) {
+        ticketsMap[ticketData.eventId] = [];
+      }
+      ticketsMap[ticketData.eventId].push(response.data);
+      saveMockTickets(ticketsMap);
       return response.data;
     } catch {
       const ticketsMap = getMockTickets();

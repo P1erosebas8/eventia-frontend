@@ -92,6 +92,24 @@ export function useCreateEvent() {
         user?.id
       );
 
+      // Crear tarifa inicial por defecto para el nuevo evento
+      try {
+        await organizerService.createTicketType({
+          eventId: createdEvent.id,
+          name: "General",
+          zone: "General",
+          pricePEN: 80,
+          capacity: formData.capacity,
+          status: "active",
+          saleStartDate: new Date().toISOString().split("T")[0],
+          saleEndDate: formData.eventDate,
+          isPresale: false,
+          maxPerPurchase: 4,
+        });
+      } catch {
+        // Ignorar si falla la tarifa inicial
+      }
+
       showToast(asDraft ? "¡Borrador creado con éxito!" : "¡Evento publicado con éxito!");
 
       setTimeout(() => {

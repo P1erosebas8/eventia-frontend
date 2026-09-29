@@ -174,6 +174,9 @@ export const eventsService = {
 
     try {
       const response = await apiClient.post<OrganizerEvent>("/events", newEvent);
+      const list = getMockEvents();
+      list.unshift(response.data);
+      saveMockEvents(list);
       return response.data;
     } catch {
       // Fallback a almacenamiento local persistente

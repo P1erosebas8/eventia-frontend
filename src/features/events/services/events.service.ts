@@ -193,33 +193,36 @@ export async function fetchCatalogEvents(): Promise<CatalogEvent[]> {
         ? eventsRes.value.data
         : DB_EVENTS;
 
-    // Agregar eventos adicionales creados por el organizador en sesión
+    // Agregar eventos adicionales creados por el organizador en sesión al inicio
     const baseEventIds = new Set(apiEvents.map((e: any) => String(e.id || e.id_event)));
     const customLocalEvents = (localMockEvents as any).filter(
       (e: any) => !baseEventIds.has(String(e.id))
     );
-    const mergedEvents = [...apiEvents, ...customLocalEvents];
+    const mergedEvents = [...customLocalEvents, ...apiEvents];
 
     const rawTicketTypes =
       ticketTypesRes.status === "fulfilled" && Array.isArray(ticketTypesRes.value.data) && ticketTypesRes.value.data.length > 0
         ? ticketTypesRes.value.data
         : DB_TICKET_TYPES;
 
-    const rawOrgTickets =
+    const apiOrgTickets =
       orgTicketsRes.status === "fulfilled" && Array.isArray(orgTicketsRes.value.data) && orgTicketsRes.value.data.length > 0
         ? orgTicketsRes.value.data
-        : (allLocalOrgTickets.length > 0 ? (allLocalOrgTickets as any) : DB_ORGANIZER_TICKETS);
+        : [];
+    const apiTicketIds = new Set(apiOrgTickets.map((t: any) => String(t.id)));
+    const customLocalTickets = (allLocalOrgTickets as any).filter((t: any) => !apiTicketIds.has(String(t.id)));
+    const mergedOrgTickets = [...customLocalTickets, ...apiOrgTickets, ...DB_ORGANIZER_TICKETS];
 
     return mergedEvents
       .filter((row: any) => row.active !== false && row.status !== "draft" && row.status !== "inactive")
-      .map((row: any) => mapEventItem(row, DB_CATEGORIES, rawTicketTypes, rawOrgTickets));
+      .map((row: any) => mapEventItem(row, DB_CATEGORIES, rawTicketTypes, mergedOrgTickets));
   } catch (err) {
     console.warn("No se pudo obtener eventos en vivo, usando eventos persistidos locales:", err);
     const baseEventIds = new Set(DB_EVENTS.map((e: any) => String(e.id || e.id_event)));
     const customLocalEvents = (localMockEvents as any).filter(
       (e: any) => !baseEventIds.has(String(e.id))
     );
-    const mergedEvents = [...DB_EVENTS, ...customLocalEvents];
+    const mergedEvents = [...customLocalEvents, ...DB_EVENTS];
 
     return mergedEvents
       .filter((row: any) => row.active !== false && row.status !== "draft" && row.status !== "inactive")
@@ -292,6 +295,15 @@ export const PRICE_RANGES: PriceRange[] = [
 /** Meses presentes en el catálogo (código → etiqueta). */
 export const MONTH_LABELS: Record<string, string> = {
   ENE: "Enero",
+  FEB: "Febrero",
+  MAR: "Marzo",
+  ABR: "Abril",
+  MAY: "Mayo",
+  JUN: "Junio",
+  JUL: "Julio",
+  AGO: "Agosto",
+  SET: "Setiembre",
+  OCT: "Octubre",
   NOV: "Noviembre",
   DIC: "Diciembre",
 };
@@ -300,3 +312,4 @@ export const MONTH_LABELS: Record<string, string> = {
 export function formatPrice(value: number): string {
   return `S/ ${value.toFixed(2)}`;
 }
+
